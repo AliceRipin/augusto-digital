@@ -9,220 +9,584 @@
 
 <style>
 :root{
---navy:#06243a;--navy2:#0b304b;--blue:#1677d2;--gold:#e4a12a;
---bg:#f4f7fb;--text:#152536;--muted:#6d7b8b;--white:#fff;
---danger:#c0392b;--ok:#198754;--shadow:0 8px 30px rgba(6,36,58,.10)
+--navy:#06243a;
+--navy2:#0b304b;
+--blue:#1677d2;
+--gold:#e4a12a;
+--bg:#f4f7fb;
+--text:#152536;
+--muted:#6d7b8b;
+--white:#fff;
+--danger:#c0392b;
+--ok:#198754;
+--shadow:0 8px 30px rgba(6,36,58,.10)
 }
+
 *{box-sizing:border-box}
-body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}
+
+body{
+margin:0;
+font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;
+background:var(--bg);
+color:var(--text)
+}
+
 button,input,select,textarea{font:inherit}
 button{cursor:pointer}
 
-.app{min-height:100vh;display:flex}
-.sidebar{
-width:245px;background:linear-gradient(180deg,var(--navy),#041b2c);
-color:#fff;padding:18px 14px;position:fixed;inset:0 auto 0 0;z-index:5
+.app{
+min-height:100vh;
+display:flex
 }
+
+.sidebar{
+width:245px;
+background:linear-gradient(180deg,var(--navy),#041b2c);
+color:#fff;
+padding:18px 14px;
+position:fixed;
+inset:0 auto 0 0;
+z-index:5
+}
+
 .brand{
-display:flex;align-items:center;gap:10px;padding:6px 8px 20px;
+display:flex;
+align-items:center;
+gap:10px;
+padding:6px 8px 20px;
 border-bottom:1px solid rgba(255,255,255,.12)
 }
-.brand img{width:42px;height:42px;object-fit:cover;border-radius:8px}
+
+.brand img{
+width:42px;
+height:42px;
+object-fit:cover;
+border-radius:8px
+}
+
 .brand b{font-size:14px}
-.brand span{display:block;font-size:11px;color:#b9c9d8;margin-top:2px}
+
+.brand span{
+display:block;
+font-size:11px;
+color:#b9c9d8;
+margin-top:2px
+}
 
 nav{padding-top:16px}
+
 nav button{
-width:100%;background:none;border:0;color:#dce8f1;text-align:left;
-padding:12px 13px;border-radius:9px;margin-bottom:5px
+width:100%;
+background:none;
+border:0;
+color:#dce8f1;
+text-align:left;
+padding:12px 13px;
+border-radius:9px;
+margin-bottom:5px
 }
-nav button.active,nav button:hover{background:rgba(228,161,42,.16);color:#fff}
-nav button.active{border-left:3px solid var(--gold)}
 
-.main{margin-left:245px;width:calc(100% - 245px);min-height:100vh}
+nav button.active,
+nav button:hover{
+background:rgba(228,161,42,.16);
+color:#fff
+}
+
+nav button.active{
+border-left:3px solid var(--gold)
+}
+
+.main{
+margin-left:245px;
+width:calc(100% - 245px);
+min-height:100vh
+}
+
 .top{
-height:68px;background:#fff;border-bottom:1px solid #e6edf4;
-display:flex;align-items:center;justify-content:space-between;
-padding:0 28px;position:sticky;top:0;z-index:4
-}
-.top h1{font-size:20px;margin:0}
-.userpill{
-font-size:13px;color:var(--muted);background:#f3f6fa;
-padding:8px 12px;border-radius:99px
+height:68px;
+background:#fff;
+border-bottom:1px solid #e6edf4;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 28px;
+position:sticky;
+top:0;
+z-index:4
 }
 
-.content{padding:26px;max-width:1400px;margin:auto}
+.top h1{
+font-size:20px;
+margin:0
+}
+
+.userpill{
+font-size:13px;
+color:var(--muted);
+background:#f3f6fa;
+padding:8px 12px;
+border-radius:99px
+}
+
+.content{
+padding:26px;
+max-width:1400px;
+margin:auto
+}
+
 .page{display:none}
 .page.active{display:block}
 
-.grid{display:grid;gap:16px}
-.cards{grid-template-columns:repeat(4,minmax(0,1fr))}
-.card{
-background:#fff;border-radius:14px;padding:18px;
-box-shadow:var(--shadow);border:1px solid #e9eff5
+.grid{
+display:grid;
+gap:16px
 }
-.card .label{color:var(--muted);font-size:12px}
-.card .value{font-size:25px;font-weight:750;margin-top:8px}
+
+.cards{
+grid-template-columns:repeat(4,minmax(0,1fr))
+}
+
+.card{
+background:#fff;
+border-radius:14px;
+padding:18px;
+box-shadow:var(--shadow);
+border:1px solid #e9eff5
+}
+
+.card .label{
+color:var(--muted);
+font-size:12px
+}
+
+.card .value{
+font-size:25px;
+font-weight:750;
+margin-top:8px
+}
+
 .gold{color:#c77f00}
 .blue{color:var(--blue)}
 
 .section-head{
-display:flex;justify-content:space-between;align-items:center;margin:0 0 16px
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin:0 0 16px
 }
-.section-head h2{font-size:19px;margin:0}
+
+.section-head h2{
+font-size:19px;
+margin:0
+}
 
 .btn{
-border:0;border-radius:9px;padding:10px 15px;font-weight:650
+border:0;
+border-radius:9px;
+padding:10px 15px;
+font-weight:650
 }
-.btn.primary{background:var(--blue);color:#fff}
-.btn.gold{background:var(--gold);color:#13202b}
-.btn.secondary{background:#eaf0f5;color:var(--navy)}
-.btn.danger{background:#fdecea;color:var(--danger)}
+
+.btn.primary{
+background:var(--blue);
+color:#fff
+}
+
+.btn.gold{
+background:var(--gold);
+color:#13202b
+}
+
+.btn.secondary{
+background:#eaf0f5;
+color:var(--navy)
+}
+
+.btn.danger{
+background:#fdecea;
+color:var(--danger)
+}
 
 .tablewrap{
-overflow:auto;background:#fff;border-radius:14px;box-shadow:var(--shadow)
+overflow:auto;
+background:#fff;
+border-radius:14px;
+box-shadow:var(--shadow)
 }
-table{width:100%;border-collapse:collapse;min-width:720px}
+
+table{
+width:100%;
+border-collapse:collapse;
+min-width:720px
+}
+
 th,td{
-padding:13px 14px;text-align:left;border-bottom:1px solid #edf1f5;font-size:13px
+padding:13px 14px;
+text-align:left;
+border-bottom:1px solid #edf1f5;
+font-size:13px
 }
+
 th{
-color:var(--muted);font-size:12px;text-transform:uppercase;
-letter-spacing:.03em;background:#fafcfe
+color:var(--muted);
+font-size:12px;
+text-transform:uppercase;
+letter-spacing:.03em;
+background:#fafcfe
 }
 
 .badge{
-display:inline-block;padding:5px 8px;border-radius:99px;
-font-size:11px;font-weight:700;background:#eaf0f5
+display:inline-block;
+padding:5px 8px;
+border-radius:99px;
+font-size:11px;
+font-weight:700;
+background:#eaf0f5
 }
-.badge.ok{background:#e8f6ee;color:#177545}
-.badge.wait{background:#fff5df;color:#9a6500}
-.badge.cancel{background:#fdecea;color:#c0392b}
+
+.badge.ok{
+background:#e8f6ee;
+color:#177545
+}
+
+.badge.wait{
+background:#fff5df;
+color:#9a6500
+}
+
+.badge.cancel{
+background:#fdecea;
+color:#c0392b
+}
 
 .form{
-background:#fff;border-radius:14px;box-shadow:var(--shadow);padding:20px
+background:#fff;
+border-radius:14px;
+box-shadow:var(--shadow);
+padding:20px
 }
-.formgrid{
-display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px
-}
-.field label{
-display:block;font-size:12px;color:var(--muted);margin-bottom:6px
-}
-.field input,.field select,.field textarea{
-width:100%;border:1px solid #dbe4ec;border-radius:9px;
-padding:10px 11px;background:#fff
-}
-.field textarea{min-height:85px;resize:vertical}
-.full{grid-column:1/-1}
 
-.items{margin-top:20px}
+.formgrid{
+display:grid;
+grid-template-columns:repeat(2,minmax(0,1fr));
+gap:14px
+}
+
+.field label{
+display:block;
+font-size:12px;
+color:var(--muted);
+margin-bottom:6px
+}
+
+.field input,
+.field select,
+.field textarea{
+width:100%;
+border:1px solid #dbe4ec;
+border-radius:9px;
+padding:10px 11px;
+background:#fff
+}
+
+.field textarea{
+min-height:85px;
+resize:vertical
+}
+
+.full{
+grid-column:1/-1
+}
+
+.items{
+margin-top:20px
+}
+
 .item{
-display:grid;grid-template-columns:115px 1fr 150px 110px 40px;
-gap:10px;align-items:center;border:1px solid #e2eaf1;
-padding:10px;border-radius:12px;margin-bottom:9px
+display:grid;
+grid-template-columns:115px 1fr 150px 110px 40px;
+gap:10px;
+align-items:center;
+border:1px solid #e2eaf1;
+padding:10px;
+border-radius:12px;
+margin-bottom:9px
 }
+
 .thumb{
-width:115px;height:90px;border-radius:8px;background:#eef3f7;object-fit:cover
+width:115px;
+height:90px;
+border-radius:8px;
+background:#eef3f7;
+object-fit:cover
 }
-.item select,.item input{
-width:100%;padding:9px;border:1px solid #dbe4ec;border-radius:8px
+
+.item select,
+.item input{
+width:100%;
+padding:9px;
+border:1px solid #dbe4ec;
+border-radius:8px
 }
+
 .remove{
-border:0;background:#fdecea;color:var(--danger);
-width:36px;height:36px;border-radius:8px
+border:0;
+background:#fdecea;
+color:var(--danger);
+width:36px;
+height:36px;
+border-radius:8px
 }
+
 .totalbar{
-display:flex;justify-content:flex-end;gap:28px;margin-top:15px;font-weight:700
+display:flex;
+justify-content:flex-end;
+gap:28px;
+margin-top:15px;
+font-weight:700
 }
+
 .muted{color:var(--muted)}
 
 .gallery{
 grid-template-columns:repeat(auto-fill,minmax(170px,1fr))
 }
+
 .photo{
-background:#fff;border-radius:12px;padding:10px;box-shadow:var(--shadow)
+background:#fff;
+border-radius:12px;
+padding:10px;
+box-shadow:var(--shadow)
 }
+
 .photo img{
-width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;background:#edf2f6
+width:100%;
+aspect-ratio:1;
+object-fit:cover;
+border-radius:8px;
+background:#edf2f6
 }
-.photo .actions{display:flex;gap:7px;margin-top:8px}
+
+.photo .actions{
+display:flex;
+gap:7px;
+margin-top:8px
+}
+
 .photo button{
-flex:1;padding:7px;border:0;border-radius:7px;background:#eef3f7
+flex:1;
+padding:7px;
+border:0;
+border-radius:7px;
+background:#eef3f7
 }
+
 .drop{
-border:2px dashed #c9d6e2;padding:22px;border-radius:12px;
-text-align:center;margin-bottom:16px;background:#fbfdff
+border:2px dashed #c9d6e2;
+padding:22px;
+border-radius:12px;
+text-align:center;
+margin-bottom:16px;
+background:#fbfdff
 }
-.empty{padding:35px;text-align:center;color:var(--muted)}
+
+.empty{
+padding:35px;
+text-align:center;
+color:var(--muted)
+}
 
 .modal{
-position:fixed;inset:0;background:rgba(3,20,34,.58);
-display:none;align-items:center;justify-content:center;
-z-index:20;padding:20px
+position:fixed;
+inset:0;
+background:rgba(3,20,34,.58);
+display:none;
+align-items:center;
+justify-content:center;
+z-index:20;
+padding:20px
 }
-.modal.show{display:flex}
+
+.modal.show{
+display:flex
+}
+
 .modalbox{
-background:#fff;border-radius:16px;max-width:850px;width:100%;
-max-height:90vh;overflow:auto;padding:22px
+background:#fff;
+border-radius:16px;
+max-width:850px;
+width:100%;
+max-height:90vh;
+overflow:auto;
+padding:22px
 }
+
 .modalhead{
-display:flex;justify-content:space-between;align-items:center
+display:flex;
+justify-content:space-between;
+align-items:center
 }
+
 .modalhead h3{margin:0}
+
 .close{
-border:0;background:#eef2f6;border-radius:8px;width:36px;height:36px
+border:0;
+background:#eef2f6;
+border-radius:8px;
+width:36px;
+height:36px
 }
 
 .toast{
-position:fixed;right:22px;bottom:22px;background:var(--navy);
-color:#fff;padding:12px 16px;border-radius:9px;
-display:none;z-index:50
+position:fixed;
+right:22px;
+bottom:22px;
+background:var(--navy);
+color:#fff;
+padding:12px 16px;
+border-radius:9px;
+display:none;
+z-index:50
 }
+
 .toast.show{display:block}
 
 .login{
-position:fixed;inset:0;background:linear-gradient(135deg,var(--navy),#0e5d91);
-display:flex;align-items:center;justify-content:center;z-index:100
+position:fixed;
+inset:0;
+background:linear-gradient(135deg,var(--navy),#0e5d91);
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:100
 }
+
 .loginbox{
-background:#fff;width:min(410px,92vw);border-radius:18px;
-padding:28px;box-shadow:0 25px 80px rgba(0,0,0,.25)
+background:#fff;
+width:min(410px,92vw);
+border-radius:18px;
+padding:28px;
+box-shadow:0 25px 80px rgba(0,0,0,.25)
 }
+
 .loginbox img{
-display:block;width:82px;height:82px;object-fit:cover;
-border-radius:14px;margin:0 auto 12px
+display:block;
+width:82px;
+height:82px;
+object-fit:cover;
+border-radius:14px;
+margin:0 auto 12px
 }
-.loginbox h2{text-align:center;margin:0}
-.loginbox p{text-align:center;color:var(--muted);font-size:13px}
-.loginbox .field{margin-top:12px}
-.loginbox .btn{width:100%;margin-top:14px}
+
+.loginbox h2{
+text-align:center;
+margin:0
+}
+
+.loginbox p{
+text-align:center;
+color:var(--muted);
+font-size:13px
+}
+
+.loginbox .field{
+margin-top:12px
+}
+
+.loginbox .btn{
+width:100%;
+margin-top:14px
+}
 
 .errorbox{
-background:#fdecea;color:#9d2418;padding:10px;
-border-radius:8px;margin-top:12px;font-size:13px;display:none
+background:#fdecea;
+color:#9d2418;
+padding:10px;
+border-radius:8px;
+margin-top:12px;
+font-size:13px;
+display:none
 }
 
 @media(max-width:900px){
+
 .sidebar{width:72px}
-.brand div,nav button span{display:none}
-.brand{justify-content:center}
-.main{margin-left:72px;width:calc(100% - 72px)}
-.cards{grid-template-columns:repeat(2,1fr)}
-.content{padding:18px}
-.item{grid-template-columns:80px 1fr 110px 70px 38px}
-.thumb{width:80px;height:70px}
+
+.brand div,
+nav button span{
+display:none
+}
+
+.brand{
+justify-content:center
+}
+
+.main{
+margin-left:72px;
+width:calc(100% - 72px)
+}
+
+.cards{
+grid-template-columns:repeat(2,1fr)
+}
+
+.content{
+padding:18px
+}
+
+.item{
+grid-template-columns:80px 1fr 110px 70px 38px
+}
+
+.thumb{
+width:80px;
+height:70px
+}
+
 }
 
 @media(max-width:600px){
-.cards{grid-template-columns:1fr 1fr}
-.formgrid{grid-template-columns:1fr}
-.full{grid-column:auto}
-.top{padding:0 15px}
-.top h1{font-size:17px}
-.item{grid-template-columns:70px 1fr 38px;gap:7px}
-.item .fabric,.item .qty{grid-column:2}
-.item .remove{grid-column:3;grid-row:1/3}
-.thumb{width:70px;height:62px}
+
+.cards{
+grid-template-columns:1fr 1fr
+}
+
+.formgrid{
+grid-template-columns:1fr
+}
+
+.full{
+grid-column:auto
+}
+
+.top{
+padding:0 15px
+}
+
+.top h1{
+font-size:17px
+}
+
+.item{
+grid-template-columns:70px 1fr 38px;
+gap:7px
+}
+
+.item .fabric,
+.item .qty{
+grid-column:2
+}
+
+.item .remove{
+grid-column:3;
+grid-row:1/3
+}
+
+.thumb{
+width:70px;
+height:62px
+}
+
 }
 </style>
 </head>
@@ -230,24 +594,40 @@ border-radius:8px;margin-top:12px;font-size:13px;display:none
 <body>
 
 <div id="login" class="login">
+
 <div class="loginbox">
 
 <img src="logo.jpg" alt="Augusto Estamparia Digital">
 
 <h2>Augusto Digital</h2>
+
 <p>Painel pessoal de pedidos e vendas</p>
 
 <div class="field">
 <label>E-mail</label>
-<input id="loginEmail" type="email" placeholder="Seu e-mail">
+<input
+id="loginEmail"
+type="email"
+placeholder="Seu e-mail"
+autocomplete="username">
 </div>
 
 <div class="field">
 <label>Senha</label>
-<input id="loginPass" type="password" placeholder="Sua senha">
+<input
+id="loginPass"
+type="password"
+placeholder="Sua senha"
+autocomplete="current-password">
 </div>
 
-<button class="btn primary" onclick="doLogin()">Entrar</button>
+<button
+id="loginButton"
+class="btn primary"
+type="button"
+onclick="doLogin()">
+Entrar
+</button>
 
 <div id="loginError" class="errorbox"></div>
 
@@ -258,17 +638,19 @@ Acesso protegido pelo Supabase.
 </div>
 </div>
 
-
 <div class="app" id="app" style="display:none">
 
 <aside class="sidebar">
 
 <div class="brand">
+
 <img src="logo.jpg">
+
 <div>
 <b>AUGUSTO</b>
 <span>Estamparia Digital</span>
 </div>
+
 </div>
 
 <nav>
@@ -300,22 +682,32 @@ Acesso protegido pelo Supabase.
 </nav>
 </aside>
 
-
 <main class="main">
 
 <header class="top">
+
 <h1 id="title">Início</h1>
-<div class="userpill" id="userEmail">Usuário</div>
+
+<div class="userpill" id="userEmail">
+Usuário
+</div>
+
 </header>
 
 <div class="content">
 
-
 <section class="page active" id="dashboard">
 
 <div class="section-head">
+
 <h2>Visão rápida</h2>
-<button class="btn gold" onclick="newOrder()">+ Novo pedido</button>
+
+<button
+class="btn gold"
+onclick="newOrder()">
++ Novo pedido
+</button>
+
 </div>
 
 <div class="grid cards">
@@ -345,12 +737,21 @@ Acesso protegido pelo Supabase.
 <div style="height:18px"></div>
 
 <div class="section-head">
+
 <h2>Pedidos recentes</h2>
-<button class="btn secondary" onclick="showPage('pedidos')">Ver todos</button>
+
+<button
+class="btn secondary"
+onclick="showPage('pedidos')">
+Ver todos
+</button>
+
 </div>
 
 <div class="tablewrap">
+
 <table>
+
 <thead>
 <tr>
 <th>Cliente</th>
@@ -360,22 +761,33 @@ Acesso protegido pelo Supabase.
 <th>Total</th>
 </tr>
 </thead>
+
 <tbody id="recentBody"></tbody>
+
 </table>
+
 </div>
 
 </section>
 
-
 <section class="page" id="pedidos">
 
 <div class="section-head">
+
 <h2>Pedidos</h2>
-<button class="btn primary" onclick="newOrder()">+ Novo pedido</button>
+
+<button
+class="btn primary"
+onclick="newOrder()">
++ Novo pedido
+</button>
+
 </div>
 
 <div class="tablewrap">
+
 <table>
+
 <thead>
 <tr>
 <th>Cliente</th>
@@ -386,22 +798,33 @@ Acesso protegido pelo Supabase.
 <th></th>
 </tr>
 </thead>
+
 <tbody id="ordersBody"></tbody>
+
 </table>
+
 </div>
 
 </section>
 
-
 <section class="page" id="clientes">
 
 <div class="section-head">
+
 <h2>Clientes</h2>
-<button class="btn primary" onclick="openClientModal()">+ Novo cliente</button>
+
+<button
+class="btn primary"
+onclick="openClientModal()">
++ Novo cliente
+</button>
+
 </div>
 
 <div class="tablewrap">
+
 <table>
+
 <thead>
 <tr>
 <th>Cliente / Empresa</th>
@@ -409,37 +832,63 @@ Acesso protegido pelo Supabase.
 <th>Pedidos</th>
 </tr>
 </thead>
+
 <tbody id="clientsBody"></tbody>
+
 </table>
+
 </div>
 
 </section>
-
 
 <section class="page" id="galeria">
 
 <div class="section-head">
+
 <h2>Minha galeria</h2>
-<button class="btn primary" onclick="document.getElementById('galleryFile').click()">
+
+<button
+class="btn primary"
+onclick="document.getElementById('galleryFile').click()">
 + Adicionar imagens
 </button>
+
 </div>
 
 <div class="drop">
-Adicione imagens de estampas. Elas serão armazenadas no Supabase.
-<input id="galleryFile" type="file" accept="image/*" multiple style="display:none" onchange="addGalleryFiles(this.files)">
+
+Adicione imagens de estampas.
+Elas serão armazenadas no Supabase.
+
+<input
+id="galleryFile"
+type="file"
+accept="image/*"
+multiple
+style="display:none"
+onchange="addGalleryFiles(this.files)">
+
 </div>
 
-<div class="grid gallery" id="galleryGrid"></div>
+<div
+class="grid gallery"
+id="galleryGrid">
+</div>
 
 </section>
-
 
 <section class="page" id="financeiro">
 
 <div class="section-head">
+
 <h2>Financeiro</h2>
-<input id="monthFilter" type="month" onchange="renderFinance()" style="padding:9px;border:1px solid #dbe4ec;border-radius:8px">
+
+<input
+id="monthFilter"
+type="month"
+onchange="renderFinance()"
+style="padding:9px;border:1px solid #dbe4ec;border-radius:8px">
+
 </div>
 
 <div class="grid cards">
@@ -469,7 +918,9 @@ Adicione imagens de estampas. Elas serão armazenadas no Supabase.
 <div style="height:18px"></div>
 
 <div class="tablewrap">
+
 <table>
+
 <thead>
 <tr>
 <th>Cliente</th>
@@ -480,12 +931,14 @@ Adicione imagens de estampas. Elas serão armazenadas no Supabase.
 <th>Comissão</th>
 </tr>
 </thead>
+
 <tbody id="finBody"></tbody>
+
 </table>
+
 </div>
 
 </section>
-
 
 <section class="page" id="backup">
 
@@ -503,7 +956,11 @@ Adicione imagens de estampas. Elas serão armazenadas no Supabase.
 Seus clientes, pedidos, imagens e faturamento ficam separados dos outros usuários.
 </p>
 
-<button class="btn danger" onclick="doLogout()">Sair da conta</button>
+<button
+class="btn danger"
+onclick="doLogout()">
+Sair da conta
+</button>
 
 </div>
 
@@ -513,28 +970,36 @@ Seus clientes, pedidos, imagens e faturamento ficam separados dos outros usuári
 </main>
 </div>
 
-
 <div class="modal" id="modal">
-<div class="modalbox" id="modalContent"></div>
+
+<div
+class="modalbox"
+id="modalContent">
 </div>
 
-<div class="toast" id="toast"></div>
+</div>
 
+<div
+class="toast"
+id="toast">
+</div>
 
 <script>
+  const SUPABASE_URL =
+'https://lzmjuqsunccqutgemgpl.supabase.co';
 
-const SUPABASE_URL = 'https://lzmjuqsunccqutgemgpl.supabase.co';
+const SUPABASE_KEY =
+'sb_publishable_2bpLexKQE9hFSQLgbZDFVA_oJKJx-2k';
 
-const SUPABASE_KEY = 'sb_publishable_2bpLexKQE9hFSQLgbZDFVA_oJKJx-2k';
-
-const supabaseClient = window.supabase.createClient(
+const supabaseClient =
+window.supabase.createClient(
 SUPABASE_URL,
 SUPABASE_KEY
 );
 
-const BUCKET = 'estampas';
+const BUCKET='estampas';
 
-const fabrics = [
+const fabrics=[
 'Suplex',
 'Fluit',
 'Tule',
@@ -543,53 +1008,80 @@ const fabrics = [
 'Moletinho'
 ];
 
-const statuses = [
+const statuses=[
 'Novo pedido',
 'Fechado',
 'Cancelado'
 ];
 
-let currentUser = null;
-let clients = [];
-let orders = [];
-let gallery = [];
-let tempItems = [];
+let currentUser=null;
+let clients=[];
+let orders=[];
+let gallery=[];
+let tempItems=[];
 
 
 /* UTILIDADES */
 
 function money(n){
-return (Number(n)||0).toLocaleString('pt-BR',{
+
+return (Number(n)||0).toLocaleString(
+'pt-BR',
+{
 style:'currency',
 currency:'BRL'
-});
+}
+);
+
 }
 
 function esc(s){
-return String(s??'').replace(/[&<>"']/g,m=>({
+
+return String(s??'').replace(
+/[&<>"']/g,
+m=>({
 '&':'&amp;',
 '<':'&lt;',
 '>':'&gt;',
 '"':'&quot;',
 "'":'&#39;'
-}[m]));
+}[m])
+);
+
 }
 
 function toast(s){
+
 const t=document.getElementById('toast');
+
 t.textContent=s;
 t.classList.add('show');
-setTimeout(()=>t.classList.remove('show'),2500);
+
+setTimeout(
+()=>t.classList.remove('show'),
+2500
+);
+
 }
 
 function fmtDate(s){
+
 if(!s)return '—';
-const [y,m,d]=s.slice(0,10).split('-');
+
+const [y,m,d]=s
+.slice(0,10)
+.split('-');
+
 return `${d}/${m}/${y}`;
+
 }
 
 function monthNow(){
-return new Date().toISOString().slice(0,7);
+
+return new Date()
+.toISOString()
+.slice(0,7);
+
 }
 
 
@@ -597,60 +1089,148 @@ return new Date().toISOString().slice(0,7);
 
 async function doLogin(){
 
-const email=document.getElementById('loginEmail').value.trim();
-const password=document.getElementById('loginPass').value;
+const email=
+document
+.getElementById('loginEmail')
+.value
+.trim();
 
-const error=document.getElementById('loginError');
+const password=
+document
+.getElementById('loginPass')
+.value;
+
+const error=
+document.getElementById('loginError');
+
+const button=
+document.getElementById('loginButton');
 
 error.style.display='none';
 
 if(!email || !password){
-error.textContent='Informe seu e-mail e sua senha.';
+
+error.textContent=
+'Informe seu e-mail e sua senha.';
+
 error.style.display='block';
+
 return;
+
 }
 
-const {data,error:loginError}=await supabaseClient.auth.signInWithPassword({
-email,
-password
+button.disabled=true;
+button.textContent='Entrando...';
+
+try{
+
+const result=
+await supabaseClient.auth.signInWithPassword({
+email:email,
+password:password
 });
 
-if(loginError){
+if(result.error){
 
-error.textContent=loginError.message;
+console.error(result.error);
+
+error.textContent=
+result.error.message;
+
 error.style.display='block';
 
+button.disabled=false;
+button.textContent='Entrar';
+
 return;
+
 }
 
-currentUser=data.user;
+currentUser=result.data.user;
+
+if(!currentUser){
+
+throw new Error(
+'Login realizado, mas o usuário não foi identificado.'
+);
+
+}
 
 await startApp();
+
+}catch(e){
+
+console.error(e);
+
+error.textContent=
+e.message ||
+'Não foi possível entrar.';
+
+error.style.display='block';
+
+button.disabled=false;
+button.textContent='Entrar';
+
+}
+
 }
 
 
 async function startApp(){
 
-document.getElementById('login').style.display='none';
-document.getElementById('app').style.display='flex';
+if(!currentUser)return;
 
-document.getElementById('userEmail').textContent=currentUser.email;
-document.getElementById('accountEmail').textContent=currentUser.email;
+document
+.getElementById('login')
+.style.display='none';
+
+document
+.getElementById('app')
+.style.display='flex';
+
+document
+.getElementById('userEmail')
+.textContent=currentUser.email;
+
+document
+.getElementById('accountEmail')
+.textContent=currentUser.email;
 
 await loadData();
+
 renderAll();
+
 }
 
 
 async function checkSession(){
 
-const {data}=await supabaseClient.auth.getSession();
+try{
+
+const {data,error}=
+await supabaseClient.auth.getSession();
+
+if(error){
+
+console.error(error);
+return;
+
+}
 
 if(data.session){
 
 currentUser=data.session.user;
 
 await startApp();
+
+}
+
+}catch(e){
+
+console.error(
+'Erro ao verificar sessão:',
+e
+);
 
 }
 
@@ -666,10 +1246,22 @@ clients=[];
 orders=[];
 gallery=[];
 
-document.getElementById('app').style.display='none';
-document.getElementById('login').style.display='flex';
+document
+.getElementById('app')
+.style.display='none';
 
-document.getElementById('loginPass').value='';
+document
+.getElementById('login')
+.style.display='flex';
+
+document
+.getElementById('loginPass')
+.value='';
+
+document
+.getElementById('loginEmail')
+.value='';
+
 }
 
 
@@ -677,14 +1269,26 @@ document.getElementById('loginPass').value='';
 
 function showPage(id){
 
-document.querySelectorAll('.page')
-.forEach(x=>x.classList.remove('active'));
+document
+.querySelectorAll('.page')
+.forEach(x=>
+x.classList.remove('active')
+);
 
-document.getElementById(id).classList.add('active');
+const page=
+document.getElementById(id);
 
-document.querySelectorAll('nav button')
+if(page){
+page.classList.add('active');
+}
+
+document
+.querySelectorAll('nav button')
 .forEach(x=>{
-x.classList.toggle('active',x.dataset.page===id);
+x.classList.toggle(
+'active',
+x.dataset.page===id
+);
 });
 
 const names={
@@ -696,13 +1300,20 @@ financeiro:'Financeiro',
 backup:'Conta'
 };
 
-document.getElementById('title').textContent=names[id];
+document
+.getElementById('title')
+.textContent=names[id]||'Início';
 
 renderAll();
+
 }
 
-document.querySelectorAll('nav button')
-.forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+
+document
+.querySelectorAll('nav button')
+.forEach(
+b=>b.onclick=()=>showPage(b.dataset.page)
+);
 
 
 /* CARREGAR DADOS */
@@ -711,35 +1322,72 @@ async function loadData(){
 
 if(!currentUser)return;
 
-const c=await supabaseClient
+
+/*
+IMPORTANTE:
+clientes também é filtrado pelo usuario_id.
+Isso garante que cada usuário veja
+somente seus próprios clientes.
+*/
+
+const c=
+await supabaseClient
 .from('clientes')
 .select('*')
-.order('created_at',{ascending:false});
+.eq('usuario_id',currentUser.id)
+.order(
+'created_at',
+{ascending:false}
+);
 
 if(c.error){
+
 console.error(c.error);
-toast('Erro ao carregar clientes.');
+
+toast(
+'Erro ao carregar clientes: '+
+c.error.message
+);
+
 return;
+
 }
 
 clients=c.data||[];
 
 
-const g=await supabaseClient
+/* GALERIA */
+
+const g=
+await supabaseClient
 .from('galeria')
 .select('*')
 .eq('usuario_id',currentUser.id)
-.order('created_at',{ascending:false});
+.order(
+'created_at',
+{ascending:false}
+);
 
 if(g.error){
+
 console.error(g.error);
-toast('Erro ao carregar galeria.');
+
+toast(
+'Erro ao carregar galeria: '+
+g.error.message
+);
+
 }else{
+
 gallery=g.data||[];
+
 }
 
 
-const p=await supabaseClient
+/* PEDIDOS */
+
+const p=
+await supabaseClient
 .from('pedidos')
 .select(`
 *,
@@ -747,13 +1395,24 @@ clientes(nome),
 itens_pedido(*)
 `)
 .eq('usuario_id',currentUser.id)
-.order('created_at',{ascending:false});
+.order(
+'created_at',
+{ascending:false}
+);
 
 if(p.error){
+
 console.error(p.error);
-toast('Erro ao carregar pedidos.');
+
+toast(
+'Erro ao carregar pedidos: '+
+p.error.message
+);
+
 }else{
+
 orders=p.data||[];
+
 }
 
 }
@@ -762,6 +1421,7 @@ orders=p.data||[];
 async function refreshData(){
 
 await loadData();
+
 renderAll();
 
 }
@@ -771,69 +1431,127 @@ renderAll();
 
 function openClientModal(){
 
-document.getElementById('modalContent').innerHTML=`
+document
+.getElementById('modalContent')
+.innerHTML=`
 
 <div class="modalhead">
+
 <h3>Novo cliente</h3>
-<button class="close" onclick="closeModal()">×</button>
+
+<button
+class="close"
+onclick="closeModal()">
+×
+</button>
+
 </div>
 
-<div class="formgrid" style="margin-top:18px">
+<div
+class="formgrid"
+style="margin-top:18px">
 
 <div class="field">
+
 <label>Cliente / Empresa</label>
+
 <input id="cName">
+
 </div>
 
 <div class="field">
+
 <label>Telefone / WhatsApp</label>
+
 <input id="cPhone">
-</div>
 
 </div>
 
-<div style="display:flex;justify-content:flex-end;margin-top:18px">
-<button class="btn primary" onclick="saveClient()">Salvar cliente</button>
+</div>
+
+<div
+style="display:flex;justify-content:flex-end;margin-top:18px">
+
+<button
+class="btn primary"
+onclick="saveClient()">
+Salvar cliente
+</button>
+
 </div>
 `;
 
-document.getElementById('modal').classList.add('show');
+document
+.getElementById('modal')
+.classList.add('show');
+
 }
 
 
 async function saveClient(){
 
-const name=document.getElementById('cName').value.trim();
-const phone=document.getElementById('cPhone').value.trim();
+const name=
+document
+.getElementById('cName')
+.value
+.trim();
+
+const phone=
+document
+.getElementById('cPhone')
+.value
+.trim();
 
 if(!name){
+
 toast('Informe o cliente.');
+
 return;
+
 }
 
 if(!currentUser){
-toast('Usuário não está conectado.');
+
+toast(
+'Usuário não está conectado.'
+);
+
 return;
+
 }
 
-const {error}=await supabaseClient
+const {error}=
+await supabaseClient
 .from('clientes')
 .insert({
+
 nome:name,
 telefone:phone,
 usuario_id:currentUser.id
+
 });
 
 if(error){
 
-console.error(error);
-toast('Não foi possível salvar cliente: '+error.message);
+console.error(
+'Erro ao salvar cliente:',
+error
+);
+
+toast(
+'Não foi possível salvar cliente: '+
+error.message
+);
+
 return;
 
 }
 
 closeModal();
-toast('Cliente salvo com sucesso.');
+
+toast(
+'Cliente salvo com sucesso.'
+);
 
 await refreshData();
 
@@ -844,41 +1562,68 @@ await refreshData();
 
 async function addGalleryFiles(files){
 
-if(!currentUser)return;
+if(!currentUser){
+
+toast(
+'Usuário não conectado.'
+);
+
+return;
+
+}
 
 for(const file of [...files]){
 
 try{
 
-const extension=file.name.split('.').pop().toLowerCase();
-
-const safeName=file.name
+const safeName=
+file.name
 .replace(/\s+/g,'-')
-.replace(/[^a-zA-Z0-9._-]/g,'');
+.replace(
+/[^a-zA-Z0-9._-]/g,
+''
+);
 
-const path=`${currentUser.id}/${crypto.randomUUID()}-${safeName}`;
+const path=
+`${currentUser.id}/${crypto.randomUUID()}-${safeName}`;
 
-const {error:uploadError}=await supabaseClient
+
+const {error:uploadError}=
+await supabaseClient
 .storage
 .from(BUCKET)
-.upload(path,file,{
+.upload(
+path,
+file,
+{
 upsert:false,
 contentType:file.type
-});
+}
+);
 
 if(uploadError){
+
 console.error(uploadError);
-toast('Erro ao enviar imagem: '+uploadError.message);
+
+toast(
+'Erro ao enviar imagem: '+
+uploadError.message
+);
+
 continue;
+
 }
 
 
-const {error:dbError}=await supabaseClient
+const {error:dbError}=
+await supabaseClient
 .from('galeria')
 .insert({
+
 nome:file.name,
 storage_path:path,
 usuario_id:currentUser.id
+
 });
 
 if(dbError){
@@ -890,7 +1635,10 @@ await supabaseClient
 .from(BUCKET)
 .remove([path]);
 
-toast('Erro ao salvar imagem na galeria: '+dbError.message);
+toast(
+'Erro ao salvar imagem na galeria: '+
+dbError.message
+);
 
 continue;
 
@@ -899,26 +1647,34 @@ continue;
 }catch(e){
 
 console.error(e);
-toast('Erro ao adicionar imagem.');
+
+toast(
+'Erro ao adicionar imagem.'
+);
 
 }
 
 }
 
-document.getElementById('galleryFile').value='';
+document
+.getElementById('galleryFile')
+.value='';
 
-toast('Imagens adicionadas.');
+toast(
+'Imagens adicionadas.'
+);
 
 await refreshData();
 
 }
 
 
-async function getImageUrl(path){
+function getImageUrl(path){
 
 if(!path)return '';
 
-const {data}=supabaseClient
+const {data}=
+supabaseClient
 .storage
 .from(BUCKET)
 .getPublicUrl(path);
@@ -930,31 +1686,47 @@ return data.publicUrl;
 
 async function deleteGallery(id,path){
 
-if(!confirm('Excluir esta imagem da galeria?'))return;
+if(!confirm(
+'Excluir esta imagem da galeria?'
+))return;
 
-const {error:storageError}=await supabaseClient
+
+const {error:storageError}=
+await supabaseClient
 .storage
 .from(BUCKET)
 .remove([path]);
 
 if(storageError){
+
 console.error(storageError);
+
 }
 
-const {error}=await supabaseClient
+
+const {error}=
+await supabaseClient
 .from('galeria')
 .delete()
-.eq('id',id);
+.eq('id',id)
+.eq('usuario_id',currentUser.id);
 
 if(error){
 
-toast('Não foi possível excluir a imagem.');
+toast(
+'Não foi possível excluir a imagem: '+
+error.message
+);
+
 console.error(error);
+
 return;
 
 }
 
-toast('Imagem excluída.');
+toast(
+'Imagem excluída.'
+);
 
 await refreshData();
 
@@ -963,132 +1735,201 @@ await refreshData();
 
 async function renderGallery(){
 
-const el=document.getElementById('galleryGrid');
+const el=
+document.getElementById('galleryGrid');
 
 if(!el)return;
 
 if(!gallery.length){
 
-el.innerHTML='<div class="empty">Sua galeria está vazia.</div>';
+el.innerHTML=
+'<div class="empty">Sua galeria está vazia.</div>';
+
 return;
 
 }
 
 const cards=[];
 
-for(let i=0;i<gallery.length;i++){
+for(const g of gallery){
 
-const g=gallery[i];
-
-const url=await getImageUrl(g.storage_path);
+const url=
+getImageUrl(g.storage_path);
 
 cards.push(`
+
 <div class="photo">
 
-<img src="${url}" alt="${esc(g.nome)}">
+<img
+src="${esc(url)}"
+alt="${esc(g.nome)}">
 
-<div style="font-size:12px;margin-top:7px">
+<div
+style="font-size:12px;margin-top:7px">
+
 ${esc(g.nome)}
+
 </div>
 
 <div class="actions">
 
-<button onclick="useGalleryImage('${g.id}')">
+<button
+onclick="useGalleryImage('${g.id}')">
 Usar no pedido
 </button>
 
-<button onclick="deleteGallery('${g.id}','${esc(g.storage_path)}')">
+<button
+onclick="deleteGallery('${g.id}','${esc(g.storage_path)}')">
 Excluir
 </button>
 
 </div>
 
 </div>
+
 `);
 
 }
 
-el.innerHTML=cards.join('');
+el.innerHTML=
+cards.join('');
 
 }
 
 
 async function useGalleryImage(id){
 
-const g=gallery.find(x=>x.id===id);
+const g=
+gallery.find(x=>x.id===id);
 
 if(!g)return;
 
-const url=await getImageUrl(g.storage_path);
+const url=
+getImageUrl(g.storage_path);
 
 tempItems.push({
+
 id:crypto.randomUUID(),
 image:url,
 galleryId:g.id,
 storagePath:g.storage_path,
 fabric:'Suplex',
 qty:1
+
 });
 
-toast('Estampa adicionada ao pedido.');
+toast(
+'Estampa adicionada ao pedido.'
+);
 
 }
-
-
-/* NOVO PEDIDO */
+ /* NOVO PEDIDO */
 
 async function newOrder(){
 
 if(!clients.length){
 
-toast('Cadastre um cliente primeiro.');
+toast(
+'Cadastre um cliente primeiro.'
+);
+
 return;
 
 }
 
-const options=clients
-.map(c=>`<option value="${c.id}">${esc(c.nome)}</option>`)
+const options=
+clients
+.map(c=>
+`<option value="${c.id}">
+${esc(c.nome)}
+</option>`
+)
 .join('');
 
-document.getElementById('modalContent').innerHTML=`
+document
+.getElementById('modalContent')
+.innerHTML=`
 
 <div class="modalhead">
+
 <h3>Novo pedido</h3>
-<button class="close" onclick="closeModal()">×</button>
+
+<button
+class="close"
+onclick="closeModal()">
+×
+</button>
+
 </div>
 
-<div class="formgrid" style="margin-top:18px">
+<div
+class="formgrid"
+style="margin-top:18px">
 
 <div class="field">
+
 <label>Cliente</label>
+
 <select id="oClient">
-<option value="">Selecione...</option>
+
+<option value="">
+Selecione...
+</option>
+
 ${options}
+
 </select>
+
 </div>
 
 <div class="field">
+
 <label>Data do pedido</label>
-<input id="oDate" type="date" value="${new Date().toISOString().slice(0,10)}">
+
+<input
+id="oDate"
+type="date"
+value="${new Date().toISOString().slice(0,10)}">
+
 </div>
 
 <div class="field">
+
 <label>Sinal recebido (R$)</label>
-<input id="oSignal" type="number" step="0.01" min="0" value="0">
+
+<input
+id="oSignal"
+type="number"
+step="0.01"
+min="0"
+value="0">
+
 </div>
 
 <div class="field">
+
 <label>Status</label>
 
 <select id="oStatus">
-${statuses.map(s=>`<option>${s}</option>`).join('')}
+
+${statuses
+.map(s=>`
+<option value="${esc(s)}">
+${esc(s)}
+</option>
+`)
+.join('')}
+
 </select>
 
 </div>
 
 <div class="field full">
+
 <label>Observações</label>
+
 <textarea id="oNotes"></textarea>
+
 </div>
 
 </div>
@@ -1101,11 +1942,15 @@ ${statuses.map(s=>`<option>${s}</option>`).join('')}
 
 <div>
 
-<button class="btn secondary" onclick="addOrderItem()">
+<button
+class="btn secondary"
+onclick="addOrderItem()">
 + Da galeria
 </button>
 
-<button class="btn gold" onclick="addNewOrderImage()">
+<button
+class="btn gold"
+onclick="addNewOrderImage()">
 + Nova imagem
 </button>
 
@@ -1118,18 +1963,26 @@ ${statuses.map(s=>`<option>${s}</option>`).join('')}
 </div>
 
 <div class="totalbar">
-<span>Total de peças:
+
+<span>
+Total de peças:
 <b id="itemsTotal">0</b>
 </span>
+
 </div>
 
-<div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px">
+<div
+style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px">
 
-<button class="btn secondary" onclick="closeModal()">
+<button
+class="btn secondary"
+onclick="closeModal()">
 Cancelar
 </button>
 
-<button class="btn primary" onclick="saveOrder()">
+<button
+class="btn primary"
+onclick="saveOrder()">
 Salvar pedido
 </button>
 
@@ -1138,7 +1991,9 @@ Salvar pedido
 
 tempItems=[];
 
-document.getElementById('modal').classList.add('show');
+document
+.getElementById('modal')
+.classList.add('show');
 
 renderItems();
 
@@ -1149,7 +2004,10 @@ async function addOrderItem(){
 
 if(!gallery.length){
 
-toast('Sua galeria está vazia.');
+toast(
+'Sua galeria está vazia.'
+);
+
 return;
 
 }
@@ -1158,42 +2016,69 @@ const cards=[];
 
 for(const g of gallery){
 
-const url=await getImageUrl(g.storage_path);
+const url=
+getImageUrl(g.storage_path);
 
 cards.push(`
+
 <div class="photo">
 
-<img src="${url}">
+<img src="${esc(url)}">
 
-<button class="btn secondary" style="width:100%;margin-top:8px"
+<button
+class="btn secondary"
+style="width:100%;margin-top:8px"
 onclick="pickGallery('${g.id}')">
+
 Usar esta
+
 </button>
 
 </div>
+
 `);
 
 }
 
-document.getElementById('modalContent').insertAdjacentHTML(
+document
+.getElementById('modalContent')
+.insertAdjacentHTML(
 'beforeend',
 `
-<div id="galleryPicker"
-style="position:absolute;inset:20px;background:#fff;border-radius:14px;padding:20px;overflow:auto;z-index:3">
+
+<div
+id="galleryPicker"
+style="
+position:absolute;
+inset:20px;
+background:#fff;
+border-radius:14px;
+padding:20px;
+overflow:auto;
+z-index:3">
 
 <div class="modalhead">
 
 <h3>Escolher da galeria</h3>
 
-<button class="close"
-onclick="document.getElementById('galleryPicker').remove()">
+<button
+class="close"
+onclick="
+document
+.getElementById('galleryPicker')
+.remove()
+">
 ×
 </button>
 
 </div>
 
-<div class="grid gallery" style="margin-top:14px">
+<div
+class="grid gallery"
+style="margin-top:14px">
+
 ${cards.join('')}
+
 </div>
 
 </div>
@@ -1205,22 +2090,28 @@ ${cards.join('')}
 
 async function pickGallery(id){
 
-const g=gallery.find(x=>x.id===id);
+const g=
+gallery.find(x=>x.id===id);
 
 if(!g)return;
 
-const url=await getImageUrl(g.storage_path);
+const url=
+getImageUrl(g.storage_path);
 
 tempItems.push({
+
 id:crypto.randomUUID(),
 image:url,
 galleryId:g.id,
 storagePath:g.storage_path,
 fabric:'Suplex',
 qty:1
+
 });
 
-document.getElementById('galleryPicker')?.remove();
+document
+.getElementById('galleryPicker')
+?.remove();
 
 renderItems();
 
@@ -1229,7 +2120,8 @@ renderItems();
 
 function addNewOrderImage(){
 
-const input=document.createElement('input');
+const input=
+document.createElement('input');
 
 input.type='file';
 input.accept='image/*';
@@ -1240,35 +2132,64 @@ const f=input.files[0];
 
 if(!f)return;
 
-if(!currentUser)return;
+if(!currentUser){
 
-const safeName=f.name
-.replace(/\s+/g,'-')
-.replace(/[^a-zA-Z0-9._-]/g,'');
+toast(
+'Usuário não conectado.'
+);
 
-const path=`${currentUser.id}/${crypto.randomUUID()}-${safeName}`;
-
-const {error:uploadError}=await supabaseClient
-.storage
-.from(BUCKET)
-.upload(path,f,{
-upsert:false,
-contentType:f.type
-});
-
-if(uploadError){
-
-toast('Erro ao enviar imagem: '+uploadError.message);
 return;
 
 }
 
-const {error:dbError}=await supabaseClient
+const safeName=
+f.name
+.replace(/\s+/g,'-')
+.replace(
+/[^a-zA-Z0-9._-]/g,
+''
+);
+
+const path=
+`${currentUser.id}/${crypto.randomUUID()}-${safeName}`;
+
+
+const {error:uploadError}=
+await supabaseClient
+.storage
+.from(BUCKET)
+.upload(
+path,
+f,
+{
+upsert:false,
+contentType:f.type
+}
+);
+
+if(uploadError){
+
+console.error(uploadError);
+
+toast(
+'Erro ao enviar imagem: '+
+uploadError.message
+);
+
+return;
+
+}
+
+
+const {error:dbError}=
+await supabaseClient
 .from('galeria')
 .insert({
+
 nome:f.name,
 storage_path:path,
 usuario_id:currentUser.id
+
 });
 
 if(dbError){
@@ -1278,22 +2199,31 @@ await supabaseClient
 .from(BUCKET)
 .remove([path]);
 
-toast('Erro ao salvar imagem.');
+console.error(dbError);
+
+toast(
+'Erro ao salvar imagem: '+
+dbError.message
+);
+
 return;
 
 }
 
-const {data}=supabaseClient
+const data=
+supabaseClient
 .storage
 .from(BUCKET)
 .getPublicUrl(path);
 
 tempItems.push({
+
 id:crypto.randomUUID(),
-image:data.publicUrl,
+image:data.data.publicUrl,
 storagePath:path,
 fabric:'Suplex',
 qty:1
+
 });
 
 renderItems();
@@ -1307,32 +2237,55 @@ input.click();
 
 function renderItems(){
 
-const el=document.getElementById('itemsList');
+const el=
+document.getElementById('itemsList');
 
 if(!el)return;
 
-el.innerHTML=tempItems.map((it,i)=>`
+el.innerHTML=
+tempItems
+.map((it,i)=>`
 
 <div class="item">
 
-<img class="thumb" src="${it.image}">
+<img
+class="thumb"
+src="${esc(it.image)}">
 
 <div>
+
 <b>Estampa ${i+1}</b>
-<div class="muted" style="font-size:11px">
+
+<div
+class="muted"
+style="font-size:11px">
+
 Imagem vinculada ao pedido
+
 </div>
+
 </div>
 
 <div class="fabric">
 
-<select onchange="tempItems[${i}].fabric=this.value">
+<select
+onchange="
+tempItems[${i}].fabric=this.value
+">
 
-${fabrics.map(f=>`
-<option ${f===it.fabric?'selected':''}>
-${f}
+${fabrics
+.map(f=>`
+
+<option
+value="${esc(f)}"
+${f===it.fabric?'selected':''}>
+
+${esc(f)}
+
 </option>
-`).join('')}
+
+`)
+.join('')}
 
 </select>
 
@@ -1343,23 +2296,42 @@ ${f}
 <input
 type="number"
 min="1"
-value="${it.qty}"
-onchange="tempItems[${i}].qty=Math.max(1,Number(this.value));renderItems()"
->
+value="${Number(it.qty)||1}"
+onchange="
+tempItems[${i}].qty=Math.max(
+1,
+Number(this.value)||1
+);
+renderItems()
+">
 
 </div>
 
-<button class="remove"
-onclick="tempItems.splice(${i},1);renderItems()">
+<button
+class="remove"
+onclick="
+tempItems.splice(${i},1);
+renderItems()
+">
+
 ×
+
 </button>
 
 </div>
 
-`).join('') || '<div class="empty">Nenhuma estampa adicionada ainda.</div>';
+`)
+.join('') ||
 
-document.getElementById('itemsTotal').textContent=
-tempItems.reduce((a,x)=>a+Number(x.qty||0),0);
+'<div class="empty">Nenhuma estampa adicionada ainda.</div>';
+
+document
+.getElementById('itemsTotal')
+.textContent=
+tempItems.reduce(
+(a,x)=>a+Number(x.qty||0),
+0
+);
 
 }
 
@@ -1368,42 +2340,80 @@ tempItems.reduce((a,x)=>a+Number(x.qty||0),0);
 
 async function saveOrder(){
 
-const clientId=document.getElementById('oClient').value;
+const clientId=
+document
+.getElementById('oClient')
+.value;
 
 if(!clientId){
 
-toast('Selecione um cliente.');
+toast(
+'Selecione um cliente.'
+);
+
 return;
 
 }
 
 if(!tempItems.length){
 
-toast('Adicione pelo menos uma estampa.');
+toast(
+'Adicione pelo menos uma estampa.'
+);
+
 return;
 
 }
 
 if(!currentUser){
 
-toast('Usuário não conectado.');
+toast(
+'Usuário não conectado.'
+);
+
 return;
 
 }
 
-
 const pedido={
+
 cliente_id:clientId,
-data_pedido:document.getElementById('oDate').value,
-sinal:Number(document.getElementById('oSignal').value)||0,
+
+data_pedido:
+document
+.getElementById('oDate')
+.value,
+
+sinal:
+Number(
+document
+.getElementById('oSignal')
+.value
+)||0,
+
 valor_total:null,
-observacoes:document.getElementById('oNotes').value,
-status:document.getElementById('oStatus').value,
-usuario_id:currentUser.id
+
+observacoes:
+document
+.getElementById('oNotes')
+.value,
+
+status:
+document
+.getElementById('oStatus')
+.value,
+
+usuario_id:
+currentUser.id
+
 };
 
 
-const {data:pedidoData,error}=await supabaseClient
+const {
+data:pedidoData,
+error
+}=
+await supabaseClient
 .from('pedidos')
 .insert(pedido)
 .select()
@@ -1413,22 +2423,35 @@ if(error){
 
 console.error(error);
 
-toast('Não foi possível salvar pedido: '+error.message);
+toast(
+'Não foi possível salvar pedido: '+
+error.message
+);
+
 return;
 
 }
 
 
-const itens=tempItems.map(it=>({
+const itens=
+tempItems.map(it=>({
 
 pedido_id:pedidoData.id,
-imagem_url:it.storagePath || it.image,
+
+imagem_url:
+it.storagePath ||
+it.image,
+
 tecido:it.fabric,
-quantidade:Number(it.qty)||1
+
+quantidade:
+Number(it.qty)||1
+
 }));
 
 
-const {error:itemError}=await supabaseClient
+const {error:itemError}=
+await supabaseClient
 .from('itens_pedido')
 .insert(itens);
 
@@ -1439,18 +2462,23 @@ console.error(itemError);
 await supabaseClient
 .from('pedidos')
 .delete()
-.eq('id',pedidoData.id);
+.eq('id',pedidoData.id)
+.eq('usuario_id',currentUser.id);
 
-toast('Erro ao salvar os itens do pedido: '+itemError.message);
+toast(
+'Erro ao salvar os itens do pedido: '+
+itemError.message
+);
 
 return;
 
 }
 
-
 closeModal();
 
-toast('Pedido criado com sucesso.');
+toast(
+'Pedido criado com sucesso.'
+);
 
 tempItems=[];
 
@@ -1461,32 +2489,102 @@ await refreshData();
 
 /* ABRIR PEDIDO */
 
+/*
+CORREÇÃO PRINCIPAL:
+a função agora busca as URLs das imagens ANTES
+de montar o HTML.
+Não existe mais await dentro de map().
+*/
+
 async function viewOrder(id){
 
-const o=orders.find(x=>x.id===id);
+const o=
+orders.find(x=>x.id===id);
 
 if(!o)return;
 
-const clientName=o.clientes?.nome ||
-clients.find(c=>c.id===o.cliente_id)?.nome ||
+const clientName=
+o.clientes?.nome ||
+clients.find(
+c=>c.id===o.cliente_id
+)?.nome ||
 'Cliente';
 
-const items=o.itens_pedido||[];
+const items=
+o.itens_pedido||[];
 
-document.getElementById('modalContent').innerHTML=`
+const images=[];
+
+for(const item of items){
+
+images.push(
+getImageUrl(item.imagem_url)
+);
+
+}
+
+
+const itemRows=
+items.map((x,i)=>`
+
+<tr>
+
+<td>
+
+<img
+src="${esc(images[i])}"
+style="
+width:90px;
+height:70px;
+object-fit:cover;
+border-radius:7px">
+
+</td>
+
+<td>
+${esc(x.tecido)}
+</td>
+
+<td>
+${Number(x.quantidade)||0} peça(s)
+</td>
+
+</tr>
+
+`)
+.join('');
+
+
+document
+.getElementById('modalContent')
+.innerHTML=`
 
 <div class="modalhead">
 
-<h3>Pedido — ${esc(clientName)}</h3>
+<h3>
+Pedido — ${esc(clientName)}
+</h3>
 
-<button class="close" onclick="closeModal()">×</button>
+<button
+class="close"
+onclick="closeModal()">
+×
+</button>
 
 </div>
 
-<div class="muted" style="margin:8px 0 18px">
+<div
+class="muted"
+style="margin:8px 0 18px">
 
 Pedido criado em ${fmtDate(o.data_pedido)}
-· ${items.reduce((a,x)=>a+Number(x.quantidade||0),0)} peças
+
+·
+
+${items.reduce(
+(a,x)=>a+Number(x.quantidade||0),
+0
+)} peças
 
 </div>
 
@@ -1495,35 +2593,18 @@ Pedido criado em ${fmtDate(o.data_pedido)}
 <table>
 
 <thead>
+
 <tr>
 <th>Estampa</th>
 <th>Tecido</th>
 <th>Quantidade</th>
 </tr>
+
 </thead>
 
 <tbody>
 
-${items.map((x,i)=>`
-
-<tr>
-
-<td>
-
-<img
-src="${await imageUrlFromStored(x.imagem_url)}"
-style="width:90px;height:70px;object-fit:cover;border-radius:7px"
->
-
-</td>
-
-<td>${esc(x.tecido)}</td>
-
-<td>${x.quantidade} peça(s)</td>
-
-</tr>
-
-`).join('')}
+${itemRows}
 
 </tbody>
 
@@ -1531,8 +2612,9 @@ style="width:90px;height:70px;object-fit:cover;border-radius:7px"
 
 </div>
 
-
-<div class="formgrid" style="margin-top:16px">
+<div
+class="formgrid"
+style="margin-top:16px">
 
 <div class="field">
 
@@ -1540,20 +2622,29 @@ style="width:90px;height:70px;object-fit:cover;border-radius:7px"
 
 <select id="vStatus">
 
-${statuses.map(s=>`
-<option ${s===o.status?'selected':''}>
-${s}
+${statuses
+.map(s=>`
+
+<option
+value="${esc(s)}"
+${s===o.status?'selected':''}>
+
+${esc(s)}
+
 </option>
-`).join('')}
+
+`)
+.join('')}
 
 </select>
 
 </div>
 
-
 <div class="field">
 
-<label>Valor total do pedido (R$)</label>
+<label>
+Valor total do pedido (R$)
+</label>
 
 <input
 id="vTotal"
@@ -1561,20 +2652,19 @@ type="number"
 step="0.01"
 min="0"
 value="${o.valor_total??''}"
-placeholder="Informar ao fechar"
->
+placeholder="Informar ao fechar">
 
 </div>
-
 
 <div class="field">
 
 <label>Sinal recebido</label>
 
-<input value="${money(o.sinal)}" disabled>
+<input
+value="${money(o.sinal)}"
+disabled>
 
 </div>
-
 
 <div class="field">
 
@@ -1582,57 +2672,104 @@ placeholder="Informar ao fechar"
 
 <input
 id="vBalance"
-value="${o.valor_total==null?'—':money(Math.max(0,o.valor_total-o.sinal))}"
-disabled
->
+value="${
+o.valor_total==null
+?'—'
+:money(
+Math.max(
+0,
+o.valor_total-o.sinal
+)
+)
+}"
+disabled>
 
 </div>
 
 </div>
 
+<div
+style="
+display:flex;
+justify-content:flex-end;
+gap:10px;
+margin-top:18px">
 
-<div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px">
-
-<button class="btn secondary"
+<button
+class="btn secondary"
 onclick="generatePDF('${o.id}')">
+
 Gerar PDF
+
 </button>
 
-<button class="btn primary"
+<button
+class="btn primary"
 onclick="updateOrder('${o.id}')">
+
 Salvar alterações
+
 </button>
 
 </div>
-
 `;
 
-document.getElementById('modal').classList.add('show');
+document
+.getElementById('modal')
+.classList.add('show');
 
-document.getElementById('vTotal').oninput=e=>{
 
-const n=Number(e.target.value);
+document
+.getElementById('vTotal')
+.oninput=e=>{
 
-document.getElementById('vBalance').value=
-isNaN(n)?'—':money(Math.max(0,n-o.sinal));
+const value=e.target.value;
+
+if(value===''){
+
+document
+.getElementById('vBalance')
+.value='—';
+
+return;
+
+}
+
+const n=Number(value);
+
+document
+.getElementById('vBalance')
+.value=
+isNaN(n)
+?'—'
+:money(
+Math.max(
+0,
+n-o.sinal
+)
+);
 
 };
 
 }
 
 
-async function imageUrlFromStored(value){
+/* IMAGEM ARMAZENADA */
+
+function imageUrlFromStored(value){
 
 if(!value)return '';
 
-if(value.startsWith('http'))return value;
+if(
+typeof value==='string' &&
+value.startsWith('http')
+){
 
-const {data}=supabaseClient
-.storage
-.from(BUCKET)
-.getPublicUrl(value);
+return value;
 
-return data.publicUrl;
+}
+
+return getImageUrl(value);
 
 }
 
@@ -1641,12 +2778,20 @@ return data.publicUrl;
 
 async function updateOrder(id){
 
-const o=orders.find(x=>x.id===id);
+const o=
+orders.find(x=>x.id===id);
 
 if(!o)return;
 
-const status=document.getElementById('vStatus').value;
-const totalInput=document.getElementById('vTotal').value;
+const status=
+document
+.getElementById('vStatus')
+.value;
+
+const totalInput=
+document
+.getElementById('vTotal')
+.value;
 
 let total=null;
 
@@ -1654,35 +2799,59 @@ if(totalInput!==''){
 
 total=Number(totalInput);
 
+if(!Number.isFinite(total) || total<0){
+
+toast(
+'Informe um valor total válido.'
+);
+
+return;
+
+}
+
 }
 
 const finalStatus=
 status==='Cancelado'
 ?'Cancelado'
-:(total!==null?'Fechado':status);
+:(total!==null
+?'Fechado'
+:status);
 
 
-const {error}=await supabaseClient
+const {error}=
+await supabaseClient
 .from('pedidos')
 .update({
+
 valor_total:total,
 status:finalStatus
+
 })
 .eq('id',id)
-.eq('usuario_id',currentUser.id);
+.eq(
+'usuario_id',
+currentUser.id
+);
 
 if(error){
 
 console.error(error);
 
-toast('Não foi possível atualizar: '+error.message);
+toast(
+'Não foi possível atualizar: '+
+error.message
+);
+
 return;
 
 }
 
 closeModal();
 
-toast('Pedido atualizado.');
+toast(
+'Pedido atualizado.'
+);
 
 await refreshData();
 
@@ -1693,42 +2862,69 @@ await refreshData();
 
 function renderOrders(){
 
-const el=document.getElementById('ordersBody');
+const el=
+document.getElementById('ordersBody');
 
 if(!el)return;
 
-el.innerHTML=orders.map(o=>{
+el.innerHTML=
+orders.map(o=>{
 
-const clientName=o.clientes?.nome ||
-clients.find(c=>c.id===o.cliente_id)?.nome ||
+const clientName=
+o.clientes?.nome ||
+clients.find(
+c=>c.id===o.cliente_id
+)?.nome ||
 '—';
 
-const pieces=(o.itens_pedido||[])
-.reduce((a,x)=>a+Number(x.quantidade||0),0);
+const pieces=
+(o.itens_pedido||[])
+.reduce(
+(a,x)=>
+a+Number(x.quantidade||0),
+0
+);
 
 let badge='wait';
 
-if(o.status==='Fechado')badge='ok';
-if(o.status==='Cancelado')badge='cancel';
+if(o.status==='Fechado')
+badge='ok';
+
+if(o.status==='Cancelado')
+badge='cancel';
 
 return `
 
 <tr>
 
-<td>${esc(clientName)}</td>
-
-<td>${fmtDate(o.data_pedido)}</td>
-
-<td>${pieces}</td>
-
 <td>
-<span class="badge ${badge}">
-${esc(o.status)}
-</span>
+${esc(clientName)}
 </td>
 
 <td>
-${o.valor_total==null?'—':money(o.valor_total)}
+${fmtDate(o.data_pedido)}
+</td>
+
+<td>
+${pieces}
+</td>
+
+<td>
+
+<span class="badge ${badge}">
+${esc(o.status||'Novo pedido')}
+</span>
+
+</td>
+
+<td>
+
+${
+o.valor_total==null
+?'—'
+:money(o.valor_total)
+}
+
 </td>
 
 <td>
@@ -1736,7 +2932,9 @@ ${o.valor_total==null?'—':money(o.valor_total)}
 <button
 class="btn secondary"
 onclick="viewOrder('${o.id}')">
+
 Abrir
+
 </button>
 
 </td>
@@ -1756,13 +2954,18 @@ Abrir
 
 function renderClients(){
 
-const el=document.getElementById('clientsBody');
+const el=
+document.getElementById('clientsBody');
 
 if(!el)return;
 
-el.innerHTML=clients.map(c=>{
+el.innerHTML=
+clients.map(c=>{
 
-const count=orders.filter(o=>o.cliente_id===c.id).length;
+const count=
+orders.filter(
+o=>o.cliente_id===c.id
+).length;
 
 return `
 
@@ -1796,60 +2999,111 @@ ${count}
 function renderFinance(){
 
 const m=
-document.getElementById('monthFilter')?.value ||
+document
+.getElementById('monthFilter')
+?.value ||
 monthNow();
 
-if(document.getElementById('monthFilter') &&
-!document.getElementById('monthFilter').value){
+const filter=
+document.getElementById('monthFilter');
 
-document.getElementById('monthFilter').value=m;
+if(
+filter &&
+!filter.value
+){
+
+filter.value=m;
 
 }
 
 
-const closed=orders.filter(o=>
+const closed=
+orders.filter(o=>
+
 o.valor_total!=null &&
+
 o.status==='Fechado' &&
+
 o.created_at?.slice(0,7)===m
+
 );
 
 
-const sales=closed.reduce(
-(a,o)=>a+Number(o.valor_total||0),0
+const sales=
+closed.reduce(
+(a,o)=>
+a+Number(o.valor_total||0),
+0
 );
 
-document.getElementById('finSales').textContent=money(sales);
+document
+.getElementById('finSales')
+.textContent=money(sales);
 
-document.getElementById('finComm').textContent=money(sales*.01);
+document
+.getElementById('finComm')
+.textContent=money(
+sales*.01
+);
 
-document.getElementById('finCount').textContent=closed.length;
+document
+.getElementById('finCount')
+.textContent=closed.length;
 
-document.getElementById('finPending').textContent=
-orders.filter(o=>o.status==='Novo pedido').length;
+document
+.getElementById('finPending')
+.textContent=
+orders.filter(
+o=>o.status==='Novo pedido'
+).length;
 
 
-document.getElementById('finBody').innerHTML=
+document
+.getElementById('finBody')
+.innerHTML=
 closed.map(o=>{
 
-const clientName=o.clientes?.nome ||
-clients.find(c=>c.id===o.cliente_id)?.nome ||
+const clientName=
+o.clientes?.nome ||
+clients.find(
+c=>c.id===o.cliente_id
+)?.nome ||
 '—';
 
 return `
 
 <tr>
 
-<td>${esc(clientName)}</td>
+<td>
+${esc(clientName)}
+</td>
 
-<td>${fmtDate(o.created_at)}</td>
+<td>
+${fmtDate(o.created_at)}
+</td>
 
-<td>${money(o.valor_total)}</td>
+<td>
+${money(o.valor_total)}
+</td>
 
-<td>${money(o.sinal)}</td>
+<td>
+${money(o.sinal)}
+</td>
 
-<td>${money(Math.max(0,o.valor_total-o.sinal))}</td>
+<td>
+${money(
+Math.max(
+0,
+o.valor_total-o.sinal
+)
+)}
+</td>
 
-<td>${money(o.valor_total*.01)}</td>
+<td>
+${money(
+o.valor_total*.01
+)}
+</td>
 
 </tr>
 
@@ -1868,59 +3122,109 @@ function renderDashboard(){
 
 const m=monthNow();
 
-const closed=orders.filter(o=>
+const closed=
+orders.filter(o=>
+
 o.valor_total!=null &&
+
 o.status==='Fechado' &&
+
 o.created_at?.slice(0,7)===m
+
 );
 
-const sales=closed.reduce(
-(a,o)=>a+Number(o.valor_total||0),0
+
+const sales=
+closed.reduce(
+(a,o)=>
+a+Number(o.valor_total||0),
+0
 );
 
-document.getElementById('dashSales').textContent=money(sales);
+document
+.getElementById('dashSales')
+.textContent=money(sales);
 
-document.getElementById('dashComm').textContent=money(sales*.01);
+document
+.getElementById('dashComm')
+.textContent=money(
+sales*.01
+);
 
-document.getElementById('dashClosed').textContent=closed.length;
+document
+.getElementById('dashClosed')
+.textContent=closed.length;
 
-document.getElementById('dashOpen').textContent=
-orders.filter(o=>o.status==='Novo pedido').length;
+document
+.getElementById('dashOpen')
+.textContent=
+orders.filter(
+o=>o.status==='Novo pedido'
+).length;
 
 
-document.getElementById('recentBody').innerHTML=
-orders.slice(0,8).map(o=>{
+document
+.getElementById('recentBody')
+.innerHTML=
+orders
+.slice(0,8)
+.map(o=>{
 
-const clientName=o.clientes?.nome ||
-clients.find(c=>c.id===o.cliente_id)?.nome ||
+const clientName=
+o.clientes?.nome ||
+clients.find(
+c=>c.id===o.cliente_id
+)?.nome ||
 '—';
 
-const pieces=(o.itens_pedido||[])
-.reduce((a,x)=>a+Number(x.quantidade||0),0);
+const pieces=
+(o.itens_pedido||[])
+.reduce(
+(a,x)=>
+a+Number(x.quantidade||0),
+0
+);
 
 let badge='wait';
 
-if(o.status==='Fechado')badge='ok';
-if(o.status==='Cancelado')badge='cancel';
+if(o.status==='Fechado')
+badge='ok';
+
+if(o.status==='Cancelado')
+badge='cancel';
 
 return `
 
 <tr>
 
-<td>${esc(clientName)}</td>
-
-<td>${pieces} peças</td>
-
-<td>${fmtDate(o.data_pedido)}</td>
-
 <td>
-<span class="badge ${badge}">
-${esc(o.status)}
-</span>
+${esc(clientName)}
 </td>
 
 <td>
-${o.valor_total==null?'—':money(o.valor_total)}
+${pieces} peças
+</td>
+
+<td>
+${fmtDate(o.data_pedido)}
+</td>
+
+<td>
+
+<span class="badge ${badge}">
+${esc(o.status||'Novo pedido')}
+</span>
+
+</td>
+
+<td>
+
+${
+o.valor_total==null
+?'—'
+:money(o.valor_total)
+}
+
 </td>
 
 </tr>
@@ -1934,14 +3238,18 @@ ${o.valor_total==null?'—':money(o.valor_total)}
 }
 
 
-/* GALERIA RENDER */
+/* RENDER GERAL */
 
 function renderAll(){
 
 renderDashboard();
+
 renderOrders();
+
 renderClients();
+
 renderGallery();
+
 renderFinance();
 
 }
@@ -1951,7 +3259,9 @@ renderFinance();
 
 function closeModal(){
 
-document.getElementById('modal').classList.remove('show');
+document
+.getElementById('modal')
+.classList.remove('show');
 
 }
 
@@ -1960,30 +3270,45 @@ document.getElementById('modal').classList.remove('show');
 
 async function generatePDF(id){
 
-const o=orders.find(x=>x.id===id);
+const o=
+orders.find(x=>x.id===id);
 
 if(!o)return;
 
-const clientName=o.clientes?.nome ||
-clients.find(c=>c.id===o.cliente_id)?.nome ||
+const clientName=
+o.clientes?.nome ||
+clients.find(
+c=>c.id===o.cliente_id
+)?.nome ||
 'Cliente';
 
-const items=o.itens_pedido||[];
+const items=
+o.itens_pedido||[];
 
 const images=[];
 
 for(const x of items){
 
-images.push(await imageUrlFromStored(x.imagem_url));
+images.push(
+imageUrlFromStored(
+x.imagem_url
+)
+);
 
 }
 
-
-const w=window.open('','_blank');
+const w=
+window.open(
+'',
+'_blank'
+);
 
 if(!w){
 
-toast('Permita pop-ups para gerar o PDF.');
+toast(
+'Permita pop-ups para gerar o PDF.'
+);
+
 return;
 
 }
@@ -1995,7 +3320,9 @@ w.document.write(`
 
 <head>
 
-<title>Pedido Augusto Digital</title>
+<title>
+Pedido Augusto Digital
+</title>
 
 <style>
 
@@ -2005,7 +3332,9 @@ color:#142536;
 padding:30px
 }
 
-h1{color:#06243a}
+h1{
+color:#06243a
+}
 
 table{
 width:100%;
@@ -2035,26 +3364,32 @@ color:#b87500
 
 <body>
 
-<h1>AUGUSTO ESTAMPARIA DIGITAL</h1>
+<h1>
+AUGUSTO ESTAMPARIA DIGITAL
+</h1>
 
 <h2>Pedido</h2>
 
 <p>
 
-<b>Cliente:</b> ${esc(clientName)}
+<b>Cliente:</b>
+${esc(clientName)}
 
 &nbsp;
 
-<b>Data:</b> ${fmtDate(o.data_pedido)}
+<b>Data:</b>
+${fmtDate(o.data_pedido)}
 
 </p>
 
 <table>
 
 <tr>
+
 <th>Estampa</th>
 <th>Tecido</th>
 <th>Quantidade</th>
+
 </tr>
 
 ${items.map((x,i)=>`
@@ -2062,12 +3397,19 @@ ${items.map((x,i)=>`
 <tr>
 
 <td>
-<img src="${images[i]}">
+
+<img
+src="${esc(images[i])}">
+
 </td>
 
-<td>${esc(x.tecido)}</td>
+<td>
+${esc(x.tecido)}
+</td>
 
-<td>${x.quantidade} peça(s)</td>
+<td>
+${Number(x.quantidade)||0} peça(s)
+</td>
 
 </tr>
 
@@ -2076,26 +3418,43 @@ ${items.map((x,i)=>`
 </table>
 
 <h3>
+
 Total de peças:
-${items.reduce((a,x)=>a+Number(x.quantidade||0),0)}
+${items.reduce(
+(a,x)=>
+a+Number(x.quantidade||0),
+0
+)}
+
 </h3>
 
 ${
 o.valor_total!=null
 ?
 `
+
 <p>
 
-<b>Valor total:</b> ${money(o.valor_total)}
+<b>Valor total:</b>
+${money(o.valor_total)}
+
 <br>
 
-<b>Sinal:</b> ${money(o.sinal)}
+<b>Sinal:</b>
+${money(o.sinal)}
+
 <br>
 
 <b>Saldo a receber:</b>
-${money(Math.max(0,o.valor_total-o.sinal))}
+${money(
+Math.max(
+0,
+o.valor_total-o.sinal
+)
+)}
 
 </p>
+
 `
 :''
 }
@@ -2103,14 +3462,24 @@ ${money(Math.max(0,o.valor_total-o.sinal))}
 <p class="gold">
 
 <b>
+
 Comissão (1%):
-${o.valor_total==null?'—':money(o.valor_total*.01)}
+${
+o.valor_total==null
+?'—'
+:money(o.valor_total*.01)
+}
+
 </b>
 
 </p>
 
 <script>
-window.onload=()=>window.print()
+
+window.onload=()=>{
+window.print()
+}
+
 <\/script>
 
 </body>
@@ -2124,6 +3493,64 @@ w.document.close();
 }
 
 
+/* ENTER NO LOGIN COM TECLA ENTER */
+
+document
+.getElementById('loginPass')
+.addEventListener(
+'keydown',
+function(e){
+
+if(e.key==='Enter'){
+
+e.preventDefault();
+
+doLogin();
+
+}
+
+}
+);
+
+
+/* MONITORAR SESSÃO */
+
+supabaseClient.auth.onAuthStateChange(
+(event,session)=>{
+
+if(
+event==='SIGNED_OUT'
+){
+
+currentUser=null;
+
+document
+.getElementById('app')
+.style.display='none';
+
+document
+.getElementById('login')
+.style.display='flex';
+
+return;
+
+}
+
+if(
+session &&
+!currentUser
+){
+
+currentUser=session.user;
+
+startApp();
+
+}
+
+}
+);
+
+
 /* INICIALIZAÇÃO */
 
 checkSession();
@@ -2131,4 +3558,4 @@ checkSession();
 </script>
 
 </body>
-</html>
+</html> 
