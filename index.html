@@ -1,3616 +1,4321 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Augusto Estamparia Digital</title>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-  <style>
-    :root {
-      --navy: #0b1f3a;
-      --blue: #1557a6;
-      --blue-light: #eaf2ff;
-      --gold: #d4a72c;
-      --gold-light: #f8edc8;
-      --white: #ffffff;
-      --bg: #f4f7fb;
-      --text: #172033;
-      --muted: #6b7280;
-      --border: #dfe5ee;
-      --success: #16834b;
-      --danger: #c62828;
-      --warning: #b77900;
-      --shadow: 0 8px 25px rgba(11, 31, 58, .08);
-      --radius: 14px;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    button,
-    input,
-    select,
-    textarea {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .login-screen {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      background: linear-gradient(135deg, var(--navy), var(--blue));
-    }
-
-    .login-card {
-      width: 100%;
-      max-width: 420px;
-      background: var(--white);
-      border-radius: 20px;
-      padding: 36px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, .2);
-    }
-
-    .brand-login {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .brand-logo {
-      width: 70px;
-      height: 70px;
-      margin: 0 auto 15px;
-      border-radius: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--navy);
-      color: var(--gold);
-      font-size: 28px;
-      font-weight: 800;
-    }
-
-    .brand-login h1 {
-      margin: 0 0 7px;
-      color: var(--navy);
-      font-size: 25px;
-    }
-
-    .brand-login p {
-      margin: 0;
-      color: var(--muted);
-    }
-
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 7px;
-      font-weight: 700;
-      font-size: 14px;
-    }
-
-    input,
-    select,
-    textarea {
-      width: 100%;
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      padding: 11px 12px;
-      background: #fff;
-      color: var(--text);
-      outline: none;
-    }
-
-    input:focus,
-    select:focus,
-    textarea:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 3px rgba(21, 87, 166, .1);
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 90px;
-    }
-
-    .btn {
-      border: 0;
-      border-radius: 9px;
-      padding: 11px 16px;
-      font-weight: 700;
-      transition: .2s;
-    }
-
-    .btn:hover {
-      transform: translateY(-1px);
-    }
-
-    .btn-primary {
-      background: var(--blue);
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background: #104887;
-    }
-
-    .btn-gold {
-      background: var(--gold);
-      color: #172033;
-    }
-
-    .btn-danger {
-      background: var(--danger);
-      color: white;
-    }
-
-    .btn-secondary {
-      background: #eef1f5;
-      color: var(--text);
-    }
-
-    .btn-success {
-      background: var(--success);
-      color: white;
-    }
-
-    .btn-small {
-      padding: 7px 10px;
-      font-size: 12px;
-    }
-
-    .full-width {
-      width: 100%;
-    }
-
-    .login-message {
-      margin-top: 15px;
-      padding: 11px;
-      border-radius: 8px;
-      font-size: 14px;
-      display: none;
-    }
-
-    .login-message.error {
-      display: block;
-      background: #ffebee;
-      color: var(--danger);
-    }
-
-    .login-message.success {
-      display: block;
-      background: #e9f7ef;
-      color: var(--success);
-    }
-
-    .app {
-      min-height: 100vh;
-      display: flex;
-    }
-
-    .sidebar {
-      width: 250px;
-      background: var(--navy);
-      color: white;
-      position: fixed;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      z-index: 20;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .sidebar-brand {
-      padding: 25px 20px;
-      border-bottom: 1px solid rgba(255,255,255,.1);
-    }
-
-    .sidebar-brand h2 {
-      margin: 0;
-      font-size: 18px;
-    }
-
-    .sidebar-brand small {
-      display: block;
-      margin-top: 5px;
-      color: #b9c6d8;
-    }
-
-    .nav {
-      padding: 15px 10px;
-      flex: 1;
-    }
-
-    .nav button {
-      width: 100%;
-      text-align: left;
-      background: transparent;
-      border: 0;
-      color: #d9e2ee;
-      padding: 13px 14px;
-      margin-bottom: 5px;
-      border-radius: 9px;
-      font-weight: 600;
-    }
-
-    .nav button:hover,
-    .nav button.active {
-      background: rgba(255,255,255,.1);
-      color: white;
-    }
-
-    .sidebar-footer {
-      padding: 15px;
-      border-top: 1px solid rgba(255,255,255,.1);
-    }
-
-    .user-email {
-      font-size: 12px;
-      color: #b9c6d8;
-      margin-bottom: 10px;
-      word-break: break-word;
-    }
-
-    .logout-btn {
-      width: 100%;
-      border: 1px solid rgba(255,255,255,.2);
-      background: transparent;
-      color: white;
-      padding: 9px;
-      border-radius: 8px;
-    }
-
-    .main {
-      margin-left: 250px;
-      width: calc(100% - 250px);
-      min-height: 100vh;
-    }
-
-    .topbar {
-      background: white;
-      border-bottom: 1px solid var(--border);
-      padding: 18px 25px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-
-    .topbar h1 {
-      margin: 0;
-      font-size: 22px;
-      color: var(--navy);
-    }
-
-    .content {
-      padding: 25px;
-    }
-
-    .page {
-      display: none;
-    }
-
-    .page.active {
-      display: block;
-    }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 17px;
-      margin-bottom: 25px;
-    }
-
-    .card {
-      background: white;
-      border-radius: var(--radius);
-      padding: 20px;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border);
-    }
-
-    .stat-card {
-      position: relative;
-      overflow: hidden;
-    }
-
-    .stat-card::after {
-      content: "";
-      position: absolute;
-      right: -25px;
-      top: -25px;
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background: var(--blue-light);
-    }
-
-    .stat-label {
-      color: var(--muted);
-      font-size: 13px;
-      margin-bottom: 8px;
-    }
-
-    .stat-value {
-      color: var(--navy);
-      font-size: 25px;
-      font-weight: 800;
-    }
-
-    .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-      margin-bottom: 18px;
-      flex-wrap: wrap;
-    }
-
-    .section-header h2 {
-      margin: 0;
-      color: var(--navy);
-      font-size: 20px;
-    }
-
-    .table-card {
-      background: white;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-
-    .table-wrapper {
-      width: 100%;
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 700px;
-    }
-
-    th,
-    td {
-      padding: 13px 15px;
-      border-bottom: 1px solid var(--border);
-      text-align: left;
-      font-size: 14px;
-    }
-
-    th {
-      background: #f8fafc;
-      color: var(--navy);
-      font-size: 12px;
-      text-transform: uppercase;
-    }
-
-    tr:last-child td {
-      border-bottom: 0;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 5px 9px;
-      border-radius: 30px;
-      font-size: 11px;
-      font-weight: 700;
-    }
-
-    .badge-new {
-      background: #e8f1ff;
-      color: var(--blue);
-    }
-
-    .badge-closed {
-      background: #e7f7ee;
-      color: var(--success);
-    }
-
-    .badge-cancelled {
-      background: #ffebee;
-      color: var(--danger);
-    }
-
-    .empty {
-      text-align: center;
-      padding: 35px;
-      color: var(--muted);
-    }
-
-    .search-bar {
-      max-width: 320px;
-    }
-
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-      gap: 18px;
-    }
-
-    .gallery-item {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-
-    .gallery-image {
-      width: 100%;
-      height: 170px;
-      object-fit: cover;
-      background: #eef2f7;
-      display: block;
-    }
-
-    .gallery-info {
-      padding: 12px;
-    }
-
-    .gallery-name {
-      font-weight: 700;
-      margin-bottom: 9px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .gallery-actions {
-      display: flex;
-      gap: 7px;
-    }
-
-    .gallery-actions button {
-      flex: 1;
-    }
-
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.55);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      z-index: 100;
-    }
-
-    .modal.open {
-      display: flex;
-    }
-
-    .modal-content {
-      width: 100%;
-      max-width: 700px;
-      max-height: 92vh;
-      overflow-y: auto;
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 20px 70px rgba(0,0,0,.3);
-    }
-
-    .modal-header {
-      padding: 18px 20px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .modal-header h2 {
-      margin: 0;
-      color: var(--navy);
-      font-size: 19px;
-    }
-
-    .close-modal {
-      border: 0;
-      background: transparent;
-      font-size: 25px;
-      color: var(--muted);
-    }
-
-    .modal-body {
-      padding: 20px;
-    }
-
-    .modal-footer {
-      padding: 15px 20px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-    }
-
-    .form-grid .full {
-      grid-column: 1 / -1;
-    }
-
-    .items-container {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .item-row {
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px;
-      background: #fafbfd;
-    }
-
-    .item-grid {
-      display: grid;
-      grid-template-columns: 1.3fr 1fr .6fr auto;
-      gap: 10px;
-      align-items: end;
-    }
-
-    .selected-gallery-image {
-      margin-top: 10px;
-      width: 100px;
-      height: 100px;
-      object-fit: cover;
-      border-radius: 8px;
-      display: none;
-    }
-
-    .order-detail {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-    }
-
-    .detail-box {
-      background: #f8fafc;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 13px;
-    }
-
-    .detail-box strong {
-      display: block;
-      color: var(--muted);
-      font-size: 12px;
-      margin-bottom: 5px;
-    }
-
-    .money {
-      font-weight: 800;
-    }
-
-    .positive {
-      color: var(--success);
-    }
-
-    .negative {
-      color: var(--danger);
-    }
-
-    .toast {
-      position: fixed;
-      right: 22px;
-      bottom: 22px;
-      z-index: 200;
-      min-width: 280px;
-      max-width: 420px;
-      background: var(--navy);
-      color: white;
-      padding: 14px 18px;
-      border-radius: 10px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.2);
-      display: none;
-    }
-
-    .toast.show {
-      display: block;
-    }
-
-    .toast.error {
-      background: var(--danger);
-    }
-
-    .toast.success {
-      background: var(--success);
-    }
-
-    .loading {
-      opacity: .6;
-      pointer-events: none;
-    }
-
-    .recent-list {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .recent-row {
-      padding: 13px 0;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      gap: 15px;
-    }
-
-    .recent-row:last-child {
-      border-bottom: 0;
-    }
-
-    .recent-client {
-      font-weight: 700;
-    }
-
-    .recent-date {
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 4px;
-    }
-
-    .mobile-menu {
-      display: none;
-      border: 0;
-      background: var(--navy);
-      color: white;
-      border-radius: 8px;
-      padding: 8px 11px;
-    }
-
-    .report-header {
-      display: none;
-    }
-
-    @media (max-width: 1100px) {
-      .cards {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 800px) {
-      .sidebar {
-        transform: translateX(-100%);
-        transition: .2s;
-      }
-
-      .sidebar.mobile-open {
-        transform: translateX(0);
-      }
-
-      .main {
-        margin-left: 0;
-        width: 100%;
-      }
-
-      .mobile-menu {
-        display: block;
-      }
-
-      .content {
-        padding: 15px;
-      }
-
-      .topbar {
-        padding: 13px 15px;
-      }
-
-      .form-grid,
-      .order-detail {
-        grid-template-columns: 1fr;
-      }
-
-      .item-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 520px) {
-      .cards {
-        grid-template-columns: 1fr;
-      }
-
-      .login-card {
-        padding: 25px;
-      }
-    }
-
-    @media print {
-      body * {
-        visibility: hidden !important;
-      }
-
-      #printArea,
-      #printArea * {
-        visibility: visible !important;
-      }
-
-      #printArea {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        padding: 25px;
-      }
-
-      .no-print {
-        display: none !important;
-      }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Augusto Digital — Pedidos</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root{
+  --navy:#06243a;
+  --navy2:#0b304b;
+  --blue:#1677d2;
+  --gold:#e4a12a;
+  --bg:#f4f7fb;
+  --text:#152536;
+  --muted:#6d7b8b;
+  --white:#fff;
+  --danger:#c0392b;
+  --ok:#198754;
+  --shadow:0 8px 30px rgba(6,36,58,.10)
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text)
+}
+
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+
+.app{
+  min-height:100vh;
+  display:flex
+}
+
+.sidebar{
+  width:245px;
+  background:linear-gradient(180deg,var(--navy),#041b2c);
+  color:#fff;
+  padding:18px 14px;
+  position:fixed;
+  inset:0 auto 0 0;
+  z-index:5
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:6px 8px 20px;
+  border-bottom:1px solid rgba(255,255,255,.12)
+}
+
+.brand img{
+  width:42px;
+  height:42px;
+  object-fit:cover;
+  border-radius:8px
+}
+
+.brand b{font-size:14px}
+
+.brand span{
+  display:block;
+  font-size:11px;
+  color:#b9c9d8;
+  margin-top:2px
+}
+
+nav{padding-top:16px}
+
+nav button{
+  width:100%;
+  background:none;
+  border:0;
+  color:#dce8f1;
+  text-align:left;
+  padding:12px 13px;
+  border-radius:9px;
+  margin-bottom:5px
+}
+
+nav button.active,
+nav button:hover{
+  background:rgba(228,161,42,.16);
+  color:#fff
+}
+
+nav button.active{
+  border-left:3px solid var(--gold)
+}
+
+.main{
+  margin-left:245px;
+  width:calc(100% - 245px);
+  min-height:100vh
+}
+
+.top{
+  height:68px;
+  background:#fff;
+  border-bottom:1px solid #e6edf4;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 28px;
+  position:sticky;
+  top:0;
+  z-index:4
+}
+
+.top h1{
+  font-size:20px;
+  margin:0
+}
+
+.top-right{
+  display:flex;
+  align-items:center;
+  gap:10px
+}
+
+.userpill{
+  font-size:13px;
+  color:var(--muted);
+  background:#f3f6fa;
+  padding:8px 12px;
+  border-radius:99px
+}
+
+.logout{
+  border:0;
+  background:#fdecea;
+  color:var(--danger);
+  padding:8px 12px;
+  border-radius:8px;
+  font-size:12px;
+  font-weight:650
+}
+
+.content{
+  padding:26px;
+  max-width:1400px;
+  margin:auto
+}
+
+.page{display:none}
+.page.active{display:block}
+
+.grid{
+  display:grid;
+  gap:16px
+}
+
+.cards{
+  grid-template-columns:repeat(4,minmax(0,1fr))
+}
+
+.card{
+  background:#fff;
+  border-radius:14px;
+  padding:18px;
+  box-shadow:var(--shadow);
+  border:1px solid #e9e5
+}
+
+.card .label{
+  color:var(--muted);
+  font-size:12px
+}
+
+.card .value{
+  font-size:25px;
+  font-weight:750;
+  margin-top:8px
+}
+
+.gold{color:#c77f00}
+.blue{color:var(--blue)}
+
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:0 0 16px
+}
+
+.section-head h2{
+  font-size:19px;
+  margin:0
+}
+
+.btn{
+  border:0;
+  border-radius:9px;
+  padding:10px 15px;
+  font-weight:650
+}
+
+.btn.primary{
+  background:var(--blue);
+  color:#fff
+}
+
+.btn.gold{
+  background:var(--gold);
+  color:#13202b
+}
+
+.btn.secondary{
+  background:#eaf0f5;
+  color:var(--navy)
+}
+
+.btn.danger{
+  background:#fdecea;
+  color:var(--danger)
+}
+
+.tablewrap{
+  overflow:auto;
+  background:#fff;
+  border-radius:14px;
+  box-shadow:var(--shadow)
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:720px
+}
+
+th,td{
+  padding:13px 14px;
+  text-align:left;
+  border-bottom:1px solid #edf1f5;
+  font-size:13px
+}
+
+th{
+  color:var(--muted);
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.03em;
+  background:#fafcfe
+}
+
+.badge{
+  display:inline-block;
+  padding:5px 8px;
+  border-radius:99px;
+  font-size:11px;
+  font-weight:700;
+  background:#eaf0f5
+}
+
+.badge.ok{
+  background:#e8f6ee;
+  color:#177545
+}
+
+.badge.wait{
+  background:#fff5df;
+  color:#9a6500
+}
+
+.badge.cancel{
+  background:#fdecea;
+  color:var(--danger)
+}
+
+.form{
+  background:#fff;
+  border-radius:14px;
+  box-shadow:var(--shadow);
+  padding:20px
+}
+
+.formgrid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px
+}
+
+.field label{
+  display:block;
+  font-size:12px;
+  color:var(--muted);
+  margin-bottom:6px
+}
+
+.field input,
+.field select,
+.field textarea{
+  width:100%;
+  border:1px solid #dbe4ec;
+  border-radius:9px;
+  padding:10px 11px;
+  background:#fff
+}
+
+.field textarea{
+  min-height:85px;
+  resize:vertical
+}
+
+.full{
+  grid-column:1/-1
+}
+
+.items{
+  margin-top:20px
+}
+
+.item{
+  display:grid;
+  grid-template-columns:125px 1fr 150px 110px 40px;
+  gap:10px;
+  align-items:center;
+  border:1px solid #e2eaf1;
+  padding:10px;
+  border-radius:12px;
+  margin-bottom:9px
+}
+
+.thumb{
+  width:125px;
+  height:100px;
+  border-radius:8px;
+  background:#eef3f7;
+  object-fit:cover
+}
+
+.item select,
+.item input{
+  width:100%;
+  padding:9px;
+  border:1px solid #dbe4ec;
+  border-radius:8px
+}
+
+.remove{
+  border:0;
+  background:#fdecea;
+  color:var(--danger);
+  width:36px;
+  height:36px;
+  border-radius:8px
+}
+
+.totalbar{
+  display:flex;
+  justify-content:flex-end;
+  gap:28px;
+  margin-top:15px;
+  font-weight:700
+}
+
+.muted{color:var(--muted)}
+
+.gallery{
+  grid-template-columns:repeat(auto-fill,minmax(180px,1fr))
+}
+
+.photo{
+  background:#fff;
+  border-radius:12px;
+  padding:10px;
+  box-shadow:var(--shadow)
+}
+
+.photo img{
+  width:100%;
+  aspect-ratio:1;
+  object-fit:cover;
+  border-radius:8px;
+  background:#edf2f6
+}
+
+.photo .actions{
+  display:flex;
+  gap:7px;
+  margin-top:8px
+}
+
+.photo button{
+  flex:1;
+  padding:7px;
+  border:0;
+  border-radius:7px;
+  background:#eef3f7
+}
+
+.drop{
+  border:2px dashed #c9d6e2;
+  padding:22px;
+  border-radius:12px;
+  text-align:center;
+  margin-bottom:16px;
+  background:#fbfdff
+}
+
+.empty{
+  padding:35px;
+  text-align:center;
+  color:var(--muted)
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(3,20,34,.58);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:20;
+  padding:20px
+}
+
+.modal.show{display:flex}
+
+.modalbox{
+  background:#fff;
+  border-radius:16px;
+  max-width:900px;
+  width:100%;
+  max-height:90vh;
+  overflow:auto;
+  padding:22px
+}
+
+.modalhead{
+  display:flex;
+  justify-content:space-between;
+  align-items:center
+}
+
+.modalhead h3{margin:0}
+
+.close{
+  border:0;
+  background:#eef2f6;
+  border-radius:8px;
+  width:36px;
+  height:36px
+}
+
+.toast{
+  position:fixed;
+  right:22px;
+  bottom:22px;
+  background:var(--navy);
+  color:#fff;
+  padding:12px 16px;
+  border-radius:9px;
+  display:none;
+  z-index:50;
+  max-width:420px;
+  white-space:pre-wrap
+}
+
+.toast.show{display:block}
+
+.login{
+  position:fixed;
+  inset:0;
+  background:linear-gradient(135deg,var(--navy),#0e5d91);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:100
+}
+
+.loginbox{
+  background:#fff;
+  width:min(410px,92vw);
+  border-radius:18px;
+  padding:28px;
+  box-shadow:0 25px 80px rgba(0,0,0,.25)
+}
+
+.loginbox img{
+  display:block;
+  width:82px;
+  height:82px;
+  object-fit:cover;
+  border-radius:14px;
+  margin:0 auto 12px
+}
+
+.loginbox h2{
+  text-align:center;
+  margin:0
+}
+
+.loginbox p{
+  text-align:center;
+  color:var(--muted);
+  font-size:13px
+}
+
+.loginbox .field{
+  margin-top:12px
+}
+
+.loginbox .btn{
+  width:100%;
+  margin-top:14px
+}
+
+.login-error{
+  color:var(--danger)!important;
+  font-size:12px!important;
+  min-height:16px
+}
+
+.report-head{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+  margin-bottom:18px
+}
+
+.report-box{
+  background:#fff;
+  border:1px solid #e9e5;
+  box-shadow:var(--shadow);
+  border-radius:14px;
+  padding:18px
+}
+
+.report-box small{
+  display:block;
+  color:var(--muted);
+  font-size:12px
+}
+
+.report-box strong{
+  display:block;
+  font-size:23px;
+  margin-top:7px
+}
+
+.gallery-picker{
+  position:absolute;
+  inset:20px;
+  background:#fff;
+  border-radius:14px;
+  padding:20px;
+  overflow:auto;
+  z-index:3
+}
+
+.pick-card{
+  background:#fff;
+  border:1px solid #e3eaf0;
+  border-radius:10px;
+  padding:8px
+}
+
+.pick-card img{
+  width:100%;
+  aspect-ratio:1;
+  object-fit:cover;
+  border-radius:7px
+}
+
+.pick-card button{
+  width:100%;
+  margin-top:7px;
+  padding:8px;
+  border:0;
+  border-radius:7px;
+  background:#eaf0f5
+}
+
+.diagnostic{
+  margin-top:10px;
+  padding:10px;
+  border-radius:8px;
+  background:#fff4f2;
+  color:#8d2d20;
+  font-size:11px;
+  display:none;
+  white-space:pre-wrap;
+  word-break:break-word
+}
+
+@media(max-width:900px){
+  .sidebar{width:72px}
+
+  .brand div,
+  nav button span{display:none}
+
+  .brand{justify-content:center}
+
+  .main{
+    margin-left:72px;
+    width:calc(100% - 72px)
+  }
+
+  .cards{
+    grid-template-columns:repeat(2,1fr)
+  }
+
+  .content{padding:18px}
+
+  .item{
+    grid-template-columns:90px 1fr 110px 70px 38px
+  }
+
+  .thumb{
+    width:90px;
+    height:75px
+  }
+}
+
+@media(max-width:600px){
+  .cards{
+    grid-template-columns:1fr 1fr
+  }
+
+  .report-head{
+    grid-template-columns:1fr
+  }
+
+  .formgrid{
+    grid-template-columns:1fr
+  }
+
+  .full{
+    grid-column:auto
+  }
+
+  .top{
+    padding:0 15px
+  }
+
+  .top h1{
+    font-size:17px
+  }
+
+  .userpill{
+    display:none
+  }
+
+  .item{
+    grid-template-columns:70px 1fr 38px;
+    gap:7px
+  }
+
+  .item .fabric,
+  .item .qty{
+    grid-column:2
+  }
+
+  .item .remove{
+    grid-column:3;
+    grid-row:1/3
+  }
+
+  .thumb{
+    width:70px;
+    height:62px
+  }
+
+  .logout{
+    padding:7px 9px
+  }
+}
+</style>
 </head>
 
 <body>
 
-  <!-- LOGIN -->
-  <div id="loginScreen" class="login-screen">
-    <div class="login-card">
-      <div class="brand-login">
-        <div class="brand-logo">AE</div>
-        <h1>Augusto Estamparia Digital</h1>
-        <p>Sistema interno</p>
-      </div>
+<!-- LOGIN -->
+<div id="login" class="login">
+  <div class="loginbox">
 
-      <form id="loginForm">
-        <div class="form-group">
-          <label for="loginEmail">E-mail</label>
-          <input type="email" id="loginEmail" required autocomplete="email">
-        </div>
+    <img src="logo.jpg" alt="Augusto Estamparia Digital">
 
-        <div class="form-group">
-          <label for="loginPassword">Senha</label>
-          <input type="password" id="loginPassword" required autocomplete="current-password">
-        </div>
+    <h2>Augusto Digital</h2>
+    <p>Painel de pedidos e vendas</p>
 
-        <button id="loginButton" type="submit" class="btn btn-primary full-width">
-          Entrar
-        </button>
-
-        <div id="loginMessage" class="login-message"></div>
-      </form>
+    <div class="field">
+      <label>E-mail</label>
+      <input
+        id="loginEmail"
+        type="email"
+        placeholder="Digite seu e-mail"
+        autocomplete="email"
+      >
     </div>
+
+    <div class="field">
+      <label>Senha</label>
+      <input
+        id="loginPass"
+        type="password"
+        placeholder="Digite sua senha"
+        autocomplete="current-password"
+      >
+    </div>
+
+    <p id="loginError" class="login-error"></p>
+    <div id="loginDiagnostic" class="diagnostic"></div>
+
+    <button class="btn primary" id="loginButton" onclick="doLogin()">
+      Entrar
+    </button>
+
+    <p style="font-size:11px;margin-top:12px">
+      Acesso protegido por Supabase.
+    </p>
+
   </div>
+</div>
 
-  <!-- APP -->
-  <div id="app" class="app hidden">
+<!-- APP -->
+<div class="app" id="app" style="display:none">
 
-    <aside id="sidebar" class="sidebar">
-      <div class="sidebar-brand">
-        <h2>Augusto Estamparia</h2>
-        <small>Estamparia Digital</small>
+  <aside class="sidebar">
+
+    <div class="brand">
+      <img src="logo.jpg" alt="Augusto">
+      <div>
+        <b>AUGUSTO</b>
+        <span>Estamparia Digital</span>
       </div>
+    </div>
 
-      <nav class="nav">
-        <button class="nav-btn active" data-page="dashboard">Dashboard</button>
-        <button class="nav-btn" data-page="clientes">Clientes</button>
-        <button class="nav-btn" data-page="pedidos">Pedidos</button>
-        <button class="nav-btn" data-page="galeria">Galeria</button>
-        <button class="nav-btn" data-page="financeiro">Financeiro</button>
-      </nav>
+    <nav>
+      <button class="active" data-page="dashboard">
+        <span>⌂ &nbsp;</span>Início
+      </button>
 
-      <div class="sidebar-footer">
-        <div id="sidebarEmail" class="user-email"></div>
-        <button id="logoutButton" class="logout-btn">Sair</button>
-      </div>
-    </aside>
+      <button data-page="pedidos">
+        <span>▣ &nbsp;</span>Pedidos
+      </button>
 
-    <main class="main">
+      <button data-page="clientes">
+        <span>♙ &nbsp;</span>Clientes
+      </button>
 
-      <header class="topbar">
-        <div style="display:flex;align-items:center;gap:12px;">
-          <button id="mobileMenuButton" class="mobile-menu">☰</button>
-          <h1 id="pageTitle">Dashboard</h1>
+      <button data-page="galeria">
+        <span>▧ &nbsp;</span>Galeria
+      </button>
+
+      <button data-page="financeiro">
+        <span>R$ &nbsp;</span>Financeiro
+      </button>
+
+      <button data-page="relatorios">
+        <span>▤ &nbsp;</span>Relatórios
+      </button>
+    </nav>
+
+  </aside>
+
+  <main class="main">
+
+    <header class="top">
+      <h1 id="title">Início</h1>
+
+      <div class="top-right">
+        <div class="userpill" id="userPill">
+          Carregando...
         </div>
 
-        <div id="topbarEmail" style="font-size:13px;color:var(--muted);"></div>
-      </header>
+        <button class="logout" onclick="logout()">
+          Sair
+        </button>
+      </div>
+    </header>
 
-      <div class="content">
+    <div class="content">
 
-        <!-- DASHBOARD -->
-        <section id="page-dashboard" class="page active">
+      <!-- DASHBOARD -->
+      <section class="page active" id="dashboard">
 
-          <div class="cards">
-            <div class="card stat-card">
-              <div class="stat-label">Vendas fechadas no mês</div>
-              <div id="dashSales" class="stat-value">R$ 0,00</div>
-            </div>
+        <div class="section-head">
+          <h2>Visão rápida</h2>
 
-            <div class="card stat-card">
-              <div class="stat-label">Comissão 1%</div>
-              <div id="dashCommission" class="stat-value">R$ 0,00</div>
-            </div>
+          <button class="btn gold" onclick="newOrder()">
+            + Novo pedido
+          </button>
+        </div>
 
-            <div class="card stat-card">
-              <div class="stat-label">Pedidos fechados</div>
-              <div id="dashClosed" class="stat-value">0</div>
-            </div>
+        <div class="grid cards">
 
-            <div class="card stat-card">
-              <div class="stat-label">Pedidos em aberto</div>
-              <div id="dashOpen" class="stat-value">0</div>
-            </div>
+          <div class="card">
+            <div class="label">Vendas fechadas no mês</div>
+            <div class="value blue" id="dashSales">R$ 0,00</div>
           </div>
 
           <div class="card">
-            <div class="section-header">
-              <h2>Pedidos recentes</h2>
-              <button class="btn btn-primary btn-small" data-go-page="pedidos">
-                Ver pedidos
-              </button>
-            </div>
-
-            <div id="recentOrders" class="recent-list">
-              <div class="empty">Carregando...</div>
-            </div>
+            <div class="label">Comissão (1%)</div>
+            <div class="value gold" id="dashComm">R$ 0,00</div>
           </div>
 
-        </section>
-
-        <!-- CLIENTES -->
-        <section id="page-clientes" class="page">
-
-          <div class="section-header">
-            <h2>Clientes</h2>
-
-            <div style="display:flex;gap:10px;flex-wrap:wrap;">
-              <input
-                id="clientSearch"
-                class="search-bar"
-                type="search"
-                placeholder="Pesquisar cliente..."
-              >
-
-              <button id="newClientButton" class="btn btn-primary">
-                + Novo cliente
-              </button>
-            </div>
+          <div class="card">
+            <div class="label">Pedidos fechados</div>
+            <div class="value" id="dashClosed">0</div>
           </div>
 
-          <div class="table-card">
-            <div class="table-wrapper">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Nome</th>
-                    <th>Telefone</th>
-                    <th>Cadastro</th>
-                    <th>Ações</th>
-                  </tr>
-                </thead>
-
-                <tbody id="clientsTableBody">
-                  <tr>
-                    <td colspan="4" class="empty">Carregando...</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+          <div class="card">
+            <div class="label">Pedidos em aberto</div>
+            <div class="value" id="dashOpen">0</div>
           </div>
-
-        </section>
-
-        <!-- PEDIDOS -->
-        <section id="page-pedidos" class="page">
-
-          <div class="section-header">
-            <h2>Pedidos</h2>
-
-            <div style="display:flex;gap:10px;flex-wrap:wrap;">
-              <input
-                id="orderSearch"
-                class="search-bar"
-                type="search"
-                placeholder="Pesquisar pedido ou cliente..."
-              >
-
-              <select id="orderStatusFilter" style="width:170px;">
-                <option value="">Todos os status</option>
-                <option value="Novo pedido">Novo pedido</option>
-                <option value="Fechado">Fechado</option>
-                <option value="Cancelado">Cancelado</option>
-              </select>
-
-              <button id="newOrderButton" class="btn btn-primary">
-                + Novo pedido
-              </button>
-            </div>
-          </div>
-
-          <div class="table-card">
-            <div class="table-wrapper">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Cliente</th>
-                    <th>Data</th>
-                    <th>Status</th>
-                    <th>Total</th>
-                    <th>Sinal</th>
-                    <th>Saldo</th>
-                    <th>Ações</th>
-                  </tr>
-                </thead>
-
-                <tbody id="ordersTableBody">
-                  <tr>
-                    <td colspan="7" class="empty">Carregando...</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-        </section>
-
-        <!-- GALERIA -->
-        <section id="page-galeria" class="page">
-
-          <div class="section-header">
-            <h2>Galeria de estampas</h2>
-
-            <button id="newGalleryButton" class="btn btn-primary">
-              + Adicionar imagem
-            </button>
-          </div>
-
-          <div id="galleryGrid" class="gallery-grid">
-            <div class="empty">Carregando...</div>
-          </div>
-
-        </section>
-
-        <!-- FINANCEIRO -->
-        <section id="page-financeiro" class="page">
-
-          <div class="section-header">
-            <h2>Financeiro</h2>
-
-            <div style="display:flex;gap:10px;align-items:center;">
-              <label style="margin:0;">Mês:</label>
-              <input id="financeMonth" type="month" style="width:180px;">
-            </div>
-          </div>
-
-          <div class="cards">
-            <div class="card stat-card">
-              <div class="stat-label">Vendas fechadas</div>
-              <div id="financeSales" class="stat-value">R$ 0,00</div>
-            </div>
-
-            <div class="card stat-card">
-              <div class="stat-label">Comissão 1%</div>
-              <div id="financeCommission" class="stat-value">R$ 0,00</div>
-            </div>
-
-            <div class="card stat-card">
-              <div class="stat-label">Pedidos fechados</div>
-              <div id="financeClosed" class="stat-value">0</div>
-            </div>
-
-            <div class="card stat-card">
-              <div class="stat-label">Pedidos em aberto</div>
-              <div id="financeOpen" class="stat-value">0</div>
-            </div>
-          </div>
-
-          <div class="table-card">
-            <div class="table-wrapper">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Cliente</th>
-                    <th>Data de fechamento</th>
-                    <th>Total</th>
-                    <th>Sinal</th>
-                    <th>Saldo</th>
-                    <th>Comissão</th>
-                  </tr>
-                </thead>
-
-                <tbody id="financeTableBody">
-                  <tr>
-                    <td colspan="6" class="empty">Carregando...</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-        </section>
-
-      </div>
-    </main>
-  </div>
-
-  <!-- MODAL CLIENTE -->
-  <div id="clientModal" class="modal">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <h2 id="clientModalTitle">Novo cliente</h2>
-        <button class="close-modal" data-close="clientModal">×</button>
-      </div>
-
-      <form id="clientForm">
-        <div class="modal-body">
-
-          <input type="hidden" id="clientId">
-
-          <div class="form-group">
-            <label for="clientName">Nome *</label>
-            <input id="clientName" type="text" required>
-          </div>
-
-          <div class="form-group">
-            <label for="clientPhone">Telefone</label>
-            <input id="clientPhone" type="text">
-          </div>
-
-          <div id="clientError" style="color:var(--danger);font-size:13px;"></div>
 
         </div>
 
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-close="clientModal">
-            Cancelar
-          </button>
+        <div style="height:18px"></div>
 
-          <button type="submit" id="saveClientButton" class="btn btn-primary">
-            Salvar cliente
+        <div class="section-head">
+          <h2>Pedidos recentes</h2>
+
+          <button class="btn secondary" onclick="showPage('pedidos')">
+            Ver todos
           </button>
         </div>
-      </form>
+
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Pedido</th>
+                <th>Data</th>
+                <th>Status</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody id="recentBody"></tbody>
+          </table>
+        </div>
+
+      </section>
+
+      <!-- PEDIDOS -->
+      <section class="page" id="pedidos">
+
+        <div class="section-head">
+          <h2>Pedidos</h2>
+
+          <button class="btn primary" onclick="newOrder()">
+            + Novo pedido
+          </button>
+        </div>
+
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Data</th>
+                <th>Peças</th>
+                <th>Status</th>
+                <th>Valor total</th>
+                <th></th>
+              </tr>
+            </thead>
+
+            <tbody id="ordersBody"></tbody>
+          </table>
+        </div>
+
+      </section>
+
+      <!-- CLIENTES -->
+      <section class="page" id="clientes">
+
+        <div class="section-head">
+          <h2>Clientes</h2>
+
+          <button class="btn primary" onclick="openClientModal()">
+            + Novo cliente
+          </button>
+        </div>
+
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Cliente / Empresa</th>
+                <th>Telefone</th>
+                <th>Pedidos</th>
+              </tr>
+            </thead>
+
+            <tbody id="clientsBody"></tbody>
+          </table>
+        </div>
+
+      </section>
+
+      <!-- GALERIA -->
+      <section class="page" id="galeria">
+
+        <div class="section-head">
+          <h2>Minha galeria</h2>
+
+          <button
+            class="btn primary"
+            onclick="document.getElementById('galleryFile').click()"
+          >
+            + Adicionar imagens
+          </button>
+        </div>
+
+        <div class="drop">
+
+          Adicione imagens de estampas.<br>
+          Elas ficam disponíveis para reutilização nos próximos pedidos.
+
+          <input
+            id="galleryFile"
+            type="file"
+            accept="image/*"
+            multiple
+            style="display:none"
+            onchange="addGalleryFiles(this.files)"
+          >
+
+        </div>
+
+        <div class="grid gallery" id="galleryGrid"></div>
+
+      </section>
+
+      <!-- FINANCEIRO -->
+      <section class="page" id="financeiro">
+
+        <div class="section-head">
+          <h2>Financeiro</h2>
+
+          <input
+            id="monthFilter"
+            type="month"
+            onchange="renderFinance()"
+            style="padding:9px;border:1px solid #dbe4ec;border-radius:8px"
+          >
+        </div>
+
+        <div class="grid cards">
+
+          <div class="card">
+            <div class="label">Vendas fechadas</div>
+            <div class="value blue" id="finSales">R$ 0,00</div>
+          </div>
+
+          <div class="card">
+            <div class="label">Comissão de 1%</div>
+            <div class="value gold" id="finComm">R$ 0,00</div>
+          </div>
+
+          <div class="card">
+            <div class="label">Pedidos fechados</div>
+            <div class="value" id="finCount">0</div>
+          </div>
+
+          <div class="card">
+            <div class="label">Pedidos em aberto</div>
+            <div class="value" id="finPending">0</div>
+          </div>
+
+        </div>
+
+        <div style="height:18px"></div>
+
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Data de fechamento</th>
+                <th>Total</th>
+                <th>Sinal</th>
+                <th>Saldo</th>
+                <th>Comissão</th>
+              </tr>
+            </thead>
+
+            <tbody id="finBody"></tbody>
+          </table>
+        </div>
+
+      </section>
+
+      <!-- RELATÓRIOS -->
+      <section class="page" id="relatorios">
+
+        <div class="section-head">
+          <h2>Relatórios</h2>
+
+          <input
+            id="reportMonth"
+            type="month"
+            onchange="renderReports()"
+            style="padding:9px;border:1px solid #dbe4ec;border-radius:8px"
+          >
+        </div>
+
+        <div class="report-head">
+
+          <div class="report-box">
+            <small>Vendas no período</small>
+            <strong class="blue" id="reportSales">
+              R$ 0,00
+            </strong>
+          </div>
+
+          <div class="report-box">
+            <small>Pedidos fechados</small>
+            <strong id="reportClosed">0</strong>
+          </div>
+
+          <div class="report-box">
+            <small>Comissão estimada</small>
+            <strong class="gold" id="reportComm">
+              R$ 0,00
+            </strong>
+          </div>
+
+        </div>
+
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Data</th>
+                <th>Valor</th>
+                <th>Sinal</th>
+                <th>Saldo</th>
+              </tr>
+            </thead>
+
+            <tbody id="reportBody"></tbody>
+          </table>
+        </div>
+
+      </section>
 
     </div>
-  </div>
+  </main>
+</div>
 
-  <!-- MODAL GALERIA -->
-  <div id="galleryModal" class="modal">
-    <div class="modal-content">
+<div class="modal" id="modal">
+  <div class="modalbox" id="modalContent"></div>
+</div>
 
-      <div class="modal-header">
-        <h2>Adicionar imagem</h2>
-        <button class="close-modal" data-close="galleryModal">×</button>
-      </div>
-
-      <form id="galleryForm">
-        <div class="modal-body">
-
-          <div class="form-group">
-            <label for="galleryName">Nome da estampa *</label>
-            <input id="galleryName" type="text" required>
-          </div>
-
-          <div class="form-group">
-            <label for="galleryFile">Imagem *</label>
-            <input
-              id="galleryFile"
-              type="file"
-              accept="image/*"
-              required
-            >
-          </div>
-
-          <div id="galleryError" style="color:var(--danger);font-size:13px;"></div>
-
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-close="galleryModal">
-            Cancelar
-          </button>
-
-          <button type="submit" id="uploadGalleryButton" class="btn btn-primary">
-            Enviar imagem
-          </button>
-        </div>
-      </form>
-
-    </div>
-  </div>
-
-  <!-- MODAL PEDIDO -->
-  <div id="orderModal" class="modal">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <h2 id="orderModalTitle">Novo pedido</h2>
-        <button class="close-modal" data-close="orderModal">×</button>
-      </div>
-
-      <form id="orderForm">
-
-        <div class="modal-body">
-
-          <input type="hidden" id="orderId">
-
-          <div class="form-grid">
-
-            <div class="form-group">
-              <label for="orderClient">Cliente *</label>
-              <select id="orderClient" required>
-                <option value="">Selecione o cliente</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="orderDate">Data *</label>
-              <input id="orderDate" type="date" required>
-            </div>
-
-            <div class="form-group">
-              <label for="orderSignal">Sinal</label>
-              <input id="orderSignal" type="number" min="0" step="0.01" value="0">
-            </div>
-
-            <div class="form-group">
-              <label for="orderStatus">Status *</label>
-              <select id="orderStatus" required>
-                <option value="Novo pedido">Novo pedido</option>
-                <option value="Fechado">Fechado</option>
-                <option value="Cancelado">Cancelado</option>
-              </select>
-            </div>
-
-            <div class="form-group full">
-              <label for="orderNotes">Observações</label>
-              <textarea id="orderNotes"></textarea>
-            </div>
-
-          </div>
-
-          <div style="margin-top:20px;">
-            <div class="section-header">
-              <h2 style="font-size:16px;">Itens / estampas</h2>
-
-              <button type="button" id="addOrderItemButton" class="btn btn-gold btn-small">
-                + Adicionar item
-              </button>
-            </div>
-
-            <div id="orderItems" class="items-container"></div>
-          </div>
-
-          <div style="margin-top:20px;padding:15px;background:var(--blue-light);border-radius:10px;">
-            <strong>Valor total</strong>
-            <p style="margin:6px 0 0;color:var(--muted);font-size:13px;">
-              O valor total pode ser informado depois, ao abrir o pedido.
-            </p>
-          </div>
-
-          <div id="orderError" style="color:var(--danger);font-size:13px;margin-top:12px;"></div>
-
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-close="orderModal">
-            Cancelar
-          </button>
-
-          <button type="submit" id="saveOrderButton" class="btn btn-primary">
-            Salvar pedido
-          </button>
-        </div>
-
-      </form>
-    </div>
-  </div>
-
-  <!-- MODAL DETALHE PEDIDO -->
-  <div id="orderDetailModal" class="modal">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <h2>Detalhes do pedido</h2>
-        <button class="close-modal" data-close="orderDetailModal">×</button>
-      </div>
-
-      <div class="modal-body" id="orderDetailBody"></div>
-
-      <div class="modal-footer">
-        <button id="printOrderButton" class="btn btn-secondary">
-          Imprimir / PDF
-        </button>
-
-        <button id="editOrderButton" class="btn btn-primary">
-          Editar pedido
-        </button>
-
-        <button type="button" class="btn btn-secondary" data-close="orderDetailModal">
-          Fechar
-        </button>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- ÁREA DE IMPRESSÃO -->
-  <div id="printArea" class="hidden"></div>
-
-  <div id="toast" class="toast"></div>
+<div class="toast" id="toast"></div>
 
 <script>
-(() => {
-  "use strict";
 
-  const SUPABASE_URL = "https://lzmjuqsunccqutgemgpl.supabase.co";
-  const SUPABASE_KEY = "sb_publishable_2bpLexKQE9hFSQLgbZDFVA_oJKJx-2k";
-  const STORAGE_BUCKET = "estampas";
+/* =========================================================
+   SUPABASE
+========================================================= */
 
-  const supabaseClient = window.supabase.createClient(
+const SUPABASE_URL =
+  'https://lzmjuqsunccqutgemgpl.supabase.co';
+
+const SUPABASE_KEY =
+  'sb_publishable_2bpLexKQE9hFSQLgbZDFVA_oJKJx-2k';
+
+const supabaseClient =
+  window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_KEY
   );
 
-  let currentUser = null;
-  let clients = [];
-  let gallery = [];
-  let orders = [];
-  let currentOrder = null;
-  let currentPage = "dashboard";
 
-  const $ = (id) => document.getElementById(id);
+/* =========================================================
+   CONFIGURAÇÕES
+========================================================= */
 
-  function showToast(message, type = "success") {
-    const toast = $("toast");
+const fabrics = [
+  'Suplex',
+  'Fluit',
+  'Tule',
+  'Crepinho',
+  'Suede',
+  'Moletinho'
+];
 
-    toast.textContent = message;
-    toast.className = "toast show " + type;
+const statuses = [
+  'Novo pedido',
+  'Fechado',
+  'Cancelado'
+];
 
-    clearTimeout(showToast.timer);
+let currentUser = null;
+let currentProfile = null;
 
-    showToast.timer = setTimeout(() => {
-      toast.className = "toast";
-    }, 4000);
-  }
+let db = {
+  clients: [],
+  orders: [],
+  gallery: []
+};
 
-  function formatMoney(value) {
-    const number = Number(value || 0);
+let tempItems = [];
 
-    return number.toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL"
-    });
-  }
 
-  function formatDate(value) {
-    if (!value) return "-";
+/* =========================================================
+   UTILITÁRIOS
+========================================================= */
 
-    const date = new Date(value + (String(value).length <= 10 ? "T00:00:00" : ""));
-
-    if (Number.isNaN(date.getTime())) {
-      return value;
+function money(n){
+  return (Number(n)||0).toLocaleString(
+    'pt-BR',
+    {
+      style:'currency',
+      currency:'BRL'
     }
+  );
+}
 
-    return date.toLocaleDateString("pt-BR");
-  }
+function esc(s){
+  return String(s ?? '')
+    .replace(/[&<>"']/g,m=>({
+      '&':'&amp;',
+      '<':'&lt;',
+      '>':'&gt;',
+      '"':'&quot;',
+      "'":'&#39;'
+    }[m]));
+}
 
-  function escapeHtml(value) {
-    return String(value ?? "")
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
-  }
+function toast(s){
+  const t = document.getElementById('toast');
 
-  function getStatusBadge(status) {
-    if (status === "Fechado") {
-      return '<span class="badge badge-closed">Fechado</span>';
-    }
+  if(!t) return;
 
-    if (status === "Cancelado") {
-      return '<span class="badge badge-cancelled">Cancelado</span>';
-    }
+  t.textContent = s;
+  t.classList.add('show');
 
-    return '<span class="badge badge-new">Novo pedido</span>';
-  }
+  clearTimeout(window.__toastTimer);
 
-  function getClientName(clientId) {
-    const client = clients.find(c => c.id === clientId);
-    return client ? client.nome : "Cliente não encontrado";
-  }
-
-  function getCurrentMonth() {
-    const date = new Date();
-
-    return (
-      date.getFullYear() +
-      "-" +
-      String(date.getMonth() + 1).padStart(2, "0")
+  window.__toastTimer =
+    setTimeout(
+      ()=>t.classList.remove('show'),
+      4000
     );
+}
+
+function showDiagnostic(elementId,message){
+  const el = document.getElementById(elementId);
+
+  if(!el) return;
+
+  el.textContent = message || '';
+  el.style.display = message ? 'block' : 'none';
+}
+
+function supabaseErrorText(error){
+  if(!error) return 'Erro desconhecido.';
+
+  const parts = [];
+
+  if(error.message)
+    parts.push('Mensagem: ' + error.message);
+
+  if(error.details)
+    parts.push('Detalhes: ' + error.details);
+
+  if(error.hint)
+    parts.push('Dica: ' + error.hint);
+
+  if(error.code)
+    parts.push('Código: ' + error.code);
+
+  return parts.join('\n') || JSON.stringify(error);
+}
+
+function fmtDate(s){
+  if(!s) return '—';
+
+  const [y,m,d] =
+    String(s).slice(0,10).split('-');
+
+  if(!y || !m || !d)
+    return '—';
+
+  return `${d}/${m}/${y}`;
+}
+
+function monthNow(){
+  return new Date()
+    .toISOString()
+    .slice(0,7);
+}
+
+function ensureAuthenticated(){
+  if(!currentUser){
+    toast('Sua sessão não está disponível. Faça login novamente.');
+    return false;
   }
 
-  function getOrderMonth(order) {
-    const dateValue = order.data_pedido || order.created_at;
+  return true;
+}
 
-    if (!dateValue) return "";
 
-    const date = new Date(dateValue);
+/* =========================================================
+   LOGIN
+========================================================= */
 
-    if (Number.isNaN(date.getTime())) return "";
+async function doLogin(){
 
-    return (
-      date.getFullYear() +
-      "-" +
-      String(date.getMonth() + 1).padStart(2, "0")
-    );
+  const button =
+    document.getElementById('loginButton');
+
+  const email =
+    document
+      .getElementById('loginEmail')
+      .value
+      .trim();
+
+  const password =
+    document
+      .getElementById('loginPass')
+      .value;
+
+  const error =
+    document.getElementById('loginError');
+
+  error.textContent = '';
+
+  showDiagnostic('loginDiagnostic','');
+
+  if(!email || !password){
+    error.textContent =
+      'Informe seu e-mail e sua senha.';
+    return;
   }
 
-  function getOrderTotal(order) {
-    return Number(order.valor_total || 0);
-  }
-
-  function getOrderSignal(order) {
-    return Number(order.sinal || 0);
-  }
-
-  function getOrderBalance(order) {
-    return Math.max(0, getOrderTotal(order) - getOrderSignal(order));
-  }
-
-  function getOrderCommission(order) {
-    return getOrderTotal(order) * 0.01;
-  }
-
-  function setLoginMessage(message, type = "error") {
-    const element = $("loginMessage");
-
-    element.textContent = message || "";
-    element.className = "login-message " + type;
-
-    if (!message) {
-      element.className = "login-message";
-    }
-  }
-
-  function setPage(page) {
-    currentPage = page;
-
-    document.querySelectorAll(".page").forEach(section => {
-      section.classList.remove("active");
-    });
-
-    const target = $("page-" + page);
-
-    if (target) {
-      target.classList.add("active");
-    }
-
-    document.querySelectorAll(".nav-btn").forEach(button => {
-      button.classList.toggle(
-        "active",
-        button.dataset.page === page
-      );
-    });
-
-    const titles = {
-      dashboard: "Dashboard",
-      clientes: "Clientes",
-      pedidos: "Pedidos",
-      galeria: "Galeria",
-      financeiro: "Financeiro"
-    };
-
-    $("pageTitle").textContent = titles[page] || "Dashboard";
-
-    $("sidebar").classList.remove("mobile-open");
-  }
-
-  function showApp() {
-    $("loginScreen").classList.add("hidden");
-    $("app").classList.remove("hidden");
-
-    const email = currentUser?.email || "";
-
-    $("sidebarEmail").textContent = email;
-    $("topbarEmail").textContent = email;
-  }
-
-  function showLogin() {
-    $("app").classList.add("hidden");
-    $("loginScreen").classList.remove("hidden");
-  }
-
-  async function loadClients() {
-    if (!currentUser) return;
-
-    try {
-      const { data, error } = await supabaseClient
-        .from("clientes")
-        .select("*")
-        .eq("usuario_id", currentUser.id)
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        console.error("Erro ao carregar clientes:", error);
-        throw error;
-      }
-
-      clients = data || [];
-
-      renderClients();
-      populateClientSelect();
-    } catch (error) {
-      console.error(error);
-
-      $("clientsTableBody").innerHTML = `
-        <tr>
-          <td colspan="4" class="empty">
-            Erro ao carregar clientes: ${escapeHtml(error.message)}
-          </td>
-        </tr>
-      `;
-    }
-  }
-
-  function renderClients() {
-    const tbody = $("clientsTableBody");
-
-    const search = $("clientSearch").value
-      .trim()
-      .toLowerCase();
-
-    const filtered = clients.filter(client => {
-      const text = (
-        (client.nome || "") +
-        " " +
-        (client.telefone || "")
-      ).toLowerCase();
-
-      return text.includes(search);
-    });
-
-    if (!filtered.length) {
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="4" class="empty">
-            Nenhum cliente encontrado.
-          </td>
-        </tr>
-      `;
-      return;
-    }
-
-    tbody.innerHTML = filtered.map(client => `
-      <tr>
-        <td><strong>${escapeHtml(client.nome)}</strong></td>
-        <td>${escapeHtml(client.telefone || "-")}</td>
-        <td>${formatDate(client.created_at)}</td>
-        <td>
-          <button
-            class="btn btn-secondary btn-small"
-            data-edit-client="${client.id}">
-            Editar
-          </button>
-
-          <button
-            class="btn btn-danger btn-small"
-            data-delete-client="${client.id}">
-            Excluir
-          </button>
-        </td>
-      </tr>
-    `).join("");
-  }
-
-  function populateClientSelect() {
-    const select = $("orderClient");
-
-    const currentValue = select.value;
-
-    select.innerHTML = `
-      <option value="">Selecione o cliente</option>
-      ${clients.map(client => `
-        <option value="${client.id}">
-          ${escapeHtml(client.nome)}
-        </option>
-      `).join("")}
-    `;
-
-    if (currentValue) {
-      select.value = currentValue;
-    }
-  }
-
-  function openClientModal(client = null) {
-    $("clientForm").reset();
-    $("clientId").value = "";
-    $("clientError").textContent = "";
-
-    if (client) {
-      $("clientModalTitle").textContent = "Editar cliente";
-      $("clientId").value = client.id;
-      $("clientName").value = client.nome || "";
-      $("clientPhone").value = client.telefone || "";
-    } else {
-      $("clientModalTitle").textContent = "Novo cliente";
-    }
-
-    $("clientModal").classList.add("open");
-  }
-
-  async function saveClient(event) {
-    event.preventDefault();
-
-    if (!currentUser) {
-      showToast("Usuário não autenticado.", "error");
-      return;
-    }
-
-    const button = $("saveClientButton");
+  try{
 
     button.disabled = true;
-    $("clientError").textContent = "";
-
-    try {
-      const id = $("clientId").value;
-      const nome = $("clientName").value.trim();
-      const telefone = $("clientPhone").value.trim();
-
-      if (!nome) {
-        throw new Error("Informe o nome do cliente.");
-      }
-
-      let result;
-
-      if (id) {
-        result = await supabaseClient
-          .from("clientes")
-          .update({
-            nome,
-            telefone
-          })
-          .eq("id", id)
-          .eq("usuario_id", currentUser.id);
-      } else {
-        result = await supabaseClient
-          .from("clientes")
-          .insert({
-            nome,
-            telefone,
-            usuario_id: currentUser.id
-          });
-      }
-
-      if (result.error) {
-        console.error("Erro Supabase ao salvar cliente:", result.error);
-        throw result.error;
-      }
-
-      closeModal("clientModal");
-
-      await loadClients();
-
-      showToast("Cliente salvo com sucesso.", "success");
-
-    } catch (error) {
-      console.error("Erro ao salvar cliente:", error);
-
-      $("clientError").textContent =
-        "Não foi possível salvar cliente: " +
-        (error?.message || String(error));
-
-      showToast(
-        "Não foi possível salvar cliente: " +
-        (error?.message || String(error)),
-        "error"
-      );
-    } finally {
-      button.disabled = false;
-    }
-  }
-
-  async function deleteClient(id) {
-    if (!currentUser) return;
-
-    const client = clients.find(c => c.id === id);
-
-    if (!client) return;
-
-    if (!confirm(
-      `Excluir o cliente "${client.nome}"?`
-    )) {
-      return;
-    }
-
-    try {
-      const { error } = await supabaseClient
-        .from("clientes")
-        .delete()
-        .eq("id", id)
-        .eq("usuario_id", currentUser.id);
-
-      if (error) {
-        console.error("Erro ao excluir cliente:", error);
-        throw error;
-      }
-
-      await loadClients();
-
-      showToast("Cliente excluído com sucesso.");
-
-    } catch (error) {
-      console.error(error);
-
-      showToast(
-        "Não foi possível excluir cliente: " +
-        (error?.message || String(error)),
-        "error"
-      );
-    }
-  }
-
-  async function loadGallery() {
-    if (!currentUser) return;
-
-    try {
-      const { data, error } = await supabaseClient
-        .from("galeria")
-        .select("*")
-        .eq("usuario_id", currentUser.id)
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        console.error("Erro ao carregar galeria:", error);
-        throw error;
-      }
-
-      gallery = data || [];
-
-      await prepareGalleryUrls();
-
-      renderGallery();
-
-    } catch (error) {
-      console.error(error);
-
-      $("galleryGrid").innerHTML = `
-        <div class="empty">
-          Erro ao carregar galeria: ${escapeHtml(error.message)}
-        </div>
-      `;
-    }
-  }
-
-  async function prepareGalleryUrls() {
-    for (const item of gallery) {
-      try {
-        const { data } = supabaseClient.storage
-          .from(STORAGE_BUCKET)
-          .getPublicUrl(item.storage_path);
-
-        item.display_url = data?.publicUrl || "";
-      } catch (error) {
-        console.error(
-          "Erro ao obter URL da imagem:",
-          error
-        );
-
-        item.display_url = "";
-      }
-    }
-  }
-
-  function renderGallery() {
-    const grid = $("galleryGrid");
-
-    if (!gallery.length) {
-      grid.innerHTML = `
-        <div class="empty">
-          Nenhuma imagem cadastrada na galeria.
-        </div>
-      `;
-      return;
-    }
-
-    grid.innerHTML = gallery.map(item => `
-      <div class="gallery-item">
-        ${
-          item.display_url
-            ? `<img
-                class="gallery-image"
-                src="${escapeHtml(item.display_url)}"
-                alt="${escapeHtml(item.nome)}"
-                loading="lazy">`
-            : `<div class="gallery-image"></div>`
-        }
-
-        <div class="gallery-info">
-          <div class="gallery-name" title="${escapeHtml(item.nome)}">
-            ${escapeHtml(item.nome)}
-          </div>
-
-          <div class="gallery-actions">
-            <button
-              class="btn btn-primary btn-small"
-              data-use-gallery="${item.id}">
-              Usar
-            </button>
-
-            <button
-              class="btn btn-danger btn-small"
-              data-delete-gallery="${item.id}">
-              Excluir
-            </button>
-          </div>
-        </div>
-      </div>
-    `).join("");
-  }
-
-  async function uploadGallery(event) {
-    event.preventDefault();
-
-    if (!currentUser) {
-      showToast("Usuário não autenticado.", "error");
-      return;
-    }
-
-    const button = $("uploadGalleryButton");
-    const file = $("galleryFile").files[0];
-    const name = $("galleryName").value.trim();
-
-    $("galleryError").textContent = "";
-
-    if (!file) {
-      $("galleryError").textContent = "Selecione uma imagem.";
-      return;
-    }
-
-    if (!name) {
-      $("galleryError").textContent = "Informe o nome da estampa.";
-      return;
-    }
-
-    button.disabled = true;
-
-    try {
-      const extension = (
-        file.name.split(".").pop() || "jpg"
-      ).toLowerCase();
-
-      const safeName = name
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/[^a-zA-Z0-9_-]/g, "_")
-        .substring(0, 60);
-
-      const uniquePart =
-        Date.now() +
-        "_" +
-        Math.random().toString(36).substring(2, 8);
-
-      const storagePath =
-        currentUser.id +
-        "/" +
-        safeName +
-        "_" +
-        uniquePart +
-        "." +
-        extension;
-
-      const { error: uploadError } =
-        await supabaseClient.storage
-          .from(STORAGE_BUCKET)
-          .upload(storagePath, file, {
-            cacheControl: "3600",
-            upsert: false
-          });
-
-      if (uploadError) {
-        console.error("Erro no upload:", uploadError);
-        throw uploadError;
-      }
-
-      const { error: insertError } =
-        await supabaseClient
-          .from("galeria")
-          .insert({
-            nome: name,
-            storage_path: storagePath,
-            usuario_id: currentUser.id
-          });
-
-      if (insertError) {
-        console.error(
-          "Erro ao salvar galeria:",
-          insertError
-        );
-
-        try {
-          await supabaseClient.storage
-            .from(STORAGE_BUCKET)
-            .remove([storagePath]);
-        } catch (cleanupError) {
-          console.error(
-            "Erro ao remover arquivo após falha:",
-            cleanupError
-          );
-        }
-
-        throw insertError;
-      }
-
-      closeModal("galleryModal");
-
-      $("galleryForm").reset();
-
-      await loadGallery();
-
-      showToast("Imagem adicionada com sucesso.");
-
-    } catch (error) {
-      console.error("Erro ao adicionar imagem:", error);
-
-      $("galleryError").textContent =
-        "Não foi possível adicionar imagem: " +
-        (error?.message || String(error));
-
-      showToast(
-        "Não foi possível adicionar imagem: " +
-        (error?.message || String(error)),
-        "error"
-      );
-    } finally {
-      button.disabled = false;
-    }
-  }
-
-  async function deleteGallery(id) {
-    if (!currentUser) return;
-
-    const item = gallery.find(g => g.id === id);
-
-    if (!item) return;
-
-    if (!confirm(
-      `Excluir a imagem "${item.nome}"?`
-    )) {
-      return;
-    }
-
-    try {
-      const { error: dbError } =
-        await supabaseClient
-          .from("galeria")
-          .delete()
-          .eq("id", id)
-          .eq("usuario_id", currentUser.id);
-
-      if (dbError) {
-        console.error(
-          "Erro ao excluir registro da galeria:",
-          dbError
-        );
-        throw dbError;
-      }
-
-      if (item.storage_path) {
-        const { error: storageError } =
-          await supabaseClient.storage
-            .from(STORAGE_BUCKET)
-            .remove([item.storage_path]);
-
-        if (storageError) {
-          console.error(
-            "Erro ao excluir arquivo do Storage:",
-            storageError
-          );
-        }
-      }
-
-      await loadGallery();
-
-      showToast("Imagem excluída com sucesso.");
-
-    } catch (error) {
-      console.error(error);
-
-      showToast(
-        "Não foi possível excluir a imagem: " +
-        (error?.message || String(error)),
-        "error"
-      );
-    }
-  }
-
-  async function loadOrders() {
-    if (!currentUser) return;
-
-    try {
-      const { data, error } = await supabaseClient
-        .from("pedidos")
-        .select("*")
-        .eq("usuario_id", currentUser.id)
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        console.error("Erro ao carregar pedidos:", error);
-        throw error;
-      }
-
-      orders = data || [];
-
-      await loadOrderItems();
-
-      renderOrders();
-      updateDashboard();
-      updateFinance();
-
-    } catch (error) {
-      console.error(error);
-
-      $("ordersTableBody").innerHTML = `
-        <tr>
-          <td colspan="7" class="empty">
-            Erro ao carregar pedidos: ${escapeHtml(error.message)}
-          </td>
-        </tr>
-      `;
-    }
-  }
-
-  async function loadOrderItems() {
-    if (!currentUser || !orders.length) {
-      orders.forEach(order => {
-        order.itens = [];
+    button.textContent = 'Entrando...';
+
+    const {
+      data,
+      error:loginError
+    } =
+      await supabaseClient.auth.signInWithPassword({
+        email,
+        password
       });
 
+    if(loginError){
+
+      console.error(
+        'Erro no login:',
+        loginError
+      );
+
+      error.textContent =
+        loginError.message ||
+        'Não foi possível entrar.';
+
+      showDiagnostic(
+        'loginDiagnostic',
+        supabaseErrorText(loginError)
+      );
+
       return;
     }
 
-    const orderIds = orders.map(order => order.id);
+    if(!data?.user){
 
-    const { data, error } =
+      const msg =
+        'O Supabase não retornou um usuário autenticado.';
+
+      console.error(msg,data);
+
+      error.textContent = msg;
+
+      showDiagnostic(
+        'loginDiagnostic',
+        JSON.stringify(data || {},null,2)
+      );
+
+      return;
+    }
+
+    currentUser = data.user;
+
+    await startApp();
+
+  }catch(err){
+
+    console.error(
+      'Exceção durante login:',
+      err
+    );
+
+    error.textContent =
+      'Ocorreu um erro ao tentar entrar.';
+
+    showDiagnostic(
+      'loginDiagnostic',
+      supabaseErrorText(err)
+    );
+
+  }finally{
+
+    button.disabled = false;
+    button.textContent = 'Entrar';
+
+  }
+}
+
+async function logout(){
+
+  try{
+
+    const {error} =
+      await supabaseClient.auth.signOut();
+
+    if(error)
+      console.error('Erro ao sair:',error);
+
+  }catch(err){
+
+    console.error('Erro no logout:',err);
+
+  }finally{
+
+    currentUser = null;
+    currentProfile = null;
+
+    db = {
+      clients:[],
+      orders:[],
+      gallery:[]
+    };
+
+    document
+      .getElementById('app')
+      .style.display='none';
+
+    document
+      .getElementById('login')
+      .style.display='flex';
+
+    document
+      .getElementById('loginPass')
+      .value='';
+
+    document
+      .getElementById('userPill')
+      .textContent='';
+
+  }
+}
+
+async function startApp(){
+
+  if(!currentUser){
+    console.error(
+      'startApp chamado sem currentUser.'
+    );
+    return;
+  }
+
+  document
+    .getElementById('login')
+    .style.display='none';
+
+  document
+    .getElementById('app')
+    .style.display='flex';
+
+  document
+    .getElementById('userPill')
+    .textContent =
+      currentUser.email || 'Usuário';
+
+  await loadProfile();
+
+  document
+    .getElementById('userPill')
+    .textContent =
+      currentProfile?.nome ||
+      currentUser.email ||
+      'Usuário';
+
+  await loadAll();
+}
+
+
+/* =========================================================
+   PERFIL
+========================================================= */
+
+async function loadProfile(){
+
+  if(!currentUser)
+    return;
+
+  try{
+
+    const {
+      data,
+      error
+    } =
       await supabaseClient
-        .from("itens_pedido")
-        .select("*")
-        .in("pedido_id", orderIds);
+        .from('perfis')
+        .select('*')
+        .eq('id',currentUser.id)
+        .maybeSingle();
 
-    if (error) {
-      console.error(
-        "Erro ao carregar itens dos pedidos:",
+    if(error){
+
+      console.warn(
+        'Tabela/perfil não pôde ser carregado. Usando e-mail:',
         error
       );
 
-      throw error;
-    }
+      currentProfile = {
+        nome:currentUser.email,
+        role:'funcionario'
+      };
 
-    const items = data || [];
-
-    orders.forEach(order => {
-      order.itens = items.filter(
-        item => item.pedido_id === order.id
-      );
-    });
-  }
-
-  function renderOrders() {
-    const tbody = $("ordersTableBody");
-
-    const search = $("orderSearch").value
-      .trim()
-      .toLowerCase();
-
-    const status = $("orderStatusFilter").value;
-
-    const filtered = orders.filter(order => {
-      const clientName = getClientName(order.cliente_id);
-
-      const text = (
-        clientName +
-        " " +
-        (order.observacoes || "") +
-        " " +
-        (order.status || "")
-      ).toLowerCase();
-
-      const matchesSearch = text.includes(search);
-
-      const matchesStatus =
-        !status ||
-        order.status === status;
-
-      return matchesSearch && matchesStatus;
-    });
-
-    if (!filtered.length) {
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="7" class="empty">
-            Nenhum pedido encontrado.
-          </td>
-        </tr>
-      `;
       return;
     }
 
-    tbody.innerHTML = filtered.map(order => `
-      <tr>
-        <td>
-          <strong>
-            ${escapeHtml(getClientName(order.cliente_id))}
-          </strong>
-        </td>
+    currentProfile =
+      data || {
+        nome:currentUser.email,
+        role:'funcionario'
+      };
 
-        <td>${formatDate(order.data_pedido)}</td>
+  }catch(err){
 
-        <td>${getStatusBadge(order.status)}</td>
+    console.error(
+      'Erro ao carregar perfil:',
+      err
+    );
 
-        <td>${formatMoney(order.valor_total)}</td>
+    currentProfile = {
+      nome:currentUser.email,
+      role:'funcionario'
+    };
+  }
+}
 
-        <td>${formatMoney(order.sinal)}</td>
 
-        <td>${formatMoney(getOrderBalance(order))}</td>
+/* =========================================================
+   CARREGAMENTO GERAL
+========================================================= */
 
-        <td>
-          <button
-            class="btn btn-primary btn-small"
-            data-view-order="${order.id}">
-            Abrir
-          </button>
+async function loadAll(){
 
-          <button
-            class="btn btn-danger btn-small"
-            data-delete-order="${order.id}">
-            Excluir
-          </button>
-        </td>
-      </tr>
-    `).join("");
+  if(!ensureAuthenticated())
+    return;
+
+  await Promise.all([
+    loadClients(),
+    loadGallery(),
+    loadOrders()
+  ]);
+
+  renderAll();
+}
+
+
+/* =========================================================
+   CLIENTES
+========================================================= */
+
+async function loadClients(){
+
+  if(!ensureAuthenticated())
+    return;
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from('clientes')
+        .select('*')
+        .eq(
+          'usuario_id',
+          currentUser.id
+        )
+        .order(
+          'created_at',
+          {ascending:false}
+        );
+
+    if(error){
+
+      console.error(
+        'Erro ao carregar clientes:',
+        error
+      );
+
+      toast(
+        'Erro ao carregar clientes.\n' +
+        supabaseErrorText(error)
+      );
+
+      return;
+    }
+
+    db.clients = data || [];
+
+  }catch(err){
+
+    console.error(
+      'Exceção ao carregar clientes:',
+      err
+    );
+
+    toast(
+      'Erro ao carregar clientes.\n' +
+      supabaseErrorText(err)
+    );
+  }
+}
+
+async function saveClient(){
+
+  if(!ensureAuthenticated())
+    return;
+
+  const name =
+    document
+      .getElementById('cName')
+      .value
+      .trim();
+
+  const phone =
+    document
+      .getElementById('cPhone')
+      .value
+      .trim();
+
+  if(!name){
+    toast('Informe o cliente.');
+    return;
   }
 
-  function addOrderItem(item = null) {
-    const container = $("orderItems");
+  try{
 
-    const row = document.createElement("div");
+    const payload = {
+      nome:name,
+      telefone:phone,
+      usuario_id:currentUser.id
+    };
 
-    row.className = "item-row";
+    console.log(
+      'Salvando cliente:',
+      payload
+    );
 
-    const itemId =
-      "item_" +
-      Date.now() +
-      "_" +
-      Math.random().toString(36).substring(2, 7);
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from('clientes')
+        .insert(payload)
+        .select()
+        .single();
 
-    row.dataset.itemId = itemId;
+    if(error){
 
-    row.innerHTML = `
-      <div class="item-grid">
+      console.error(
+        'Erro real retornado pelo Supabase ao salvar cliente:',
+        error
+      );
 
-        <div>
-          <label>Estampa</label>
+      toast(
+        'Não foi possível salvar cliente.\n\n' +
+        supabaseErrorText(error)
+      );
 
-          <select class="item-gallery">
-            <option value="">Selecione</option>
+      const diagnostic =
+        document.getElementById(
+          'clientDiagnostic'
+        );
 
-            ${gallery.map(image => `
-              <option
-                value="${image.id}"
-                data-url="${escapeHtml(image.display_url || "")}"
-                ${item && item.gallery_id === image.id ? "selected" : ""}>
-                ${escapeHtml(image.nome)}
-              </option>
-            `).join("")}
-          </select>
+      if(diagnostic){
+        diagnostic.textContent =
+          supabaseErrorText(error);
+        diagnostic.style.display='block';
+      }
 
-          <input
-            class="item-image-url"
-            type="hidden"
-            value="${escapeHtml(item?.imagem_url || "")}">
+      return;
+    }
+
+    console.log(
+      'Cliente salvo com sucesso:',
+      data
+    );
+
+    closeModal();
+
+    toast(
+      'Cliente salvo com sucesso.'
+    );
+
+    await loadClients();
+
+    renderAll();
+
+  }catch(err){
+
+    console.error(
+      'Exceção ao salvar cliente:',
+      err
+    );
+
+    toast(
+      'Erro ao salvar cliente.\n\n' +
+      supabaseErrorText(err)
+    );
+  }
+}
+
+function openClientModal(){
+
+  document
+    .getElementById('modalContent')
+    .innerHTML = `
+
+      <div class="modalhead">
+
+        <h3>Novo cliente</h3>
+
+        <button
+          class="close"
+          onclick="closeModal()"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <div
+        class="formgrid"
+        style="margin-top:18px"
+      >
+
+        <div class="field">
+
+          <label>
+            Cliente / Empresa
+          </label>
+
+          <input id="cName">
+
         </div>
 
-        <div>
-          <label>Tecido</label>
-          <input
-            class="item-fabric"
-            type="text"
-            value="${escapeHtml(item?.tecido || "")}"
-            placeholder="Ex.: Dry Fit">
-        </div>
+        <div class="field">
 
-        <div>
-          <label>Quantidade</label>
-          <input
-            class="item-quantity"
-            type="number"
-            min="1"
-            step="1"
-            value="${item?.quantidade || 1}">
-        </div>
+          <label>
+            WhatsApp / Telefone
+          </label>
 
-        <div>
-          <button
-            type="button"
-            class="btn btn-danger btn-small remove-item">
-            Remover
-          </button>
+          <input id="cPhone">
+
         </div>
 
       </div>
 
-      <img
-        class="selected-gallery-image"
-        src="${escapeHtml(item?.imagem_url || "")}"
-        alt="Estampa">
+      <div
+        id="clientDiagnostic"
+        class="diagnostic"
+      ></div>
 
+      <div
+        style="
+          display:flex;
+          justify-content:flex-end;
+          margin-top:18px
+        "
+      >
+
+        <button
+          class="btn primary"
+          onclick="saveClient()"
+        >
+          Salvar cliente
+        </button>
+
+      </div>
     `;
 
-    container.appendChild(row);
+  document
+    .getElementById('modal')
+    .classList.add('show');
+}
 
-    const select = row.querySelector(".item-gallery");
 
-    select.addEventListener("change", () => {
-      const option =
-        select.options[select.selectedIndex];
+/* =========================================================
+   GALERIA
+========================================================= */
 
-      const url =
-        option?.dataset?.url || "";
+async function loadGallery(){
 
-      row.querySelector(".item-image-url").value = url;
+  if(!ensureAuthenticated())
+    return;
 
-      const image =
-        row.querySelector(".selected-gallery-image");
+  try{
 
-      image.src = url;
-      image.style.display = url ? "block" : "none";
-    });
-
-    row.querySelector(".remove-item").addEventListener(
-      "click",
-      () => {
-        row.remove();
-      }
-    );
-
-    const initialImage =
-      row.querySelector(".selected-gallery-image");
-
-    if (item?.imagem_url) {
-      initialImage.style.display = "block";
-    }
-  }
-
-  function resetOrderForm() {
-    $("orderForm").reset();
-
-    $("orderId").value = "";
-    $("orderError").textContent = "";
-
-    $("orderDate").value =
-      new Date().toISOString().slice(0, 10);
-
-    $("orderStatus").value = "Novo pedido";
-
-    $("orderSignal").value = "0";
-
-    $("orderItems").innerHTML = "";
-  }
-
-  function openNewOrderModal() {
-    resetOrderForm();
-
-    $("orderModalTitle").textContent =
-      "Novo pedido";
-
-    addOrderItem();
-
-    $("orderModal").classList.add("open");
-  }
-
-  function openEditOrderModal(order) {
-    resetOrderForm();
-
-    $("orderModalTitle").textContent =
-      "Editar pedido";
-
-    $("orderId").value = order.id;
-    $("orderClient").value = order.cliente_id || "";
-    $("orderDate").value = order.data_pedido || "";
-    $("orderSignal").value = order.sinal ?? 0;
-    $("orderStatus").value =
-      ["Novo pedido", "Fechado", "Cancelado"].includes(order.status)
-        ? order.status
-        : "Novo pedido";
-
-    $("orderNotes").value =
-      order.observacoes || "";
-
-    (order.itens || []).forEach(item => {
-      const galleryItem =
-        gallery.find(g => g.display_url === item.imagem_url);
-
-      addOrderItem({
-        ...item,
-        gallery_id: galleryItem?.id || ""
-      });
-    });
-
-    if (!order.itens?.length) {
-      addOrderItem();
-    }
-
-    $("orderModal").classList.add("open");
-  }
-
-  function collectOrderItems() {
-    const rows =
-      document.querySelectorAll(
-        "#orderItems .item-row"
-      );
-
-    return Array.from(rows).map(row => {
-      const gallerySelect =
-        row.querySelector(".item-gallery");
-
-      const imageUrl =
-        row.querySelector(".item-image-url").value.trim();
-
-      const fabric =
-        row.querySelector(".item-fabric").value.trim();
-
-      const quantity =
-        Number(
-          row.querySelector(".item-quantity").value || 0
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from('galeria')
+        .select('*')
+        .eq(
+          'usuario_id',
+          currentUser.id
+        )
+        .order(
+          'created_at',
+          {ascending:false}
         );
 
-      const galleryId =
-        gallerySelect.value || "";
+    if(error){
 
-      return {
-        galleryId,
-        imagem_url: imageUrl,
-        tecido: fabric,
-        quantidade: quantity
-      };
-    }).filter(item =>
-      item.imagem_url ||
-      item.tecido ||
-      item.quantidade
-    );
-  }
+      console.error(
+        'Erro ao carregar galeria:',
+        error
+      );
 
-  async function saveOrder(event) {
-    event.preventDefault();
+      toast(
+        'Erro ao carregar galeria.\n' +
+        supabaseErrorText(error)
+      );
 
-    if (!currentUser) {
-      showToast("Usuário não autenticado.", "error");
       return;
     }
 
-    const button = $("saveOrderButton");
+    db.gallery = data || [];
 
-    button.disabled = true;
-    $("orderError").textContent = "";
+  }catch(err){
 
-    try {
-      const id = $("orderId").value;
-      const clienteId = $("orderClient").value;
-      const dataPedido = $("orderDate").value;
-      const sinal = Number(
-        $("orderSignal").value || 0
-      );
-      const observacoes =
-        $("orderNotes").value.trim();
+    console.error(
+      'Exceção ao carregar galeria:',
+      err
+    );
 
-      let status = $("orderStatus").value;
+    toast(
+      'Erro ao carregar galeria.\n' +
+      supabaseErrorText(err)
+    );
+  }
+}
 
-      if (
-        !["Novo pedido", "Fechado", "Cancelado"]
-          .includes(status)
-      ) {
-        status = "Novo pedido";
-      }
+function storagePublicUrl(path){
 
-      if (!clienteId) {
-        throw new Error("Selecione o cliente.");
-      }
+  if(!path)
+    return '';
 
-      if (!dataPedido) {
-        throw new Error("Informe a data do pedido.");
-      }
+  const {
+    data
+  } =
+    supabaseClient
+      .storage
+      .from('estampas')
+      .getPublicUrl(path);
 
-      if (sinal < 0) {
-        throw new Error("O sinal não pode ser negativo.");
-      }
+  return data?.publicUrl || '';
+}
 
-      const items = collectOrderItems();
+async function addGalleryFiles(files){
 
-      for (const item of items) {
-        if (
-          item.quantidade &&
-          item.quantidade < 1
-        ) {
-          throw new Error(
-            "A quantidade dos itens deve ser pelo menos 1."
-          );
-        }
-      }
+  if(!ensureAuthenticated())
+    return;
 
-      const orderData = {
-        cliente_id: clienteId,
-        data_pedido: dataPedido,
-        sinal,
-        observacoes,
-        status,
-        usuario_id: currentUser.id
-      };
+  if(!files || !files.length)
+    return;
 
-      let orderId = id;
+  let successCount = 0;
 
-      if (id) {
-        const { error } =
-          await supabaseClient
-            .from("pedidos")
-            .update(orderData)
-            .eq("id", id)
-            .eq("usuario_id", currentUser.id);
+  for(const file of [...files]){
 
-        if (error) {
-          console.error(
-            "Erro ao atualizar pedido:",
-            error
-          );
+    try{
 
-          throw error;
-        }
+      const extension =
+        file.name
+          .split('.')
+          .pop()
+          .toLowerCase();
 
-      } else {
-        const { data, error } =
-          await supabaseClient
-            .from("pedidos")
-            .insert(orderData)
-            .select()
-            .single();
+      const safeName =
+        file.name.replace(
+          /[^a-zA-Z0-9._-]/g,
+          '_'
+        );
 
-        if (error) {
-          console.error(
-            "Erro ao criar pedido:",
-            error
+      const path =
+        `${currentUser.id}/${Date.now()}-${crypto.randomUUID()}.${extension}`;
+
+      const {
+        error:uploadError
+      } =
+        await supabaseClient
+          .storage
+          .from('estampas')
+          .upload(
+            path,
+            file,
+            {
+              cacheControl:'3600',
+              upsert:false
+            }
           );
 
-          throw error;
-        }
+      if(uploadError){
 
-        orderId = data.id;
+        console.error(
+          'Erro no upload:',
+          uploadError
+        );
+
+        toast(
+          'Erro ao enviar uma imagem.\n' +
+          supabaseErrorText(uploadError)
+        );
+
+        continue;
       }
 
-      if (id) {
-        const { error: deleteItemsError } =
-          await supabaseClient
-            .from("itens_pedido")
-            .delete()
-            .eq("pedido_id", orderId);
+      const {
+        error:dbError
+      } =
+        await supabaseClient
+          .from('galeria')
+          .insert({
+            nome:safeName,
+            storage_path:path,
+            usuario_id:currentUser.id
+          });
 
-        if (deleteItemsError) {
-          console.error(
-            "Erro ao atualizar itens:",
-            deleteItemsError
-          );
+      if(dbError){
 
-          throw deleteItemsError;
-        }
+        console.error(
+          'Erro ao salvar imagem na galeria:',
+          dbError
+        );
+
+        toast(
+          'A imagem foi enviada, mas não foi salva na galeria.\n' +
+          supabaseErrorText(dbError)
+        );
+
+        continue;
       }
 
-      if (items.length) {
-        const itemRows = items.map(item => ({
-          pedido_id: orderId,
-          imagem_url: item.imagem_url || null,
-          tecido: item.tecido || null,
-          quantidade: item.quantidade || 1
-        }));
+      successCount++;
 
-        const { error: itemsError } =
-          await supabaseClient
-            .from("itens_pedido")
-            .insert(itemRows);
+    }catch(err){
 
-        if (itemsError) {
-          console.error(
-            "Erro ao salvar itens do pedido:",
-            itemsError
-          );
-
-          throw itemsError;
-        }
-      }
-
-      closeModal("orderModal");
-
-      await loadOrders();
-
-      showToast(
-        id
-          ? "Pedido atualizado com sucesso."
-          : "Pedido salvo com sucesso."
+      console.error(
+        'Exceção ao adicionar imagem:',
+        err
       );
 
-    } catch (error) {
-      console.error("Erro ao salvar pedido:", error);
-
-      $("orderError").textContent =
-        "Não foi possível salvar pedido: " +
-        (error?.message || String(error));
-
-      showToast(
-        "Não foi possível salvar pedido: " +
-        (error?.message || String(error)),
-        "error"
+      toast(
+        'Erro ao adicionar imagem.\n' +
+        supabaseErrorText(err)
       );
-    } finally {
-      button.disabled = false;
     }
   }
 
-  async function deleteOrder(id) {
-    if (!currentUser) return;
+  if(successCount){
 
-    const order =
-      orders.find(o => o.id === id);
+    toast(
+      `${successCount} imagem(ns) adicionada(s).`
+    );
 
-    if (!order) return;
+    await loadGallery();
+    renderGallery();
+  }
+}
 
-    if (!confirm(
-      `Excluir o pedido de "${getClientName(order.cliente_id)}"?`
-    )) {
+async function deleteGallery(id){
+
+  if(!ensureAuthenticated())
+    return;
+
+  const item =
+    db.gallery.find(
+      x=>x.id===id
+    );
+
+  if(!item)
+    return;
+
+  if(!confirm(
+    'Excluir esta estampa da galeria?'
+  ))
+    return;
+
+  try{
+
+    if(item.storage_path){
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .storage
+          .from('estampas')
+          .remove([
+            item.storage_path
+          ]);
+
+      if(error)
+        console.error(
+          'Erro ao remover arquivo do Storage:',
+          error
+        );
+    }
+
+    const {
+      error
+    } =
+      await supabaseClient
+        .from('galeria')
+        .delete()
+        .eq('id',id)
+        .eq(
+          'usuario_id',
+          currentUser.id
+        );
+
+    if(error){
+
+      console.error(
+        'Erro ao excluir galeria:',
+        error
+      );
+
+      toast(
+        'Não foi possível excluir.\n' +
+        supabaseErrorText(error)
+      );
+
       return;
     }
 
-    try {
-      const { error: itemsError } =
-        await supabaseClient
-          .from("itens_pedido")
-          .delete()
-          .eq("pedido_id", id);
+    toast('Imagem excluída.');
 
-      if (itemsError) {
-        console.error(
-          "Erro ao excluir itens:",
-          itemsError
+    await loadGallery();
+
+    renderGallery();
+
+  }catch(err){
+
+    console.error(
+      'Exceção ao excluir galeria:',
+      err
+    );
+
+    toast(
+      'Erro ao excluir imagem.\n' +
+      supabaseErrorText(err)
+    );
+  }
+}
+
+function renderGallery(){
+
+  const el =
+    document.getElementById(
+      'galleryGrid'
+    );
+
+  if(!el)
+    return;
+
+  el.innerHTML =
+    db.gallery.map(
+      g=>{
+
+        const url =
+          storagePublicUrl(
+            g.storage_path
+          );
+
+        return `
+
+          <div class="photo">
+
+            <img
+              src="${esc(url)}"
+              alt="${esc(g.nome||'Estampa')}"
+            >
+
+            <div class="actions">
+
+              <button
+                onclick="useGalleryImage('${g.id}')"
+              >
+                Usar
+              </button>
+
+              <button
+                onclick="deleteGallery('${g.id}')"
+              >
+                Excluir
+              </button>
+
+            </div>
+
+          </div>
+        `;
+      }
+    ).join('') ||
+    '<div class="empty">Sua galeria está vazia.</div>';
+}
+
+function useGalleryImage(id){
+
+  if(!db.gallery.some(x=>x.id===id))
+    return;
+
+  toast(
+    'Imagem disponível para uso nos pedidos.'
+  );
+}
+
+
+/* =========================================================
+   PEDIDOS
+========================================================= */
+
+async function loadOrders(){
+
+  if(!ensureAuthenticated())
+    return;
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from('pedidos')
+        .select(`
+          *,
+          clientes (
+            id,
+            nome,
+            telefone
+          ),
+          itens_pedido (
+            id,
+            pedido_id,
+            imagem_url,
+            tecido,
+            quantidade,
+            created_at
+          )
+        `)
+        .eq(
+          'usuario_id',
+          currentUser.id
+        )
+        .order(
+          'created_at',
+          {ascending:false}
         );
 
-        throw itemsError;
-      }
+    if(error){
 
-      const { error } =
+      console.error(
+        'Erro ao carregar pedidos:',
+        error
+      );
+
+      toast(
+        'Erro ao carregar pedidos.\n' +
+        supabaseErrorText(error)
+      );
+
+      return;
+    }
+
+    db.orders =
+      (data || []).map(
+        o=>({
+
+          ...o,
+
+          clientId:o.cliente_id,
+
+          date:o.data_pedido,
+
+          signal:Number(o.sinal||0),
+
+          total:
+            o.valor_total === null
+              ? null
+              : Number(o.valor_total),
+
+          status:
+            statuses.includes(o.status)
+              ? o.status
+              : 'Novo pedido',
+
+          notes:
+            o.observacoes || '',
+
+          items:
+            (o.itens_pedido || [])
+              .map(
+                item=>({
+
+                  id:item.id,
+
+                  image:item.imagem_url,
+
+                  fabric:item.tecido,
+
+                  qty:Number(
+                    item.quantidade || 1
+                  )
+                })
+              )
+        })
+      );
+
+  }catch(err){
+
+    console.error(
+      'Exceção ao carregar pedidos:',
+      err
+    );
+
+    toast(
+      'Erro ao carregar pedidos.\n' +
+      supabaseErrorText(err)
+    );
+  }
+}
+
+function newOrder(){
+
+  if(!ensureAuthenticated())
+    return;
+
+  if(!db.clients.length){
+
+    toast(
+      'Cadastre um cliente antes de criar o pedido.'
+    );
+
+    openClientModal();
+
+    return;
+  }
+
+  const options =
+    db.clients
+      .map(
+        c=>
+          `<option value="${esc(c.id)}">
+            ${esc(c.nome)}
+          </option>`
+      )
+      .join('');
+
+  document
+    .getElementById('modalContent')
+    .innerHTML = `
+
+      <div class="modalhead">
+
+        <h3>Novo pedido</h3>
+
+        <button
+          class="close"
+          onclick="closeModal()"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <div
+        class="formgrid"
+        style="margin-top:18px"
+      >
+
+        <div class="field">
+
+          <label>Cliente</label>
+
+          <select id="oClient">
+
+            <option value="">
+              Selecione...
+            </option>
+
+            ${options}
+
+          </select>
+
+        </div>
+
+        <div class="field">
+
+          <label>Data do pedido</label>
+
+          <input
+            id="oDate"
+            type="date"
+            value="${new Date().toISOString().slice(0,10)}"
+          >
+
+        </div>
+
+        <div class="field">
+
+          <label>Sinal recebido (R$)</label>
+
+          <input
+            id="oSignal"
+            type="number"
+            step="0.01"
+            min="0"
+            value="0"
+          >
+
+        </div>
+
+        <div class="field">
+
+          <label>Status</label>
+
+          <select id="oStatus">
+
+            ${statuses.map(
+              s=>
+                `<option value="${s}">
+                  ${s}
+                </option>`
+            ).join('')}
+
+          </select>
+
+        </div>
+
+        <div class="field full">
+
+          <label>Observações</label>
+
+          <textarea
+            id="oNotes"
+            placeholder="Observações do pedido..."
+          ></textarea>
+
+        </div>
+
+      </div>
+
+      <div class="items">
+
+        <div class="section-head">
+
+          <h3>Estampas do pedido</h3>
+
+          <div>
+
+            <button
+              class="btn secondary"
+              onclick="addOrderItem()"
+            >
+              + Da galeria
+            </button>
+
+            <button
+              class="btn gold"
+              onclick="addNewOrderImage()"
+            >
+              + Nova imagem
+            </button>
+
+          </div>
+
+        </div>
+
+        <div id="itemsList"></div>
+
+      </div>
+
+      <div class="totalbar">
+
+        <span>
+          Total de peças:
+          <b id="itemsTotal">0</b>
+        </span>
+
+      </div>
+
+      <div
+        style="
+          display:flex;
+          justify-content:flex-end;
+          gap:10px;
+          margin-top:18px
+        "
+      >
+
+        <button
+          class="btn secondary"
+          onclick="closeModal()"
+        >
+          Cancelar
+        </button>
+
+        <button
+          class="btn primary"
+          onclick="saveOrder()"
+        >
+          Salvar pedido
+        </button>
+
+      </div>
+    `;
+
+  tempItems = [];
+
+  document
+    .getElementById('modal')
+    .classList.add('show');
+
+  renderItems();
+}
+
+function addOrderItem(){
+
+  if(!db.gallery.length){
+
+    toast(
+      'Sua galeria está vazia. Adicione uma imagem primeiro.'
+    );
+
+    return;
+  }
+
+  const html =
+    db.gallery
+      .map(
+        g=>{
+
+          const url =
+            storagePublicUrl(
+              g.storage_path
+            );
+
+          return `
+
+            <div class="pick-card">
+
+              <img
+                src="${esc(url)}"
+                alt="${esc(g.nome||'Estampa')}"
+              >
+
+              <button
+                onclick="pickGallery('${g.id}')"
+              >
+                Usar esta
+              </button>
+
+            </div>
+          `;
+        }
+      )
+      .join('');
+
+  document
+    .getElementById('modalContent')
+    .innerHTML += `
+
+      <div
+        id="galleryPicker"
+        class="gallery-picker"
+      >
+
+        <div class="modalhead">
+
+          <h3>
+            Escolher da galeria
+          </h3>
+
+          <button
+            class="close"
+            onclick="
+              document
+                .getElementById('galleryPicker')
+                ?.remove()
+            "
+          >
+            ×
+          </button>
+
+        </div>
+
+        <div
+          class="grid gallery"
+          style="margin-top:14px"
+        >
+          ${html}
+        </div>
+
+      </div>
+    `;
+}
+
+function pickGallery(id){
+
+  const g =
+    db.gallery.find(
+      x=>x.id===id
+    );
+
+  if(!g)
+    return;
+
+  const image =
+    storagePublicUrl(
+      g.storage_path
+    );
+
+  tempItems.push({
+    id:crypto.randomUUID(),
+    image:image,
+    fabric:'Suplex',
+    qty:1
+  });
+
+  document
+    .getElementById('galleryPicker')
+    ?.remove();
+
+  renderItems();
+}
+
+async function addNewOrderImage(){
+
+  if(!ensureAuthenticated())
+    return;
+
+  const input =
+    document.createElement('input');
+
+  input.type='file';
+  input.accept='image/*';
+
+  input.onchange=async()=>{
+
+    const file =
+      input.files?.[0];
+
+    if(!file)
+      return;
+
+    try{
+
+      const extension =
+        file.name
+          .split('.')
+          .pop()
+          .toLowerCase();
+
+      const path =
+        `${currentUser.id}/pedido-${Date.now()}-${crypto.randomUUID()}.${extension}`;
+
+      const {
+        error
+      } =
         await supabaseClient
-          .from("pedidos")
-          .delete()
-          .eq("id", id)
-          .eq("usuario_id", currentUser.id);
+          .storage
+          .from('estampas')
+          .upload(
+            path,
+            file,
+            {
+              cacheControl:'3600',
+              upsert:false
+            }
+          );
 
-      if (error) {
+      if(error){
+
         console.error(
-          "Erro ao excluir pedido:",
+          'Erro ao enviar imagem do pedido:',
           error
         );
 
-        throw error;
+        toast(
+          'Não foi possível enviar a imagem.\n' +
+          supabaseErrorText(error)
+        );
+
+        return;
       }
 
-      closeModal("orderDetailModal");
+      const {
+        data
+      } =
+        supabaseClient
+          .storage
+          .from('estampas')
+          .getPublicUrl(path);
 
-      await loadOrders();
+      tempItems.push({
+        id:crypto.randomUUID(),
+        image:data?.publicUrl || '',
+        fabric:'Suplex',
+        qty:1
+      });
 
-      showToast("Pedido excluído com sucesso.");
+      renderItems();
 
-    } catch (error) {
-      console.error(error);
+    }catch(err){
 
-      showToast(
-        "Não foi possível excluir pedido: " +
-        (error?.message || String(error)),
-        "error"
+      console.error(
+        'Exceção ao enviar imagem:',
+        err
+      );
+
+      toast(
+        'Erro ao enviar imagem.\n' +
+        supabaseErrorText(err)
       );
     }
-  }
+  };
 
-  function openOrderDetail(order) {
-    currentOrder = order;
+  input.click();
+}
 
-    const clientName =
-      getClientName(order.cliente_id);
+function renderItems(){
 
-    const total = getOrderTotal(order);
-    const signal = getOrderSignal(order);
-    const balance = getOrderBalance(order);
-    const commission = getOrderCommission(order);
+  const el =
+    document.getElementById(
+      'itemsList'
+    );
 
-    const itemsHtml =
-      order.itens?.length
-        ? order.itens.map(item => `
-          <div style="
-            border:1px solid var(--border);
-            border-radius:10px;
-            padding:12px;
-            margin-top:10px;
-            display:flex;
-            gap:12px;
-            align-items:center;
-          ">
-            ${
-              item.imagem_url
-                ? `<img
-                    src="${escapeHtml(item.imagem_url)}"
-                    style="
-                      width:80px;
-                      height:80px;
-                      object-fit:cover;
-                      border-radius:8px;
-                    "
-                    alt="Estampa">`
-                : ""
-            }
+  if(!el)
+    return;
+
+  el.innerHTML =
+    tempItems
+      .map(
+        (it,i)=>`
+
+          <div class="item">
+
+            <img
+              class="thumb"
+              src="${esc(it.image)}"
+              alt="Estampa ${i+1}"
+            >
 
             <div>
-              <strong>${escapeHtml(item.tecido || "Tecido não informado")}</strong>
-              <div style="font-size:13px;color:var(--muted);">
-                Quantidade: ${escapeHtml(item.quantidade || 0)}
+
+              <b>
+                Estampa ${i+1}
+              </b>
+
+              <div
+                class="muted"
+                style="font-size:11px"
+              >
+                Imagem vinculada ao item
               </div>
+
             </div>
+
+            <div class="fabric">
+
+              <select
+                onchange="
+                  tempItems[${i}].fabric=this.value
+                "
+              >
+
+                ${fabrics.map(
+                  f=>
+                    `<option
+                      ${f===it.fabric?'selected':''}
+                    >
+                      ${f}
+                    </option>`
+                ).join('')}
+
+              </select>
+
+            </div>
+
+            <div class="qty">
+
+              <input
+                type="number"
+                min="1"
+                value="${it.qty}"
+                onchange="
+                  tempItems[${i}].qty=Math.max(
+                    1,
+                    Number(this.value)||1
+                  );
+                  renderItems()
+                "
+              >
+
+            </div>
+
+            <button
+              class="remove"
+              onclick="
+                tempItems.splice(${i},1);
+                renderItems()
+              "
+            >
+              ×
+            </button>
+
           </div>
-        `).join("")
-        : `<div class="empty">Nenhum item cadastrado.</div>`;
+        `
+      )
+      .join('') ||
+      '<div class="empty">Nenhuma estampa adicionada ainda.</div>';
 
-    $("orderDetailBody").innerHTML = `
-      <div class="order-detail">
-
-        <div class="detail-box">
-          <strong>Cliente</strong>
-          ${escapeHtml(clientName)}
-        </div>
-
-        <div class="detail-box">
-          <strong>Data</strong>
-          ${formatDate(order.data_pedido)}
-        </div>
-
-        <div class="detail-box">
-          <strong>Status</strong>
-          ${getStatusBadge(order.status)}
-        </div>
-
-        <div class="detail-box">
-          <strong>Valor total</strong>
-          <span class="money">${formatMoney(total)}</span>
-        </div>
-
-        <div class="detail-box">
-          <strong>Sinal</strong>
-          <span class="money">${formatMoney(signal)}</span>
-        </div>
-
-        <div class="detail-box">
-          <strong>Saldo a receber</strong>
-          <span class="money">${formatMoney(balance)}</span>
-        </div>
-
-        <div class="detail-box">
-          <strong>Comissão de 1%</strong>
-          <span class="money">${formatMoney(commission)}</span>
-        </div>
-
-        <div class="detail-box">
-          <strong>Total de peças</strong>
-          <span class="money">${getTotalPieces(order)}</span>
-        </div>
-
-      </div>
-
-      ${
-        order.observacoes
-          ? `
-            <div style="margin-top:15px;">
-              <div class="detail-box">
-                <strong>Observações</strong>
-                ${escapeHtml(order.observacoes)}
-              </div>
-            </div>
-          `
-          : ""
-      }
-
-      <div style="margin-top:20px;">
-        <h3 style="margin:0;color:var(--navy);">
-          Itens do pedido
-        </h3>
-
-        ${itemsHtml}
-      </div>
-    `;
-
-    $("orderDetailModal").classList.add("open");
-  }
-
-  function getTotalPieces(order) {
-    return (order.itens || []).reduce(
-      (sum, item) =>
-        sum + Number(item.quantidade || 0),
-      0
-    );
-  }
-
-  function updateDashboard() {
-    const month = getCurrentMonth();
-
-    const closed = orders.filter(order =>
-      order.status === "Fechado" &&
-      getOrderMonth(order) === month
-    );
-
-    const open = orders.filter(order =>
-      order.status === "Novo pedido"
-    );
-
-    const sales = closed.reduce(
-      (sum, order) =>
-        sum + getOrderTotal(order),
+  const total =
+    tempItems.reduce(
+      (a,x)=>
+        a+Number(x.qty||0),
       0
     );
 
-    const commission = sales * 0.01;
+  const totalEl =
+    document.getElementById(
+      'itemsTotal'
+    );
 
-    $("dashSales").textContent =
-      formatMoney(sales);
+  if(totalEl)
+    totalEl.textContent=total;
+}
 
-    $("dashCommission").textContent =
-      formatMoney(commission);
+async function saveOrder(){
 
-    $("dashClosed").textContent =
-      closed.length;
+  if(!ensureAuthenticated())
+    return;
 
-    $("dashOpen").textContent =
-      open.length;
+  const clientId =
+    document
+      .getElementById('oClient')
+      .value;
 
-    const recent =
-      [...orders]
-        .sort((a,b) =>
-          new Date(b.created_at || 0) -
-          new Date(a.created_at || 0)
-        )
-        .slice(0, 8);
+  if(!clientId){
 
-    const container =
-      $("recentOrders");
+    toast(
+      'Selecione um cliente.'
+    );
 
-    if (!recent.length) {
-      container.innerHTML = `
-        <div class="empty">
-          Nenhum pedido cadastrado.
-        </div>
-      `;
-      return;
-    }
-
-    container.innerHTML =
-      recent.map(order => `
-        <div class="recent-row">
-          <div>
-            <div class="recent-client">
-              ${escapeHtml(
-                getClientName(order.cliente_id)
-              )}
-            </div>
-
-            <div class="recent-date">
-              ${formatDate(order.data_pedido)}
-            </div>
-          </div>
-
-          <div style="text-align:right;">
-            ${getStatusBadge(order.status)}
-
-            <div style="margin-top:5px;font-weight:700;">
-              ${formatMoney(order.valor_total)}
-            </div>
-          </div>
-        </div>
-      `).join("");
+    return;
   }
 
-  function updateFinance() {
-    const month =
-      $("financeMonth").value ||
-      getCurrentMonth();
+  if(!tempItems.length){
 
-    $("financeMonth").value = month;
-
-    const closed = orders.filter(order =>
-      order.status === "Fechado" &&
-      getOrderMonth(order) === month
+    toast(
+      'Adicione pelo menos uma estampa.'
     );
 
-    const open = orders.filter(order =>
-      order.status === "Novo pedido"
-    );
+    return;
+  }
 
-    const sales =
-      closed.reduce(
-        (sum, order) =>
-          sum + getOrderTotal(order),
-        0
+  try{
+
+    const selectedClient =
+      db.clients.find(
+        c=>c.id===clientId
       );
 
-    const commission =
-      sales * 0.01;
+    if(!selectedClient){
 
-    $("financeSales").textContent =
-      formatMoney(sales);
+      toast(
+        'Cliente inválido ou não pertence ao usuário logado.'
+      );
 
-    $("financeCommission").textContent =
-      formatMoney(commission);
-
-    $("financeClosed").textContent =
-      closed.length;
-
-    $("financeOpen").textContent =
-      open.length;
-
-    const tbody =
-      $("financeTableBody");
-
-    if (!closed.length) {
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="6" class="empty">
-            Nenhuma venda fechada neste mês.
-          </td>
-        </tr>
-      `;
       return;
     }
 
-    tbody.innerHTML =
-      closed.map(order => `
-        <tr>
-          <td>
-            <strong>
-              ${escapeHtml(
-                getClientName(order.cliente_id)
-              )}
-            </strong>
-          </td>
+    const status =
+      document
+        .getElementById('oStatus')
+        .value;
 
-          <td>${formatDate(order.data_pedido)}</td>
+    if(!statuses.includes(status)){
 
-          <td>${formatMoney(order.valor_total)}</td>
+      toast(
+        'Status inválido.'
+      );
 
-          <td>${formatMoney(order.sinal)}</td>
+      return;
+    }
 
-          <td>${formatMoney(getOrderBalance(order))}</td>
+    const payload = {
 
-          <td>${formatMoney(getOrderCommission(order))}</td>
-        </tr>
-      `).join("");
+      cliente_id:clientId,
+
+      usuario_id:currentUser.id,
+
+      data_pedido:
+        document
+          .getElementById('oDate')
+          .value,
+
+      sinal:
+        Number(
+          document
+            .getElementById('oSignal')
+            .value
+        ) || 0,
+
+      valor_total:null,
+
+      observacoes:
+        document
+          .getElementById('oNotes')
+          .value,
+
+      status:status
+    };
+
+    console.log(
+      'Criando pedido:',
+      payload
+    );
+
+    const {
+      data:order,
+      error:orderError
+    } =
+      await supabaseClient
+        .from('pedidos')
+        .insert(payload)
+        .select()
+        .single();
+
+    if(orderError){
+
+      console.error(
+        'Erro ao criar pedido:',
+        orderError
+      );
+
+      toast(
+        'Erro ao criar o pedido.\n' +
+        supabaseErrorText(orderError)
+      );
+
+      return;
+    }
+
+    const rows =
+      tempItems.map(
+        item=>({
+
+          pedido_id:order.id,
+
+          imagem_url:item.image,
+
+          tecido:item.fabric,
+
+          quantidade:
+            Number(item.qty||1)
+
+        })
+      );
+
+    console.log(
+      'Salvando itens do pedido:',
+      rows
+    );
+
+    const {
+      error:itemError
+    } =
+      await supabaseClient
+        .from('itens_pedido')
+        .insert(rows);
+
+    if(itemError){
+
+      console.error(
+        'Erro ao salvar itens:',
+        itemError
+      );
+
+      await supabaseClient
+        .from('pedidos')
+        .delete()
+        .eq('id',order.id)
+        .eq(
+          'usuario_id',
+          currentUser.id
+        );
+
+      toast(
+        'Erro ao salvar as estampas do pedido.\n' +
+        supabaseErrorText(itemError)
+      );
+
+      return;
+    }
+
+    closeModal();
+
+    tempItems=[];
+
+    toast(
+      'Pedido criado com sucesso.'
+    );
+
+    await loadOrders();
+
+    renderAll();
+
+  }catch(err){
+
+    console.error(
+      'Exceção ao criar pedido:',
+      err
+    );
+
+    toast(
+      'Erro ao criar pedido.\n' +
+      supabaseErrorText(err)
+    );
+  }
+}
+
+async function updateOrder(id){
+
+  if(!ensureAuthenticated())
+    return;
+
+  const o =
+    db.orders.find(
+      x=>x.id===id
+    );
+
+  if(!o)
+    return;
+
+  const totalInput =
+    document
+      .getElementById('vTotal')
+      .value;
+
+  let status =
+    document
+      .getElementById('vStatus')
+      .value;
+
+  if(!statuses.includes(status)){
+
+    toast(
+      'Status inválido.'
+    );
+
+    return;
   }
 
-  async function openOrderForEditing() {
-    if (!currentOrder) return;
+  let valorTotal = null;
 
-    closeModal("orderDetailModal");
+  if(totalInput !== ''){
 
-    openEditOrderModal(currentOrder);
+    valorTotal =
+      Number(totalInput);
+
+    if(!Number.isFinite(valorTotal) ||
+       valorTotal < 0){
+
+      toast(
+        'O valor não pode ser negativo.'
+      );
+
+      return;
+    }
+
+    /*
+      Se o valor total foi informado,
+      o pedido fica fechado automaticamente,
+      exceto quando o usuário escolheu Cancelado.
+    */
+    if(status !== 'Cancelado')
+      status='Fechado';
   }
 
-  function generateOrderPrint(order) {
-    const clientName =
-      getClientName(order.cliente_id);
+  /*
+    Cancelado pode permanecer sem valor.
+  */
 
-    const total =
-      getOrderTotal(order);
+  try{
 
-    const signal =
-      getOrderSignal(order);
+    const {
+      error
+    } =
+      await supabaseClient
+        .from('pedidos')
+        .update({
+          valor_total:valorTotal,
+          status:status
+        })
+        .eq('id',id)
+        .eq(
+          'usuario_id',
+          currentUser.id
+        );
 
-    const balance =
-      getOrderBalance(order);
+    if(error){
 
-    const commission =
-      getOrderCommission(order);
+      console.error(
+        'Erro ao atualizar pedido:',
+        error
+      );
 
-    const pieces =
-      getTotalPieces(order);
+      toast(
+        'Não foi possível atualizar o pedido.\n' +
+        supabaseErrorText(error)
+      );
 
-    const items =
-      order.itens || [];
+      return;
+    }
 
-    $("printArea").innerHTML = `
-      <div style="
-        font-family:Arial,Helvetica,sans-serif;
-        color:#172033;
-        max-width:850px;
-        margin:0 auto;
-      ">
+    closeModal();
 
-        <div style="
-          border-bottom:3px solid #d4a72c;
-          padding-bottom:15px;
-          margin-bottom:20px;
-        ">
-          <h1 style="
-            margin:0;
-            color:#0b1f3a;
-            font-size:25px;
-          ">
-            Augusto Estamparia Digital
-          </h1>
+    toast(
+      'Pedido atualizado com sucesso.'
+    );
 
-          <p style="
-            margin:6px 0 0;
-            color:#6b7280;
-          ">
-            Pedido
-          </p>
-        </div>
+    await loadOrders();
 
-        <div style="
-          display:grid;
-          grid-template-columns:1fr 1fr;
-          gap:12px;
-          margin-bottom:20px;
-        ">
+    renderAll();
 
-          <div style="
-            border:1px solid #dfe5ee;
-            padding:12px;
-            border-radius:8px;
-          ">
-            <strong>Cliente</strong>
-            <div>${escapeHtml(clientName)}</div>
-          </div>
+  }catch(err){
 
-          <div style="
-            border:1px solid #dfe5ee;
-            padding:12px;
-            border-radius:8px;
-          ">
-            <strong>Data</strong>
-            <div>${formatDate(order.data_pedido)}</div>
-          </div>
+    console.error(
+      'Exceção ao atualizar pedido:',
+      err
+    );
 
-        </div>
+    toast(
+      'Erro ao atualizar pedido.\n' +
+      supabaseErrorText(err)
+    );
+  }
+}
 
-        <h2 style="color:#0b1f3a;">
-          Itens
-        </h2>
 
-        <table style="
-          width:100%;
-          border-collapse:collapse;
-          margin-bottom:20px;
-        ">
+/* =========================================================
+   VISUALIZAR PEDIDO
+========================================================= */
+
+function viewOrder(id){
+
+  const o =
+    db.orders.find(
+      x=>x.id===id
+    );
+
+  if(!o)
+    return;
+
+  const c =
+    db.clients.find(
+      x=>x.id===o.clientId
+    );
+
+  document
+    .getElementById('modalContent')
+    .innerHTML = `
+
+      <div class="modalhead">
+
+        <h3>
+          Pedido — ${esc(c?.nome||'Cliente')}
+        </h3>
+
+        <button
+          class="close"
+          onclick="closeModal()"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <div
+        class="muted"
+        style="margin:8px 0 18px"
+      >
+        Criado em ${fmtDate(o.date)}
+        ·
+        ${o.items.reduce(
+          (a,x)=>
+            a+Number(x.qty||0),
+          0
+        )} peças
+      </div>
+
+      <div class="tablewrap">
+
+        <table>
+
           <thead>
             <tr>
-              <th style="
-                text-align:left;
-                border-bottom:1px solid #ccc;
-                padding:9px;
-              ">
-                Imagem
-              </th>
-
-              <th style="
-                text-align:left;
-                border-bottom:1px solid #ccc;
-                padding:9px;
-              ">
-                Tecido
-              </th>
-
-              <th style="
-                text-align:left;
-                border-bottom:1px solid #ccc;
-                padding:9px;
-              ">
-                Quantidade
-              </th>
+              <th>Estampa</th>
+              <th>Tecido</th>
+              <th>Quantidade</th>
             </tr>
           </thead>
 
           <tbody>
 
-            ${
-              items.length
-                ? items.map(item => `
-                  <tr>
-                    <td style="
-                      padding:9px;
-                      border-bottom:1px solid #eee;
-                    ">
-                      ${
-                        item.imagem_url
-                          ? `<img
-                              src="${escapeHtml(item.imagem_url)}"
-                              style="
-                                width:75px;
-                                height:75px;
-                                object-fit:cover;
-                                border-radius:5px;
-                              "
-                              alt="Estampa">`
-                          : "-"
-                      }
-                    </td>
+            ${o.items.map(
+              x=>`
 
-                    <td style="
-                      padding:9px;
-                      border-bottom:1px solid #eee;
-                    ">
-                      ${escapeHtml(item.tecido || "-")}
-                    </td>
+                <tr>
 
-                    <td style="
-                      padding:9px;
-                      border-bottom:1px solid #eee;
-                    ">
-                      ${escapeHtml(item.quantidade || 0)}
-                    </td>
-                  </tr>
-                `).join("")
-                : `
-                  <tr>
-                    <td colspan="3" style="padding:12px;">
-                      Nenhum item.
-                    </td>
-                  </tr>
-                `
-            }
+                  <td>
+                    <img
+                      src="${esc(x.image)}"
+                      style="
+                        width:120px;
+                        height:90px;
+                        object-fit:cover;
+                        border-radius:7px
+                      "
+                      alt="Estampa"
+                    >
+                  </td>
+
+                  <td>
+                    ${esc(x.fabric)}
+                  </td>
+
+                  <td>
+                    ${x.qty} peça(s)
+                  </td>
+
+                </tr>
+              `
+            ).join('')}
 
           </tbody>
+
         </table>
 
-        ${
-          order.observacoes
-            ? `
-              <div style="
-                background:#f8fafc;
-                border:1px solid #dfe5ee;
-                padding:12px;
-                border-radius:8px;
-                margin-bottom:20px;
-              ">
-                <strong>Observações</strong>
-                <div style="margin-top:5px;">
-                  ${escapeHtml(order.observacoes)}
-                </div>
-              </div>
-            `
-            : ""
-        }
+      </div>
 
-        <div style="
-          border:1px solid #dfe5ee;
-          border-radius:10px;
-          padding:15px;
-        ">
+      <div
+        class="formgrid"
+        style="margin-top:16px"
+      >
 
-          <div style="
-            display:flex;
-            justify-content:space-between;
-            padding:6px 0;
-          ">
-            <strong>Total de peças</strong>
-            <span>${pieces}</span>
-          </div>
+        <div class="field">
 
-          <div style="
-            display:flex;
-            justify-content:space-between;
-            padding:6px 0;
-          ">
-            <strong>Valor total</strong>
-            <span>${formatMoney(total)}</span>
-          </div>
+          <label>Status</label>
 
-          <div style="
-            display:flex;
-            justify-content:space-between;
-            padding:6px 0;
-          ">
-            <strong>Sinal</strong>
-            <span>${formatMoney(signal)}</span>
-          </div>
+          <select id="vStatus">
 
-          <div style="
-            display:flex;
-            justify-content:space-between;
-            padding:6px 0;
-          ">
-            <strong>Saldo a receber</strong>
-            <span>${formatMoney(balance)}</span>
-          </div>
+            ${statuses.map(
+              s=>
+                `<option
+                  ${s===o.status?'selected':''}
+                >
+                  ${s}
+                </option>`
+            ).join('')}
 
-          <div style="
-            display:flex;
-            justify-content:space-between;
-            padding:6px 0;
-            border-top:1px solid #eee;
-            margin-top:5px;
-          ">
-            <strong>Comissão 1%</strong>
-            <span>${formatMoney(commission)}</span>
-          </div>
+          </select>
+
+        </div>
+
+        <div class="field">
+
+          <label>
+            Valor total do pedido (R$)
+          </label>
+
+          <input
+            id="vTotal"
+            type="number"
+            step="0.01"
+            min="0"
+            value="${o.total??''}"
+            placeholder="Informar quando fechar"
+          >
+
+        </div>
+
+        <div class="field">
+
+          <label>Sinal recebido</label>
+
+          <input
+            value="${money(o.signal)}"
+            disabled
+          >
+
+        </div>
+
+        <div class="field">
+
+          <label>Saldo a receber</label>
+
+          <input
+            id="vBalance"
+            value="${
+              o.total==null
+                ? '—'
+                : money(
+                    Math.max(
+                      0,
+                      o.total-o.signal
+                    )
+                  )
+            }"
+            disabled
+          >
 
         </div>
 
       </div>
+
+      <div
+        style="
+          margin-top:16px;
+          padding:13px;
+          background:#f6f9fc;
+          border-radius:9px;
+          display:grid;
+          grid-template-columns:repeat(3,1fr);
+          gap:10px
+        "
+      >
+
+        <div>
+          <div class="muted" style="font-size:11px">
+            Valor total
+          </div>
+          <strong id="viewTotal">
+            ${
+              o.total==null
+                ? '—'
+                : money(o.total)
+            }
+          </strong>
+        </div>
+
+        <div>
+          <div class="muted" style="font-size:11px">
+            Sinal
+          </div>
+          <strong>
+            ${money(o.signal)}
+          </strong>
+        </div>
+
+        <div>
+          <div class="muted" style="font-size:11px">
+            Comissão 1%
+          </div>
+          <strong class="gold">
+            ${
+              o.total==null
+                ? '—'
+                : money(o.total*.01)
+            }
+          </strong>
+        </div>
+
+      </div>
+
+      <div
+        style="
+          display:flex;
+          justify-content:flex-end;
+          gap:10px;
+          margin-top:18px;
+          flex-wrap:wrap
+        "
+      >
+
+        <button
+          class="btn danger"
+          onclick="deleteOrder('${o.id}')"
+        >
+          Excluir pedido
+        </button>
+
+        <button
+          class="btn secondary"
+          onclick="generatePDF('${o.id}')"
+        >
+          Gerar PDF
+        </button>
+
+        <button
+          class="btn primary"
+          onclick="updateOrder('${o.id}')"
+        >
+          Salvar alterações
+        </button>
+
+      </div>
     `;
 
-    $("printArea").classList.remove("hidden");
+  document
+    .getElementById('modal')
+    .classList.add('show');
 
-    setTimeout(() => {
-      window.print();
+  document
+    .getElementById('vTotal')
+    .oninput=e=>{
 
-      setTimeout(() => {
-        $("printArea").classList.add("hidden");
-      }, 500);
-    }, 300);
-  }
+      const n =
+        Number(e.target.value);
 
-  function closeModal(id) {
-    const modal = $(id);
+      document
+        .getElementById('vBalance')
+        .value =
+          e.target.value === ''
+            ? '—'
+            : money(
+                Math.max(
+                  0,
+                  n-o.signal
+                )
+              );
+    };
+}
 
-    if (modal) {
-      modal.classList.remove("open");
-    }
-  }
+async function deleteOrder(id){
 
-  async function loadAllData() {
-    if (!currentUser) return;
+  if(!ensureAuthenticated())
+    return;
 
-    try {
-      await loadClients();
-      await loadGallery();
-      await loadOrders();
+  const o =
+    db.orders.find(
+      x=>x.id===id
+    );
 
-      updateDashboard();
-      updateFinance();
+  if(!o)
+    return;
 
-    } catch (error) {
+  if(!confirm(
+    'Tem certeza que deseja excluir este pedido? Esta ação não pode ser desfeita.'
+  ))
+    return;
+
+  try{
+
+    const {
+      error:itemError
+    } =
+      await supabaseClient
+        .from('itens_pedido')
+        .delete()
+        .eq(
+          'pedido_id',
+          id
+        );
+
+    if(itemError){
+
       console.error(
-        "Erro ao carregar dados:",
-        error
+        'Erro ao excluir itens:',
+        itemError
       );
 
-      showToast(
-        "Ocorreu um erro ao carregar os dados.",
-        "error"
+      toast(
+        'Não foi possível excluir os itens do pedido.\n' +
+        supabaseErrorText(itemError)
       );
-    }
-  }
 
-  async function handleLogin(event) {
-    event.preventDefault();
-
-    const email =
-      $("loginEmail").value.trim();
-
-    const password =
-      $("loginPassword").value;
-
-    const button =
-      $("loginButton");
-
-    if (!email || !password) {
-      setLoginMessage(
-        "Informe o e-mail e a senha.",
-        "error"
-      );
       return;
     }
 
-    button.disabled = true;
-    button.textContent = "Entrando...";
-    setLoginMessage("");
-
-    try {
-      const {
-        data,
-        error
-      } =
-        await supabaseClient.auth.signInWithPassword({
-          email,
-          password
-        });
-
-      if (error) {
-        console.error(
-          "Erro no login:",
-          error
+    const {
+      error
+    } =
+      await supabaseClient
+        .from('pedidos')
+        .delete()
+        .eq('id',id)
+        .eq(
+          'usuario_id',
+          currentUser.id
         );
 
-        throw error;
-      }
+    if(error){
 
-      if (!data?.user) {
-        throw new Error(
-          "O Supabase não retornou o usuário autenticado."
-        );
-      }
-
-      currentUser = data.user;
-
-      showApp();
-
-      setPage("dashboard");
-
-      await loadAllData();
-
-      showToast(
-        "Login realizado com sucesso.",
-        "success"
-      );
-
-    } catch (error) {
       console.error(
-        "Falha no login:",
+        'Erro ao excluir pedido:',
         error
       );
 
-      setLoginMessage(
-        "Não foi possível entrar: " +
-        (error?.message || String(error)),
-        "error"
+      toast(
+        'Não foi possível excluir o pedido.\n' +
+        supabaseErrorText(error)
       );
 
-      $("loginPassword").value = "";
-
-    } finally {
-      button.disabled = false;
-      button.textContent = "Entrar";
+      return;
     }
+
+    closeModal();
+
+    toast(
+      'Pedido excluído com sucesso.'
+    );
+
+    await loadOrders();
+
+    renderAll();
+
+  }catch(err){
+
+    console.error(
+      'Exceção ao excluir pedido:',
+      err
+    );
+
+    toast(
+      'Erro ao excluir pedido.\n' +
+      supabaseErrorText(err)
+    );
   }
+}
 
-  async function checkSession() {
-    try {
-      const {
-        data,
-        error
-      } =
-        await supabaseClient.auth.getSession();
 
-      if (error) {
-        console.error(
-          "Erro ao verificar sessão:",
-          error
-        );
+/* =========================================================
+   RENDER PEDIDOS
+========================================================= */
 
-        showLogin();
+function renderOrders(){
 
-        setLoginMessage(
-          "Não foi possível verificar sua sessão: " +
-          error.message,
-          "error"
-        );
-
-        return;
-      }
-
-      const session = data?.session;
-
-      if (session?.user) {
-        currentUser = session.user;
-
-        showApp();
-
-        await loadAllData();
-
-      } else {
-        currentUser = null;
-
-        showLogin();
-      }
-
-    } catch (error) {
-      console.error(
-        "Erro inesperado ao verificar sessão:",
-        error
-      );
-
-      currentUser = null;
-
-      showLogin();
-
-      setLoginMessage(
-        "Erro ao iniciar o sistema: " +
-        (error?.message || String(error)),
-        "error"
-      );
-    }
-  }
-
-  async function logout() {
-    try {
-      const {
-        error
-      } =
-        await supabaseClient.auth.signOut();
-
-      if (error) {
-        console.error(
-          "Erro ao sair:",
-          error
-        );
-
-        throw error;
-      }
-
-      currentUser = null;
-      clients = [];
-      gallery = [];
-      orders = [];
-      currentOrder = null;
-
-      showLogin();
-
-      $("loginPassword").value = "";
-
-      setLoginMessage(
-        "Você saiu do sistema.",
-        "success"
-      );
-
-    } catch (error) {
-      console.error(error);
-
-      showToast(
-        "Não foi possível sair: " +
-        (error?.message || String(error)),
-        "error"
-      );
-    }
-  }
-
-  function bindEvents() {
-
-    $("loginForm").addEventListener(
-      "submit",
-      handleLogin
+  const el =
+    document.getElementById(
+      'ordersBody'
     );
 
-    $("logoutButton").addEventListener(
-      "click",
-      logout
-    );
+  if(!el)
+    return;
 
-    $("newClientButton").addEventListener(
-      "click",
-      () => openClientModal()
-    );
+  el.innerHTML =
+    db.orders.map(
+      o=>{
 
-    $("clientForm").addEventListener(
-      "submit",
-      saveClient
-    );
-
-    $("clientSearch").addEventListener(
-      "input",
-      renderClients
-    );
-
-    $("newGalleryButton").addEventListener(
-      "click",
-      () => {
-        $("galleryForm").reset();
-        $("galleryError").textContent = "";
-        $("galleryModal").classList.add("open");
-      }
-    );
-
-    $("galleryForm").addEventListener(
-      "submit",
-      uploadGallery
-    );
-
-    $("newOrderButton").addEventListener(
-      "click",
-      openNewOrderModal
-    );
-
-    $("orderForm").addEventListener(
-      "submit",
-      saveOrder
-    );
-
-    $("addOrderItemButton").addEventListener(
-      "click",
-      () => addOrderItem()
-    );
-
-    $("orderSearch").addEventListener(
-      "input",
-      renderOrders
-    );
-
-    $("orderStatusFilter").addEventListener(
-      "change",
-      renderOrders
-    );
-
-    $("financeMonth").addEventListener(
-      "change",
-      updateFinance
-    );
-
-    $("editOrderButton").addEventListener(
-      "click",
-      openOrderForEditing
-    );
-
-    $("printOrderButton").addEventListener(
-      "click",
-      () => {
-        if (currentOrder) {
-          generateOrderPrint(currentOrder);
-        }
-      }
-    );
-
-    $("mobileMenuButton").addEventListener(
-      "click",
-      () => {
-        $("sidebar").classList.toggle(
-          "mobile-open"
-        );
-      }
-    );
-
-    document.addEventListener(
-      "click",
-      async event => {
-
-        const navButton =
-          event.target.closest(".nav-btn");
-
-        if (navButton) {
-          setPage(navButton.dataset.page);
-          return;
-        }
-
-        const goPage =
-          event.target.closest("[data-go-page]");
-
-        if (goPage) {
-          setPage(goPage.dataset.goPage);
-          return;
-        }
-
-        const closeButton =
-          event.target.closest("[data-close]");
-
-        if (closeButton) {
-          closeModal(
-            closeButton.dataset.close
+        const c =
+          db.clients.find(
+            x=>x.id===o.clientId
           );
-          return;
-        }
 
-        const editClientButton =
-          event.target.closest("[data-edit-client]");
+        const pieces =
+          o.items.reduce(
+            (a,x)=>
+              a+Number(x.qty||0),
+            0
+          );
 
-        if (editClientButton) {
-          const client =
-            clients.find(
-              c => c.id === editClientButton.dataset.editClient
+        let badge='wait';
+
+        if(o.status==='Fechado')
+          badge='ok';
+
+        if(o.status==='Cancelado')
+          badge='cancel';
+
+        return `
+
+          <tr>
+
+            <td>
+              ${esc(c?.nome||'—')}
+            </td>
+
+            <td>
+              ${fmtDate(o.date)}
+            </td>
+
+            <td>
+              ${pieces}
+            </td>
+
+            <td>
+
+              <span class="badge ${badge}">
+                ${esc(o.status)}
+              </span>
+
+            </td>
+
+            <td>
+              ${
+                o.total==null
+                  ? '—'
+                  : money(o.total)
+              }
+            </td>
+
+            <td>
+
+              <button
+                class="btn secondary"
+                onclick="viewOrder('${o.id}')"
+              >
+                Abrir
+              </button>
+
+            </td>
+
+          </tr>
+        `;
+      }
+    ).join('') ||
+    '<tr><td colspan="6" class="empty">Nenhum pedido cadastrado.</td></tr>';
+}
+
+function renderClients(){
+
+  const el =
+    document.getElementById(
+      'clientsBody'
+    );
+
+  if(!el)
+    return;
+
+  el.innerHTML =
+    db.clients.map(
+      c=>`
+
+        <tr>
+
+          <td>
+            <b>
+              ${esc(c.nome)}
+            </b>
+          </td>
+
+          <td>
+            ${esc(c.telefone||'—')}
+          </td>
+
+          <td>
+            ${
+              db.orders.filter(
+                o=>o.clientId===c.id
+              ).length
+            }
+          </td>
+
+        </tr>
+      `
+    ).join('') ||
+    '<tr><td colspan="3" class="empty">Nenhum cliente cadastrado.</td></tr>';
+}
+
+
+/* =========================================================
+   FINANCEIRO
+========================================================= */
+
+function renderFinance(){
+
+  const input =
+    document.getElementById(
+      'monthFilter'
+    );
+
+  const month =
+    input?.value ||
+    monthNow();
+
+  if(input && !input.value)
+    input.value=month;
+
+  const closed =
+    db.orders.filter(
+      o=>
+        o.total!=null &&
+        o.status==='Fechado' &&
+        String(
+          o.created_at ||
+          o.date
+        ).slice(0,7)===month
+    );
+
+  const sales =
+    closed.reduce(
+      (a,o)=>
+        a+Number(o.total||0),
+      0
+    );
+
+  document
+    .getElementById('finSales')
+    .textContent=
+      money(sales);
+
+  document
+    .getElementById('finComm')
+    .textContent=
+      money(
+        sales*.01
+      );
+
+  document
+    .getElementById('finCount')
+    .textContent=
+      closed.length;
+
+  document
+    .getElementById('finPending')
+    .textContent=
+      db.orders.filter(
+        o=>
+          o.status!=='Cancelado' &&
+          o.total==null
+      ).length;
+
+  document
+    .getElementById('finBody')
+    .innerHTML =
+      closed.map(
+        o=>{
+
+          const c =
+            db.clients.find(
+              x=>x.id===o.clientId
             );
 
-          if (client) {
-            openClientModal(client);
-          }
+          return `
 
-          return;
+            <tr>
+
+              <td>
+                ${esc(c?.nome||'—')}
+              </td>
+
+              <td>
+                ${fmtDate(
+                  o.created_at ||
+                  o.date
+                )}
+              </td>
+
+              <td>
+                ${money(o.total)}
+              </td>
+
+              <td>
+                ${money(o.signal)}
+              </td>
+
+              <td>
+                ${money(
+                  Math.max(
+                    0,
+                    o.total-o.signal
+                  )
+                )}
+              </td>
+
+              <td>
+                ${money(
+                  o.total*.01
+                )}
+              </td>
+
+            </tr>
+          `;
         }
+      ).join('') ||
+      '<tr><td colspan="6" class="empty">Nenhum fechamento neste mês.</td></tr>';
+}
 
-        const deleteClientButton =
-          event.target.closest("[data-delete-client]");
 
-        if (deleteClientButton) {
-          await deleteClient(
-            deleteClientButton.dataset.deleteClient
-          );
+/* =========================================================
+   RELATÓRIOS
+========================================================= */
 
-          return;
-        }
+function renderReports(){
 
-        const deleteGalleryButton =
-          event.target.closest("[data-delete-gallery]");
-
-        if (deleteGalleryButton) {
-          await deleteGallery(
-            deleteGalleryButton.dataset.deleteGallery
-          );
-
-          return;
-        }
-
-        const useGalleryButton =
-          event.target.closest("[data-use-gallery]");
-
-        if (useGalleryButton) {
-          setPage("pedidos");
-
-          openNewOrderModal();
-
-          setTimeout(() => {
-            const image =
-              gallery.find(
-                g => g.id === useGalleryButton.dataset.useGallery
-              );
-
-            if (!image) return;
-
-            const firstRow =
-              document.querySelector(
-                "#orderItems .item-row"
-              );
-
-            if (!firstRow) return;
-
-            const select =
-              firstRow.querySelector(".item-gallery");
-
-            select.value = image.id;
-
-            const option =
-              select.options[select.selectedIndex];
-
-            firstRow.querySelector(
-              ".item-image-url"
-            ).value =
-              option?.dataset?.url || "";
-
-            const preview =
-              firstRow.querySelector(
-                ".selected-gallery-image"
-              );
-
-            preview.src =
-              option?.dataset?.url || "";
-
-            preview.style.display =
-              option?.dataset?.url
-                ? "block"
-                : "none";
-          }, 50);
-
-          return;
-        }
-
-        const viewOrderButton =
-          event.target.closest("[data-view-order]");
-
-        if (viewOrderButton) {
-          const order =
-            orders.find(
-              o => o.id === viewOrderButton.dataset.viewOrder
-            );
-
-          if (order) {
-            openOrderDetail(order);
-          }
-
-          return;
-        }
-
-        const deleteOrderButton =
-          event.target.closest("[data-delete-order]");
-
-        if (deleteOrderButton) {
-          await deleteOrder(
-            deleteOrderButton.dataset.deleteOrder
-          );
-
-          return;
-        }
-      }
+  const input =
+    document.getElementById(
+      'reportMonth'
     );
 
-    document.querySelectorAll(".modal").forEach(modal => {
-      modal.addEventListener("click", event => {
-        if (event.target === modal) {
-          modal.classList.remove("open");
-        }
-      });
-    });
+  const month =
+    input?.value ||
+    monthNow();
 
-    window.addEventListener(
-      "error",
-      event => {
-        console.error(
-          "Erro JavaScript:",
-          event.error || event.message
-        );
-      }
+  if(input && !input.value)
+    input.value=month;
+
+  const closed =
+    db.orders.filter(
+      o=>
+        o.total!=null &&
+        o.status==='Fechado' &&
+        String(
+          o.created_at ||
+          o.date
+        ).slice(0,7)===month
     );
 
-    window.addEventListener(
-      "unhandledrejection",
-      event => {
-        console.error(
-          "Promise rejeitada:",
-          event.reason
-        );
-      }
+  const sales =
+    closed.reduce(
+      (a,o)=>
+        a+Number(o.total||0),
+      0
     );
-  }
 
-  supabaseClient.auth.onAuthStateChange(
-    async (event, session) => {
-      console.log(
-        "Auth event:",
-        event
+  document
+    .getElementById('reportSales')
+    .textContent=
+      money(sales);
+
+  document
+    .getElementById('reportClosed')
+    .textContent=
+      closed.length;
+
+  document
+    .getElementById('reportComm')
+    .textContent=
+      money(
+        sales*.01
       );
 
-      if (event === "SIGNED_OUT") {
-        currentUser = null;
-        showLogin();
-        return;
-      }
+  document
+    .getElementById('reportBody')
+    .innerHTML =
+      closed.map(
+        o=>{
 
-      if (
-        (event === "SIGNED_IN" ||
-         event === "TOKEN_REFRESHED" ||
-         event === "USER_UPDATED") &&
-        session?.user
-      ) {
-        currentUser = session.user;
+          const c =
+            db.clients.find(
+              x=>x.id===o.clientId
+            );
 
-        showApp();
+          return `
 
-        try {
-          await loadAllData();
-        } catch (error) {
-          console.error(
-            "Erro após mudança de autenticação:",
-            error
-          );
+            <tr>
+
+              <td>
+                ${esc(c?.nome||'—')}
+              </td>
+
+              <td>
+                ${fmtDate(
+                  o.created_at ||
+                  o.date
+                )}
+              </td>
+
+              <td>
+                ${money(o.total)}
+              </td>
+
+              <td>
+                ${money(o.signal)}
+              </td>
+
+              <td>
+                ${money(
+                  Math.max(
+                    0,
+                    o.total-o.signal
+                  )
+                )}
+              </td>
+
+            </tr>
+          `;
         }
-      }
+      ).join('') ||
+      '<tr><td colspan="5" class="empty">Nenhum fechamento neste mês.</td></tr>';
+}
+
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+function renderDashboard(){
+
+  const month =
+    monthNow();
+
+  const closed =
+    db.orders.filter(
+      o=>
+        o.total!=null &&
+        o.status==='Fechado' &&
+        String(
+          o.created_at ||
+          o.date
+        ).slice(0,7)===month
+    );
+
+  const sales =
+    closed.reduce(
+      (a,o)=>
+        a+Number(o.total||0),
+      0
+    );
+
+  document
+    .getElementById('dashSales')
+    .textContent=
+      money(sales);
+
+  document
+    .getElementById('dashComm')
+    .textContent=
+      money(
+        sales*.01
+      );
+
+  document
+    .getElementById('dashClosed')
+    .textContent=
+      closed.length;
+
+  document
+    .getElementById('dashOpen')
+    .textContent =
+      db.orders.filter(
+        o=>
+          o.total==null &&
+          o.status!=='Cancelado'
+      ).length;
+
+  document
+    .getElementById('recentBody')
+    .innerHTML =
+      db.orders
+        .slice(0,8)
+        .map(
+          o=>{
+
+            const c =
+              db.clients.find(
+                x=>x.id===o.clientId
+              );
+
+            let badge='wait';
+
+            if(o.status==='Fechado')
+              badge='ok';
+
+            if(o.status==='Cancelado')
+              badge='cancel';
+
+            return `
+
+              <tr>
+
+                <td>
+                  ${esc(c?.nome||'—')}
+                </td>
+
+                <td>
+                  ${
+                    o.items.reduce(
+                      (a,x)=>
+                        a+Number(x.qty||0),
+                      0
+                    )
+                  } peças
+                </td>
+
+                <td>
+                  ${fmtDate(o.date)}
+                </td>
+
+                <td>
+
+                  <span class="badge ${badge}">
+                    ${esc(o.status)}
+                  </span>
+
+                </td>
+
+                <td>
+                  ${
+                    o.total==null
+                      ? '—'
+                      : money(o.total)
+                  }
+                </td>
+
+              </tr>
+            `;
+          }
+        ).join('') ||
+        '<tr><td colspan="5" class="empty">Nenhum pedido recente.</td></tr>';
+}
+
+
+/* =========================================================
+   NAVEGAÇÃO
+========================================================= */
+
+function showPage(id){
+
+  document
+    .querySelectorAll('.page')
+    .forEach(
+      x=>x.classList.remove('active')
+    );
+
+  const page =
+    document.getElementById(id);
+
+  if(page)
+    page.classList.add('active');
+
+  document
+    .querySelectorAll('nav button')
+    .forEach(
+      x=>
+        x.classList.toggle(
+          'active',
+          x.dataset.page===id
+        )
+    );
+
+  const names = {
+    dashboard:'Início',
+    pedidos:'Pedidos',
+    clientes:'Clientes',
+    galeria:'Galeria',
+    financeiro:'Financeiro',
+    relatorios:'Relatórios'
+  };
+
+  document
+    .getElementById('title')
+    .textContent =
+      names[id] ||
+      'Augusto Digital';
+
+  renderAll();
+}
+
+document
+  .querySelectorAll('nav button')
+  .forEach(
+    b=>
+      b.onclick=()=>
+        showPage(
+          b.dataset.page
+        )
+  );
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+function closeModal(){
+
+  document
+    .getElementById('modal')
+    .classList.remove('show');
+}
+
+document
+  .getElementById('modal')
+  .addEventListener(
+    'click',
+    e=>{
+      if(e.target.id==='modal')
+        closeModal();
     }
   );
 
-  bindEvents();
 
-  $("financeMonth").value =
-    getCurrentMonth();
+/* =========================================================
+   PDF
+========================================================= */
 
-  checkSession();
+function generatePDF(id){
 
-})();
+  const o =
+    db.orders.find(
+      x=>x.id===id
+    );
+
+  if(!o)
+    return;
+
+  const c =
+    db.clients.find(
+      x=>x.id===o.clientId
+    );
+
+  const w =
+    window.open(
+      '',
+      '_blank'
+    );
+
+  if(!w){
+
+    toast(
+      'Permita pop-ups para gerar o PDF.'
+    );
+
+    return;
+  }
+
+  const items =
+    o.items || [];
+
+  const totalPieces =
+    items.reduce(
+      (a,x)=>
+        a+Number(x.qty||0),
+      0
+    );
+
+  let itemHtml='';
+
+  items.forEach(
+    (x,i)=>{
+
+      itemHtml += `
+
+        <div class="stamp">
+
+          <div class="stamp-title">
+            Estampa ${i+1}
+          </div>
+
+          <div class="stamp-content">
+
+            <img
+              src="${esc(x.image)}"
+              alt="Estampa ${i+1}"
+            >
+
+            <div class="stamp-info">
+
+              <p>
+                <b>Tecido:</b>
+                ${esc(x.fabric)}
+              </p>
+
+              <p>
+                <b>Quantidade:</b>
+                ${x.qty} peça(s)
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+      `;
+    }
+  );
+
+  w.document.write(`
+
+    <!doctype html>
+
+    <html lang="pt-BR">
+
+    <head>
+
+      <meta charset="utf-8">
+
+      <title>
+        Pedido Augusto Digital
+      </title>
+
+      <style>
+
+        @page{
+          size:A4;
+          margin:12mm;
+        }
+
+        *{
+          box-sizing:border-box;
+        }
+
+        body{
+          font-family:Arial,sans-serif;
+          color:#142536;
+          margin:0;
+        }
+
+        .header{
+          border-bottom:2px solid #06243a;
+          padding-bottom:10px;
+          margin-bottom:14px;
+        }
+
+        h1{
+          color:#06243a;
+          margin:0;
+          font-size:22px;
+        }
+
+        h2{
+          margin:4px 0 0;
+          font-size:16px;
+        }
+
+        .info{
+          font-size:12px;
+          margin-bottom:12px;
+        }
+
+        .stamp{
+          height:128mm;
+          page-break-inside:avoid;
+          border:1px solid #d8e1e9;
+          border-radius:8px;
+          padding:7mm;
+          margin-bottom:6mm;
+        }
+
+        .stamp:nth-of-type(2n){
+          page-break-after:always;
+        }
+
+        .stamp-title{
+          font-size:15px;
+          font-weight:bold;
+          margin-bottom:5mm;
+          color:#06243a;
+        }
+
+        .stamp-content{
+          display:flex;
+          gap:8mm;
+          height:105mm;
+        }
+
+        .stamp img{
+          width:100mm;
+          height:100mm;
+          object-fit:contain;
+          border:1px solid #e0e6eb;
+          border-radius:5px;
+          background:#f7f9fb;
+        }
+
+        .stamp-info{
+          font-size:13px;
+          padding-top:8px;
+        }
+
+        .footer-info{
+          margin-top:5mm;
+          padding:5mm;
+          border-top:1px solid #ddd;
+          font-size:13px;
+        }
+
+      </style>
+
+    </head>
+
+    <body>
+
+      <div class="header">
+
+        <h1>
+          AUGUSTO ESTAMPARIA DIGITAL
+        </h1>
+
+        <h2>
+          Pedido
+        </h2>
+
+      </div>
+
+      <div class="info">
+
+        <b>Cliente:</b>
+        ${esc(c?.nome||'—')}
+
+        &nbsp;&nbsp;&nbsp;
+
+        <b>Data:</b>
+        ${fmtDate(o.date)}
+
+      </div>
+
+      ${itemHtml}
+
+      <div class="footer-info">
+
+        <b>Total de peças:</b>
+        ${totalPieces}
+
+        ${
+          o.total!=null
+            ? `
+              <br>
+              <b>Valor total:</b>
+              ${money(o.total)}
+
+              <br>
+              <b>Sinal:</b>
+              ${money(o.signal)}
+
+              <br>
+              <b>Saldo a receber:</b>
+              ${money(
+                Math.max(
+                  0,
+                  o.total-o.signal
+                )
+              )}
+
+              <br>
+              <b>Comissão 1%:</b>
+              ${money(o.total*.01)}
+            `
+            : ''
+        }
+
+        ${
+          o.notes
+            ? `
+              <br><br>
+              <b>Observações:</b>
+              ${esc(o.notes)}
+            `
+            : ''
+        }
+
+      </div>
+
+      <script>
+
+        window.onload=function(){
+
+          setTimeout(
+            ()=>window.print(),
+            300
+          );
+
+        };
+
+      <\/script>
+
+    </body>
+
+    </html>
+  `);
+
+  w.document.close();
+}
+
+
+/* =========================================================
+   RENDER GERAL
+========================================================= */
+
+function renderAll(){
+
+  renderDashboard();
+  renderOrders();
+  renderClients();
+  renderGallery();
+  renderFinance();
+  renderReports();
+}
+
+
+/* =========================================================
+   INICIALIZAÇÃO
+========================================================= */
+
+async function init(){
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.auth.getSession();
+
+    if(error){
+
+      console.error(
+        'Erro ao recuperar sessão:',
+        error
+      );
+
+      return;
+    }
+
+    if(data?.session?.user){
+
+      currentUser =
+        data.session.user;
+
+      await startApp();
+    }
+
+  }catch(err){
+
+    console.error(
+      'Erro na inicialização:',
+      err
+    );
+
+  }
+
+  supabaseClient.auth.onAuthStateChange(
+    async(event,session)=>{
+
+      console.log(
+        'Mudança de autenticação:',
+        event
+      );
+
+      if(
+        session?.user &&
+        !currentUser
+      ){
+
+        currentUser =
+          session.user;
+
+        try{
+
+          await startApp();
+
+        }catch(err){
+
+          console.error(
+            'Erro ao iniciar aplicativo após autenticação:',
+            err
+          );
+        }
+      }
+
+      if(
+        !session?.user &&
+        currentUser
+      ){
+
+        currentUser=null;
+        currentProfile=null;
+
+        document
+          .getElementById('app')
+          .style.display='none';
+
+        document
+          .getElementById('login')
+          .style.display='flex';
+      }
+    }
+  );
+}
+
+
+/* =========================================================
+   ATALHOS DE LOGIN
+========================================================= */
+
+document
+  .getElementById('loginPass')
+  .addEventListener(
+    'keydown',
+    e=>{
+      if(e.key==='Enter')
+        doLogin();
+    }
+  );
+
+
+/* =========================================================
+   INICIAR
+========================================================= */
+
+init();
+
 </script>
 
 </body>
