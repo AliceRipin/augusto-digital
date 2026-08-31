@@ -9,3841 +9,2024 @@
 
 <style>
 :root{
-  --navy:#06243a;
-  --navy2:#0b304b;
-  --blue:#1677d2;
-  --gold:#e4a12a;
-  --bg:#f4f7fb;
-  --text:#152536;
-  --muted:#6d7b8b;
-  --white:#fff;
-  --danger:#c0392b;
-  --ok:#198754;
-  --shadow:0 8px 30px rgba(6,36,58,.10)
+--navy:#06243a;--navy2:#0b304b;--blue:#1677d2;--gold:#e4a12a;
+--bg:#f4f7fb;--text:#152536;--muted:#6d7b8b;--white:#fff;
+--danger:#c0392b;--ok:#198754;--shadow:0 8px 30px rgba(6,36,58,.10)
 }
-
 *{box-sizing:border-box}
-
-body{
-  margin:0;
-  font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text)
-}
-
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}
 button,input,select,textarea{font:inherit}
 button{cursor:pointer}
 
-.app{
-  min-height:100vh;
-  display:flex
-}
-
+.app{min-height:100vh;display:flex}
 .sidebar{
-  width:245px;
-  background:linear-gradient(180deg,var(--navy),#041b2c);
-  color:#fff;
-  padding:18px 14px;
-  position:fixed;
-  inset:0 auto 0 0;
-  z-index:5
+width:245px;background:linear-gradient(180deg,var(--navy),#041b2c);
+color:#fff;padding:18px 14px;position:fixed;inset:0 auto 0 0;z-index:5
 }
-
 .brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:6px 8px 20px;
-  border-bottom:1px solid rgba(255,255,255,.12)
+display:flex;align-items:center;gap:10px;padding:6px 8px 20px;
+border-bottom:1px solid rgba(255,255,255,.12)
 }
-
-.brand img{
-  width:42px;
-  height:42px;
-  object-fit:cover;
-  border-radius:8px
-}
-
+.brand img{width:42px;height:42px;object-fit:cover;border-radius:8px}
 .brand b{font-size:14px}
-
-.brand span{
-  display:block;
-  font-size:11px;
-  color:#b9c9d8;
-  margin-top:2px
-}
+.brand span{display:block;font-size:11px;color:#b9c9d8;margin-top:2px}
 
 nav{padding-top:16px}
-
 nav button{
-  width:100%;
-  background:none;
-  border:0;
-  color:#dce8f1;
-  text-align:left;
-  padding:12px 13px;
-  border-radius:9px;
-  margin-bottom:5px
+width:100%;background:none;border:0;color:#dce8f1;text-align:left;
+padding:12px 13px;border-radius:9px;margin-bottom:5px
 }
+nav button.active,nav button:hover{background:rgba(228,161,42,.16);color:#fff}
+nav button.active{border-left:3px solid var(--gold)}
 
-nav button.active,
-nav button:hover{
-  background:rgba(228,161,42,.16);
-  color:#fff
-}
-
-nav button.active{
-  border-left:3px solid var(--gold)
-}
-
-.main{
-  margin-left:245px;
-  width:calc(100% - 245px);
-  min-height:100vh
-}
-
+.main{margin-left:245px;width:calc(100% - 245px);min-height:100vh}
 .top{
-  height:68px;
-  background:#fff;
-  border-bottom:1px solid #e6edf4;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 28px;
-  position:sticky;
-  top:0;
-  z-index:4
+height:68px;background:#fff;border-bottom:1px solid #e6edf4;
+display:flex;align-items:center;justify-content:space-between;
+padding:0 28px;position:sticky;top:0;z-index:4
 }
-
-.top h1{
-  font-size:20px;
-  margin:0
-}
-
-.top-right{
-  display:flex;
-  align-items:center;
-  gap:10px
-}
-
+.top h1{font-size:20px;margin:0}
 .userpill{
-  font-size:13px;
-  color:var(--muted);
-  background:#f3f6fa;
-  padding:8px 12px;
-  border-radius:99px
+font-size:13px;color:var(--muted);background:#f3f6fa;
+padding:8px 12px;border-radius:99px
 }
 
-.logout{
-  border:0;
-  background:#fdecea;
-  color:var(--danger);
-  padding:8px 12px;
-  border-radius:8px;
-  font-size:12px;
-  font-weight:650
-}
-
-.content{
-  padding:26px;
-  max-width:1400px;
-  margin:auto
-}
-
+.content{padding:26px;max-width:1400px;margin:auto}
 .page{display:none}
 .page.active{display:block}
 
-.grid{
-  display:grid;
-  gap:16px
-}
-
-.cards{
-  grid-template-columns:repeat(4,minmax(0,1fr))
-}
-
+.grid{display:grid;gap:16px}
+.cards{grid-template-columns:repeat(4,minmax(0,1fr))}
 .card{
-  background:#fff;
-  border-radius:14px;
-  padding:18px;
-  box-shadow:var(--shadow);
-  border:1px solid #e9eff5
+background:#fff;border-radius:14px;padding:18px;
+box-shadow:var(--shadow);border:1px solid #e9eff5
 }
-
-.card .label{
-  color:var(--muted);
-  font-size:12px
-}
-
-.card .value{
-  font-size:25px;
-  font-weight:750;
-  margin-top:8px
-}
-
+.card .label{color:var(--muted);font-size:12px}
+.card .value{font-size:25px;font-weight:750;margin-top:8px}
 .gold{color:#c77f00}
 .blue{color:var(--blue)}
 
 .section-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin:0 0 16px
+display:flex;justify-content:space-between;align-items:center;margin:0 0 16px
 }
-
-.section-head h2{
-  font-size:19px;
-  margin:0
-}
+.section-head h2{font-size:19px;margin:0}
 
 .btn{
-  border:0;
-  border-radius:9px;
-  padding:10px 15px;
-  font-weight:650
+border:0;border-radius:9px;padding:10px 15px;font-weight:650
 }
-
-.btn.primary{
-  background:var(--blue);
-  color:#fff
-}
-
-.btn.gold{
-  background:var(--gold);
-  color:#13202b
-}
-
-.btn.secondary{
-  background:#eaf0f5;
-  color:var(--navy)
-}
-
-.btn.danger{
-  background:#fdecea;
-  color:var(--danger)
-}
+.btn.primary{background:var(--blue);color:#fff}
+.btn.gold{background:var(--gold);color:#13202b}
+.btn.secondary{background:#eaf0f5;color:var(--navy)}
+.btn.danger{background:#fdecea;color:var(--danger)}
 
 .tablewrap{
-  overflow:auto;
-  background:#fff;
-  border-radius:14px;
-  box-shadow:var(--shadow)
+overflow:auto;background:#fff;border-radius:14px;box-shadow:var(--shadow)
 }
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  min-width:720px
-}
-
+table{width:100%;border-collapse:collapse;min-width:720px}
 th,td{
-  padding:13px 14px;
-  text-align:left;
-  border-bottom:1px solid #edf1f5;
-  font-size:13px
+padding:13px 14px;text-align:left;border-bottom:1px solid #edf1f5;font-size:13px
 }
-
 th{
-  color:var(--muted);
-  font-size:12px;
-  text-transform:uppercase;
-  letter-spacing:.03em;
-  background:#fafcfe
+color:var(--muted);font-size:12px;text-transform:uppercase;
+letter-spacing:.03em;background:#fafcfe
 }
 
 .badge{
-  display:inline-block;
-  padding:5px 8px;
-  border-radius:99px;
-  font-size:11px;
-  font-weight:700;
-  background:#eaf0f5
+display:inline-block;padding:5px 8px;border-radius:99px;
+font-size:11px;font-weight:700;background:#eaf0f5
 }
-
-.badge.ok{
-  background:#e8f6ee;
-  color:#177545
-}
-
-.badge.wait{
-  background:#fff5df;
-  color:#9a6500
-}
-
-.badge.cancel{
-  background:#fdecea;
-  color:var(--danger)
-}
+.badge.ok{background:#e8f6ee;color:#177545}
+.badge.wait{background:#fff5df;color:#9a6500}
+.badge.cancel{background:#fdecea;color:#c0392b}
 
 .form{
-  background:#fff;
-  border-radius:14px;
-  box-shadow:var(--shadow);
-  padding:20px
+background:#fff;border-radius:14px;box-shadow:var(--shadow);padding:20px
 }
-
 .formgrid{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:14px
+display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px
 }
-
 .field label{
-  display:block;
-  font-size:12px;
-  color:var(--muted);
-  margin-bottom:6px
+display:block;font-size:12px;color:var(--muted);margin-bottom:6px
 }
-
-.field input,
-.field select,
-.field textarea{
-  width:100%;
-  border:1px solid #dbe4ec;
-  border-radius:9px;
-  padding:10px 11px;
-  background:#fff
+.field input,.field select,.field textarea{
+width:100%;border:1px solid #dbe4ec;border-radius:9px;
+padding:10px 11px;background:#fff
 }
+.field textarea{min-height:85px;resize:vertical}
+.full{grid-column:1/-1}
 
-.field textarea{
-  min-height:85px;
-  resize:vertical
-}
-
-.full{
-  grid-column:1/-1
-}
-
-.items{
-  margin-top:20px
-}
-
+.items{margin-top:20px}
 .item{
-  display:grid;
-  grid-template-columns:125px 1fr 150px 110px 40px;
-  gap:10px;
-  align-items:center;
-  border:1px solid #e2eaf1;
-  padding:10px;
-  border-radius:12px;
-  margin-bottom:9px
+display:grid;grid-template-columns:115px 1fr 150px 110px 40px;
+gap:10px;align-items:center;border:1px solid #e2eaf1;
+padding:10px;border-radius:12px;margin-bottom:9px
 }
-
 .thumb{
-  width:125px;
-  height:100px;
-  border-radius:8px;
-  background:#eef3f7;
-  object-fit:cover
+width:115px;height:90px;border-radius:8px;background:#eef3f7;object-fit:cover
 }
-
-.item select,
-.item input{
-  width:100%;
-  padding:9px;
-  border:1px solid #dbe4ec;
-  border-radius:8px
+.item select,.item input{
+width:100%;padding:9px;border:1px solid #dbe4ec;border-radius:8px
 }
-
 .remove{
-  border:0;
-  background:#fdecea;
-  color:var(--danger);
-  width:36px;
-  height:36px;
-  border-radius:8px
+border:0;background:#fdecea;color:var(--danger);
+width:36px;height:36px;border-radius:8px
 }
-
 .totalbar{
-  display:flex;
-  justify-content:flex-end;
-  gap:28px;
-  margin-top:15px;
-  font-weight:700
+display:flex;justify-content:flex-end;gap:28px;margin-top:15px;font-weight:700
 }
-
 .muted{color:var(--muted)}
 
 .gallery{
-  grid-template-columns:repeat(auto-fill,minmax(180px,1fr))
+grid-template-columns:repeat(auto-fill,minmax(170px,1fr))
 }
-
 .photo{
-  background:#fff;
-  border-radius:12px;
-  padding:10px;
-  box-shadow:var(--shadow)
+background:#fff;border-radius:12px;padding:10px;box-shadow:var(--shadow)
 }
-
 .photo img{
-  width:100%;
-  aspect-ratio:1;
-  object-fit:cover;
-  border-radius:8px;
-  background:#edf2f6
+width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;background:#edf2f6
 }
-
-.photo .actions{
-  display:flex;
-  gap:7px;
-  margin-top:8px
-}
-
+.photo .actions{display:flex;gap:7px;margin-top:8px}
 .photo button{
-  flex:1;
-  padding:7px;
-  border:0;
-  border-radius:7px;
-  background:#eef3f7
+flex:1;padding:7px;border:0;border-radius:7px;background:#eef3f7
 }
-
 .drop{
-  border:2px dashed #c9d6e2;
-  padding:22px;
-  border-radius:12px;
-  text-align:center;
-  margin-bottom:16px;
-  background:#fbfdff
+border:2px dashed #c9d6e2;padding:22px;border-radius:12px;
+text-align:center;margin-bottom:16px;background:#fbfdff
 }
-
-.empty{
-  padding:35px;
-  text-align:center;
-  color:var(--muted)
-}
+.empty{padding:35px;text-align:center;color:var(--muted)}
 
 .modal{
-  position:fixed;
-  inset:0;
-  background:rgba(3,20,34,.58);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:20;
-  padding:20px
+position:fixed;inset:0;background:rgba(3,20,34,.58);
+display:none;align-items:center;justify-content:center;
+z-index:20;padding:20px
 }
-
 .modal.show{display:flex}
-
 .modalbox{
-  background:#fff;
-  border-radius:16px;
-  max-width:900px;
-  width:100%;
-  max-height:90vh;
-  overflow:auto;
-  padding:22px
+background:#fff;border-radius:16px;max-width:850px;width:100%;
+max-height:90vh;overflow:auto;padding:22px
 }
-
 .modalhead{
-  display:flex;
-  justify-content:space-between;
-  align-items:center
+display:flex;justify-content:space-between;align-items:center
 }
-
 .modalhead h3{margin:0}
-
 .close{
-  border:0;
-  background:#eef2f6;
-  border-radius:8px;
-  width:36px;
-  height:36px
+border:0;background:#eef2f6;border-radius:8px;width:36px;height:36px
 }
 
 .toast{
-  position:fixed;
-  right:22px;
-  bottom:22px;
-  background:var(--navy);
-  color:#fff;
-  padding:12px 16px;
-  border-radius:9px;
-  display:none;
-  z-index:50
+position:fixed;right:22px;bottom:22px;background:var(--navy);
+color:#fff;padding:12px 16px;border-radius:9px;
+display:none;z-index:50
 }
-
 .toast.show{display:block}
 
-/* LOGIN */
-
 .login{
-  position:fixed;
-  inset:0;
-  background:linear-gradient(135deg,var(--navy),#0e5d91);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:100
+position:fixed;inset:0;background:linear-gradient(135deg,var(--navy),#0e5d91);
+display:flex;align-items:center;justify-content:center;z-index:100
 }
-
 .loginbox{
-  background:#fff;
-  width:min(410px,92vw);
-  border-radius:18px;
-  padding:28px;
-  box-shadow:0 25px 80px rgba(0,0,0,.25)
+background:#fff;width:min(410px,92vw);border-radius:18px;
+padding:28px;box-shadow:0 25px 80px rgba(0,0,0,.25)
 }
-
 .loginbox img{
-  display:block;
-  width:82px;
-  height:82px;
-  object-fit:cover;
-  border-radius:14px;
-  margin:0 auto 12px
+display:block;width:82px;height:82px;object-fit:cover;
+border-radius:14px;margin:0 auto 12px
 }
+.loginbox h2{text-align:center;margin:0}
+.loginbox p{text-align:center;color:var(--muted);font-size:13px}
+.loginbox .field{margin-top:12px}
+.loginbox .btn{width:100%;margin-top:14px}
 
-.loginbox h2{
-  text-align:center;
-  margin:0
-}
-
-.loginbox p{
-  text-align:center;
-  color:var(--muted);
-  font-size:13px
-}
-
-.loginbox .field{
-  margin-top:12px
-}
-
-.loginbox .btn{
-  width:100%;
-  margin-top:14px
-}
-
-.login-error{
-  color:var(--danger)!important;
-  font-size:12px!important;
-  min-height:16px
-}
-
-/* RELATORIOS */
-
-.report-head{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:16px;
-  margin-bottom:18px
-}
-
-.report-box{
-  background:#fff;
-  border:1px solid #e9eff5;
-  box-shadow:var(--shadow);
-  border-radius:14px;
-  padding:18px
-}
-
-.report-box small{
-  display:block;
-  color:var(--muted);
-  font-size:12px
-}
-
-.report-box strong{
-  display:block;
-  font-size:23px;
-  margin-top:7px
-}
-
-/* PICKER */
-
-.gallery-picker{
-  position:absolute;
-  inset:20px;
-  background:#fff;
-  border-radius:14px;
-  padding:20px;
-  overflow:auto;
-  z-index:3
-}
-
-.pick-card{
-  background:#fff;
-  border:1px solid #e3eaf0;
-  border-radius:10px;
-  padding:8px
-}
-
-.pick-card img{
-  width:100%;
-  aspect-ratio:1;
-  object-fit:cover;
-  border-radius:7px
-}
-
-.pick-card button{
-  width:100%;
-  margin-top:7px;
-  padding:8px;
-  border:0;
-  border-radius:7px;
-  background:#eaf0f5
+.errorbox{
+background:#fdecea;color:#9d2418;padding:10px;
+border-radius:8px;margin-top:12px;font-size:13px;display:none
 }
 
 @media(max-width:900px){
-
-  .sidebar{width:72px}
-
-  .brand div,
-  nav button span{display:none}
-
-  .brand{justify-content:center}
-
-  .main{
-    margin-left:72px;
-    width:calc(100% - 72px)
-  }
-
-  .cards{
-    grid-template-columns:repeat(2,1fr)
-  }
-
-  .content{padding:18px}
-
-  .item{
-    grid-template-columns:90px 1fr 110px 70px 38px
-  }
-
-  .thumb{
-    width:90px;
-    height:75px
-  }
+.sidebar{width:72px}
+.brand div,nav button span{display:none}
+.brand{justify-content:center}
+.main{margin-left:72px;width:calc(100% - 72px)}
+.cards{grid-template-columns:repeat(2,1fr)}
+.content{padding:18px}
+.item{grid-template-columns:80px 1fr 110px 70px 38px}
+.thumb{width:80px;height:70px}
 }
 
 @media(max-width:600px){
-
-  .cards{
-    grid-template-columns:1fr 1fr
-  }
-
-  .report-head{
-    grid-template-columns:1fr
-  }
-
-  .formgrid{
-    grid-template-columns:1fr
-  }
-
-  .full{
-    grid-column:auto
-  }
-
-  .top{
-    padding:0 15px
-  }
-
-  .top h1{
-    font-size:17px
-  }
-
-  .userpill{
-    display:none
-  }
-
-  .item{
-    grid-template-columns:70px 1fr 38px;
-    gap:7px
-  }
-
-  .item .fabric,
-  .item .qty{
-    grid-column:2
-  }
-
-  .item .remove{
-    grid-column:3;
-    grid-row:1/3
-  }
-
-  .thumb{
-    width:70px;
-    height:62px
-  }
-
-  .logout{
-    padding:7px 9px
-  }
+.cards{grid-template-columns:1fr 1fr}
+.formgrid{grid-template-columns:1fr}
+.full{grid-column:auto}
+.top{padding:0 15px}
+.top h1{font-size:17px}
+.item{grid-template-columns:70px 1fr 38px;gap:7px}
+.item .fabric,.item .qty{grid-column:2}
+.item .remove{grid-column:3;grid-row:1/3}
+.thumb{width:70px;height:62px}
 }
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
-
 <div id="login" class="login">
+<div class="loginbox">
 
-  <div class="loginbox">
+<img src="logo.jpg" alt="Augusto Estamparia Digital">
 
-    <img src="logo.jpg" alt="Augusto Estamparia Digital">
+<h2>Augusto Digital</h2>
+<p>Painel pessoal de pedidos e vendas</p>
 
-    <h2>Augusto Digital</h2>
-
-    <p>Painel de pedidos e vendas</p>
-
-    <div class="field">
-      <label>E-mail</label>
-      <input
-        id="loginEmail"
-        type="email"
-        placeholder="Digite seu e-mail"
-        autocomplete="email"
-      >
-    </div>
-
-    <div class="field">
-      <label>Senha</label>
-      <input
-        id="loginPass"
-        type="password"
-        placeholder="Digite sua senha"
-        autocomplete="current-password"
-      >
-    </div>
-
-    <p id="loginError" class="login-error"></p>
-
-    <button class="btn primary" onclick="doLogin()">
-      Entrar
-    </button>
-
-    <p style="font-size:11px;margin-top:12px">
-      Acesso protegido por Supabase.
-    </p>
-
-  </div>
-
+<div class="field">
+<label>E-mail</label>
+<input id="loginEmail" type="email" placeholder="Seu e-mail">
 </div>
 
+<div class="field">
+<label>Senha</label>
+<input id="loginPass" type="password" placeholder="Sua senha">
+</div>
 
-<!-- APP -->
+<button class="btn primary" onclick="doLogin()">Entrar</button>
+
+<div id="loginError" class="errorbox"></div>
+
+<p style="font-size:11px;margin-top:12px">
+Acesso protegido pelo Supabase.
+</p>
+
+</div>
+</div>
+
 
 <div class="app" id="app" style="display:none">
 
 <aside class="sidebar">
 
-  <div class="brand">
+<div class="brand">
+<img src="logo.jpg">
+<div>
+<b>AUGUSTO</b>
+<span>Estamparia Digital</span>
+</div>
+</div>
 
-    <img src="logo.jpg">
+<nav>
 
-    <div>
-      <b>AUGUSTO</b>
-      <span>Estamparia Digital</span>
-    </div>
+<button class="active" data-page="dashboard">
+<span>⌂ &nbsp; </span>Início
+</button>
 
-  </div>
+<button data-page="pedidos">
+<span>▣ &nbsp; </span>Pedidos
+</button>
 
-  <nav>
+<button data-page="clientes">
+<span>♙ &nbsp; </span>Clientes
+</button>
 
-    <button class="active" data-page="dashboard">
-      <span>⌂ &nbsp;</span>Início
-    </button>
+<button data-page="galeria">
+<span>▧ &nbsp; </span>Galeria
+</button>
 
-    <button data-page="pedidos">
-      <span>▣ &nbsp;</span>Pedidos
-    </button>
+<button data-page="financeiro">
+<span>R$ &nbsp; </span>Financeiro
+</button>
 
-    <button data-page="clientes">
-      <span>♙ &nbsp;</span>Clientes
-    </button>
+<button data-page="backup">
+<span>⚙ &nbsp; </span>Conta
+</button>
 
-    <button data-page="galeria">
-      <span>▧ &nbsp;</span>Galeria
-    </button>
-
-    <button data-page="financeiro">
-      <span>R$ &nbsp;</span>Financeiro
-    </button>
-
-    <button data-page="relatorios">
-      <span>▤ &nbsp;</span>Relatórios
-    </button>
-
-  </nav>
-
+</nav>
 </aside>
 
 
 <main class="main">
 
 <header class="top">
-
-  <h1 id="title">Início</h1>
-
-  <div class="top-right">
-
-    <div class="userpill" id="userPill">
-      Carregando...
-    </div>
-
-    <button class="logout" onclick="logout()">
-      Sair
-    </button>
-
-  </div>
-
+<h1 id="title">Início</h1>
+<div class="userpill" id="userEmail">Usuário</div>
 </header>
-
 
 <div class="content">
 
 
-<!-- DASHBOARD -->
-
 <section class="page active" id="dashboard">
 
-  <div class="section-head">
-
-    <h2>Visão rápida</h2>
-
-    <button class="btn gold" onclick="newOrder()">
-      + Novo pedido
-    </button>
-
-  </div>
-
-
-  <div class="grid cards">
-
-    <div class="card">
-      <div class="label">Vendas fechadas no mês</div>
-      <div class="value blue" id="dashSales">R$ 0,00</div>
-    </div>
-
-    <div class="card">
-      <div class="label">Comissão (1%)</div>
-      <div class="value gold" id="dashComm">R$ 0,00</div>
-    </div>
-
-    <div class="card">
-      <div class="label">Pedidos fechados</div>
-      <div class="value" id="dashClosed">0</div>
-    </div>
-
-    <div class="card">
-      <div class="label">Pedidos em aberto</div>
-      <div class="value" id="dashOpen">0</div>
-    </div>
-
-  </div>
-
-
-  <div style="height:18px"></div>
-
-
-  <div class="section-head">
-
-    <h2>Pedidos recentes</h2>
-
-    <button class="btn secondary" onclick="showPage('pedidos')">
-      Ver todos
-    </button>
-
-  </div>
-
-
-  <div class="tablewrap">
-
-    <table>
-
-      <thead>
-
-        <tr>
-          <th>Cliente</th>
-          <th>Pedido</th>
-          <th>Data</th>
-          <th>Status</th>
-          <th>Total</th>
-        </tr>
-
-      </thead>
-
-      <tbody id="recentBody"></tbody>
-
-    </table>
-
-  </div>
-
-</section>
-
-
-<!-- PEDIDOS -->
-
-<section class="page" id="pedidos">
-
-  <div class="section-head">
-
-    <h2>Pedidos</h2>
-
-    <button class="btn primary" onclick="newOrder()">
-      + Novo pedido
-    </button>
-
-  </div>
-
-
-  <div class="tablewrap">
-
-    <table>
-
-      <thead>
-
-        <tr>
-          <th>Cliente</th>
-          <th>Data</th>
-          <th>Peças</th>
-          <th>Status</th>
-          <th>Valor total</th>
-          <th></th>
-        </tr>
-
-      </thead>
-
-      <tbody id="ordersBody"></tbody>
-
-    </table>
-
-  </div>
-
-</section>
-
-
-<!-- CLIENTES -->
-
-<section class="page" id="clientes">
-
-  <div class="section-head">
-
-    <h2>Clientes</h2>
-
-    <button class="btn primary" onclick="openClientModal()">
-      + Novo cliente
-    </button>
-
-  </div>
-
-
-  <div class="tablewrap">
-
-    <table>
-
-      <thead>
-
-        <tr>
-          <th>Cliente / Empresa</th>
-          <th>Telefone</th>
-          <th>Pedidos</th>
-        </tr>
-
-      </thead>
-
-      <tbody id="clientsBody"></tbody>
-
-    </table>
-
-  </div>
-
-</section>
-
-
-<!-- GALERIA -->
-
-<section class="page" id="galeria">
-
-  <div class="section-head">
-
-    <h2>Minha galeria</h2>
-
-    <button
-      class="btn primary"
-      onclick="document.getElementById('galleryFile').click()"
-    >
-      + Adicionar imagens
-    </button>
-
-  </div>
-
-
-  <div class="drop">
-
-    Adicione imagens de estampas.
-    Elas ficam disponíveis para reutilização nos próximos pedidos.
-
-    <input
-      id="galleryFile"
-      type="file"
-      accept="image/*"
-      multiple
-      style="display:none"
-      onchange="addGalleryFiles(this.files)"
-    >
-
-  </div>
-
-
-  <div class="grid gallery" id="galleryGrid"></div>
-
-</section>
-
-
-<!-- FINANCEIRO -->
-
-<section class="page" id="financeiro">
-
-  <div class="section-head">
-
-    <h2>Financeiro</h2>
-
-    <input
-      id="monthFilter"
-      type="month"
-      onchange="renderFinance()"
-      style="padding:9px;border:1px solid #dbe4ec;border-radius:8px"
-    >
-
-  </div>
-
-
-  <div class="grid cards">
-
-    <div class="card">
-      <div class="label">Vendas fechadas</div>
-      <div class="value blue" id="finSales">R$ 0,00</div>
-    </div>
-
-    <div class="card">
-      <div class="label">Comissão de 1%</div>
-      <div class="value gold" id="finComm">R$ 0,00</div>
-    </div>
-
-    <div class="card">
-      <div class="label">Pedidos fechados</div>
-      <div class="value" id="finCount">0</div>
-    </div>
-
-    <div class="card">
-      <div class="label">Pedidos em aberto</div>
-      <div class="value" id="finPending">0</div>
-    </div>
-
-  </div>
-
-
-  <div style="height:18px"></div>
-
-
-  <div class="tablewrap">
-
-    <table>
-
-      <thead>
-
-        <tr>
-          <th>Cliente</th>
-          <th>Data de fechamento</th>
-          <th>Total</th>
-          <th>Sinal</th>
-          <th>Saldo</th>
-          <th>Comissão</th>
-        </tr>
-
-      </thead>
-
-      <tbody id="finBody"></tbody>
-
-    </table>
-
-  </div>
-
-</section>
-
-
-<!-- RELATORIOS -->
-
-<section class="page" id="relatorios">
-
-  <div class="section-head">
-
-    <h2>Relatórios</h2>
-
-    <input
-      id="reportMonth"
-      type="month"
-      onchange="renderReports()"
-      style="padding:9px;border:1px solid #dbe4ec;border-radius:8px"
-    >
-
-  </div>
-
-
-  <div class="report-head">
-
-    <div class="report-box">
-
-      <small>Vendas no período</small>
-
-      <strong class="blue" id="reportSales">
-        R$ 0,00
-      </strong>
-
-    </div>
-
-
-    <div class="report-box">
-
-      <small>Pedidos fechados</small>
-
-      <strong id="reportClosed">
-        0
-      </strong>
-
-    </div>
-
-
-    <div class="report-box">
-
-      <small>Comissão estimada</small>
-
-      <strong class="gold" id="reportComm">
-        R$ 0,00
-      </strong>
-
-    </div>
-
-  </div>
-
-
-  <div class="tablewrap">
-
-    <table>
-
-      <thead>
-
-        <tr>
-          <th>Cliente</th>
-          <th>Data</th>
-          <th>Valor</th>
-          <th>Sinal</th>
-          <th>Saldo</th>
-        </tr>
-
-      </thead>
-
-      <tbody id="reportBody"></tbody>
-
-    </table>
-
-  </div>
-
-</section>
-
+<div class="section-head">
+<h2>Visão rápida</h2>
+<button class="btn gold" onclick="newOrder()">+ Novo pedido</button>
+</div>
+
+<div class="grid cards">
+
+<div class="card">
+<div class="label">Vendas fechadas no mês</div>
+<div class="value blue" id="dashSales">R$ 0,00</div>
+</div>
+
+<div class="card">
+<div class="label">Comissão (1%)</div>
+<div class="value gold" id="dashComm">R$ 0,00</div>
+</div>
+
+<div class="card">
+<div class="label">Pedidos fechados</div>
+<div class="value" id="dashClosed">0</div>
+</div>
+
+<div class="card">
+<div class="label">Pedidos em aberto</div>
+<div class="value" id="dashOpen">0</div>
+</div>
 
 </div>
 
-</main>
+<div style="height:18px"></div>
 
+<div class="section-head">
+<h2>Pedidos recentes</h2>
+<button class="btn secondary" onclick="showPage('pedidos')">Ver todos</button>
+</div>
+
+<div class="tablewrap">
+<table>
+<thead>
+<tr>
+<th>Cliente</th>
+<th>Pedido</th>
+<th>Data</th>
+<th>Status</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody id="recentBody"></tbody>
+</table>
+</div>
+
+</section>
+
+
+<section class="page" id="pedidos">
+
+<div class="section-head">
+<h2>Pedidos</h2>
+<button class="btn primary" onclick="newOrder()">+ Novo pedido</button>
+</div>
+
+<div class="tablewrap">
+<table>
+<thead>
+<tr>
+<th>Cliente</th>
+<th>Data</th>
+<th>Peças</th>
+<th>Status</th>
+<th>Valor total</th>
+<th></th>
+</tr>
+</thead>
+<tbody id="ordersBody"></tbody>
+</table>
+</div>
+
+</section>
+
+
+<section class="page" id="clientes">
+
+<div class="section-head">
+<h2>Clientes</h2>
+<button class="btn primary" onclick="openClientModal()">+ Novo cliente</button>
+</div>
+
+<div class="tablewrap">
+<table>
+<thead>
+<tr>
+<th>Cliente / Empresa</th>
+<th>Telefone</th>
+<th>Pedidos</th>
+</tr>
+</thead>
+<tbody id="clientsBody"></tbody>
+</table>
+</div>
+
+</section>
+
+
+<section class="page" id="galeria">
+
+<div class="section-head">
+<h2>Minha galeria</h2>
+<button class="btn primary" onclick="document.getElementById('galleryFile').click()">
++ Adicionar imagens
+</button>
+</div>
+
+<div class="drop">
+Adicione imagens de estampas. Elas serão armazenadas no Supabase.
+<input id="galleryFile" type="file" accept="image/*" multiple style="display:none" onchange="addGalleryFiles(this.files)">
+</div>
+
+<div class="grid gallery" id="galleryGrid"></div>
+
+</section>
+
+
+<section class="page" id="financeiro">
+
+<div class="section-head">
+<h2>Financeiro</h2>
+<input id="monthFilter" type="month" onchange="renderFinance()" style="padding:9px;border:1px solid #dbe4ec;border-radius:8px">
+</div>
+
+<div class="grid cards">
+
+<div class="card">
+<div class="label">Vendas fechadas</div>
+<div class="value blue" id="finSales">R$ 0,00</div>
+</div>
+
+<div class="card">
+<div class="label">Comissão de 1%</div>
+<div class="value gold" id="finComm">R$ 0,00</div>
+</div>
+
+<div class="card">
+<div class="label">Pedidos fechados</div>
+<div class="value" id="finCount">0</div>
+</div>
+
+<div class="card">
+<div class="label">Pedidos em aberto</div>
+<div class="value" id="finPending">0</div>
+</div>
+
+</div>
+
+<div style="height:18px"></div>
+
+<div class="tablewrap">
+<table>
+<thead>
+<tr>
+<th>Cliente</th>
+<th>Data de fechamento</th>
+<th>Total</th>
+<th>Sinal</th>
+<th>Saldo</th>
+<th>Comissão</th>
+</tr>
+</thead>
+<tbody id="finBody"></tbody>
+</table>
+</div>
+
+</section>
+
+
+<section class="page" id="backup">
+
+<div class="section-head">
+<h2>Conta</h2>
+</div>
+
+<div class="form">
+
+<h3>Usuário conectado</h3>
+
+<p class="muted" id="accountEmail"></p>
+
+<p class="muted">
+Seus clientes, pedidos, imagens e faturamento ficam separados dos outros usuários.
+</p>
+
+<button class="btn danger" onclick="doLogout()">Sair da conta</button>
+
+</div>
+
+</section>
+
+</div>
+</main>
 </div>
 
 
 <div class="modal" id="modal">
-
-  <div class="modalbox" id="modalContent"></div>
-
+<div class="modalbox" id="modalContent"></div>
 </div>
-
 
 <div class="toast" id="toast"></div>
 
 
 <script>
 
-/* =========================================================
-   SUPABASE
-========================================================= */
+const SUPABASE_URL = 'https://lzmjuqsunccqutgemgpl.supabase.co';
 
-const SUPABASE_URL =
-  'https://lzmjuqsunccqutgemgpl.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_2bpLexKQE9hFSQLgbZDFVA_oJKJx-2k';
 
-const SUPABASE_KEY =
-  'sb_publishable_2bpLexKQE9hFSQLgbZDFVA_oJKJx-2k';
+const supabaseClient = window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
 
-const supabaseClient =
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
-
-
-/* =========================================================
-   CONFIGURAÇÕES
-========================================================= */
+const BUCKET = 'estampas';
 
 const fabrics = [
-  'Suplex',
-  'Fluit',
-  'Tule',
-  'Crepinho',
-  'Suede',
-  'Moletinho'
+'Suplex',
+'Fluit',
+'Tule',
+'Crepinho',
+'Suede',
+'Moletinho'
 ];
 
 const statuses = [
-  'Novo pedido',
-  'Fechado',
-  'Cancelado'
+'Novo pedido',
+'Fechado',
+'Cancelado'
 ];
 
 let currentUser = null;
-let currentProfile = null;
-let db = {
-  clients: [],
-  orders: [],
-  gallery: []
-};
-
+let clients = [];
+let orders = [];
+let gallery = [];
 let tempItems = [];
 
 
-/* =========================================================
-   UTILITÁRIOS
-========================================================= */
+/* UTILIDADES */
 
 function money(n){
-
-  return (Number(n)||0).toLocaleString(
-    'pt-BR',
-    {
-      style:'currency',
-      currency:'BRL'
-    }
-  );
-
+return (Number(n)||0).toLocaleString('pt-BR',{
+style:'currency',
+currency:'BRL'
+});
 }
-
 
 function esc(s){
-
-  return String(s ?? '')
-    .replace(/[&<>"']/g,m=>({
-
-      '&':'&amp;',
-      '<':'&lt;',
-      '>':'&gt;',
-      '"':'&quot;',
-      "'":'&#39;'
-
-    }[m]));
-
+return String(s??'').replace(/[&<>"']/g,m=>({
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#39;'
+}[m]));
 }
-
 
 function toast(s){
-
-  const t =
-    document.getElementById('toast');
-
-  t.textContent = s;
-
-  t.classList.add('show');
-
-  setTimeout(
-    ()=>t.classList.remove('show'),
-    2500
-  );
-
+const t=document.getElementById('toast');
+t.textContent=s;
+t.classList.add('show');
+setTimeout(()=>t.classList.remove('show'),2500);
 }
-
 
 function fmtDate(s){
-
-  if(!s) return '—';
-
-  const [y,m,d] =
-    String(s).slice(0,10).split('-');
-
-  return `${d}/${m}/${y}`;
-
+if(!s)return '—';
+const [y,m,d]=s.slice(0,10).split('-');
+return `${d}/${m}/${y}`;
 }
-
 
 function monthNow(){
-
-  return new Date()
-    .toISOString()
-    .slice(0,7);
-
+return new Date().toISOString().slice(0,7);
 }
 
 
-/* =========================================================
-   LOGIN
-========================================================= */
+/* LOGIN */
 
 async function doLogin(){
 
-  const email =
-    document
-      .getElementById('loginEmail')
-      .value
-      .trim();
+const email=document.getElementById('loginEmail').value.trim();
+const password=document.getElementById('loginPass').value;
 
-  const password =
-    document
-      .getElementById('loginPass')
-      .value;
+const error=document.getElementById('loginError');
 
-  const error =
-    document.getElementById('loginError');
+error.style.display='none';
 
-  error.textContent = '';
-
-  if(!email || !password){
-
-    error.textContent =
-      'Informe seu e-mail e sua senha.';
-
-    return;
-
-  }
-
-  const {
-    data,
-    error:loginError
-  } =
-    await supabaseClient.auth.signInWithPassword({
-      email,
-      password
-    });
-
-  if(loginError){
-
-    console.error(loginError);
-
-    error.textContent =
-      'E-mail ou senha incorretos.';
-
-    return;
-
-  }
-
-  currentUser = data.user;
-
-  await startApp();
-
+if(!email || !password){
+error.textContent='Informe seu e-mail e sua senha.';
+error.style.display='block';
+return;
 }
 
+const {data,error:loginError}=await supabaseClient.auth.signInWithPassword({
+email,
+password
+});
 
-async function logout(){
+if(loginError){
 
-  await supabaseClient.auth.signOut();
+error.textContent=loginError.message;
+error.style.display='block';
 
-  currentUser = null;
-  currentProfile = null;
+return;
+}
 
-  document
-    .getElementById('app')
-    .style.display='none';
+currentUser=data.user;
 
-  document
-    .getElementById('login')
-    .style.display='flex';
-
-  document
-    .getElementById('loginPass')
-    .value='';
-
+await startApp();
 }
 
 
 async function startApp(){
 
-  document
-    .getElementById('login')
-    .style.display='none';
+document.getElementById('login').style.display='none';
+document.getElementById('app').style.display='flex';
 
-  document
-    .getElementById('app')
-    .style.display='flex';
+document.getElementById('userEmail').textContent=currentUser.email;
+document.getElementById('accountEmail').textContent=currentUser.email;
 
-  await loadProfile();
+await loadData();
+renderAll();
+}
 
-  document
-    .getElementById('userPill')
-    .textContent =
-      currentProfile?.nome ||
-      currentUser?.email ||
-      'Usuário';
 
-  await loadAll();
+async function checkSession(){
+
+const {data}=await supabaseClient.auth.getSession();
+
+if(data.session){
+
+currentUser=data.session.user;
+
+await startApp();
+
+}
 
 }
 
 
-/* =========================================================
-   PERFIL
-========================================================= */
+async function doLogout(){
 
-async function loadProfile(){
+await supabaseClient.auth.signOut();
 
-  if(!currentUser) return;
+currentUser=null;
+clients=[];
+orders=[];
+gallery=[];
 
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from('perfis')
-      .select('*')
-      .eq('id',currentUser.id)
-      .maybeSingle();
+document.getElementById('app').style.display='none';
+document.getElementById('login').style.display='flex';
 
-  if(error){
+document.getElementById('loginPass').value='';
+}
 
-    console.error(error);
 
-    currentProfile = {
-      nome:currentUser.email,
-      role:'funcionario'
-    };
+/* NAVEGAÇÃO */
 
-    return;
+function showPage(id){
 
-  }
+document.querySelectorAll('.page')
+.forEach(x=>x.classList.remove('active'));
 
-  currentProfile = data;
+document.getElementById(id).classList.add('active');
+
+document.querySelectorAll('nav button')
+.forEach(x=>{
+x.classList.toggle('active',x.dataset.page===id);
+});
+
+const names={
+dashboard:'Início',
+pedidos:'Pedidos',
+clientes:'Clientes',
+galeria:'Galeria',
+financeiro:'Financeiro',
+backup:'Conta'
+};
+
+document.getElementById('title').textContent=names[id];
+
+renderAll();
+}
+
+document.querySelectorAll('nav button')
+.forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+
+
+/* CARREGAR DADOS */
+
+async function loadData(){
+
+if(!currentUser)return;
+
+const c=await supabaseClient
+.from('clientes')
+.select('*')
+.order('created_at',{ascending:false});
+
+if(c.error){
+console.error(c.error);
+toast('Erro ao carregar clientes.');
+return;
+}
+
+clients=c.data||[];
+
+
+const g=await supabaseClient
+.from('galeria')
+.select('*')
+.eq('usuario_id',currentUser.id)
+.order('created_at',{ascending:false});
+
+if(g.error){
+console.error(g.error);
+toast('Erro ao carregar galeria.');
+}else{
+gallery=g.data||[];
+}
+
+
+const p=await supabaseClient
+.from('pedidos')
+.select(`
+*,
+clientes(nome),
+itens_pedido(*)
+`)
+.eq('usuario_id',currentUser.id)
+.order('created_at',{ascending:false});
+
+if(p.error){
+console.error(p.error);
+toast('Erro ao carregar pedidos.');
+}else{
+orders=p.data||[];
+}
 
 }
 
 
-/* =========================================================
-   CARREGAMENTO GERAL
-========================================================= */
+async function refreshData(){
 
-async function loadAll(){
-
-  await Promise.all([
-    loadClients(),
-    loadGallery(),
-    loadOrders()
-  ]);
-
-  renderAll();
+await loadData();
+renderAll();
 
 }
 
 
-/* =========================================================
-   CLIENTES
-========================================================= */
+/* CLIENTES */
 
-async function loadClients(){
+function openClientModal(){
 
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from('clientes')
-      .select('*')
-      .order('created_at',{
-        ascending:false
-      });
+document.getElementById('modalContent').innerHTML=`
 
-  if(error){
+<div class="modalhead">
+<h3>Novo cliente</h3>
+<button class="close" onclick="closeModal()">×</button>
+</div>
 
-    console.error(error);
-    toast('Erro ao carregar clientes.');
+<div class="formgrid" style="margin-top:18px">
 
-    return;
+<div class="field">
+<label>Cliente / Empresa</label>
+<input id="cName">
+</div>
 
-  }
+<div class="field">
+<label>Telefone / WhatsApp</label>
+<input id="cPhone">
+</div>
 
-  db.clients = data || [];
+</div>
 
+<div style="display:flex;justify-content:flex-end;margin-top:18px">
+<button class="btn primary" onclick="saveClient()">Salvar cliente</button>
+</div>
+`;
+
+document.getElementById('modal').classList.add('show');
 }
 
 
 async function saveClient(){
 
-  const name =
-    document
-      .getElementById('cName')
-      .value
-      .trim();
+const name=document.getElementById('cName').value.trim();
+const phone=document.getElementById('cPhone').value.trim();
 
-  const phone =
-    document
-      .getElementById('cPhone')
-      .value
-      .trim();
+if(!name){
+toast('Informe o cliente.');
+return;
+}
 
-  if(!name){
+if(!currentUser){
+toast('Usuário não está conectado.');
+return;
+}
 
-    toast('Informe o cliente.');
+const {error}=await supabaseClient
+.from('clientes')
+.insert({
+nome:name,
+telefone:phone,
+usuario_id:currentUser.id
+});
 
-    return;
+if(error){
 
-  }
+console.error(error);
+toast('Não foi possível salvar cliente: '+error.message);
+return;
 
-  const {
-    error
-  } =
-    await supabaseClient
-      .from('clientes')
-      .insert({
+}
 
-        nome:name,
-        telefone:phone,
-        usuario_id:currentUser.id
+closeModal();
+toast('Cliente salvo com sucesso.');
 
-      });
-
-  if(error){
-
-    console.error(error);
-
-    toast(
-      'Não foi possível salvar o cliente.'
-    );
-
-    return;
-
-  }
-
-  closeModal();
-
-  toast('Cliente salvo.');
-
-  await loadClients();
-
-  renderAll();
+await refreshData();
 
 }
 
 
-function openClientModal(){
-
-  document
-    .getElementById('modalContent')
-    .innerHTML = `
-
-      <div class="modalhead">
-
-        <h3>Novo cliente</h3>
-
-        <button
-          class="close"
-          onclick="closeModal()"
-        >
-          ×
-        </button>
-
-      </div>
-
-
-      <div
-        class="formgrid"
-        style="margin-top:18px"
-      >
-
-        <div class="field">
-
-          <label>
-            Cliente / Empresa
-          </label>
-
-          <input id="cName">
-
-        </div>
-
-
-        <div class="field">
-
-          <label>
-            WhatsApp / Telefone
-          </label>
-
-          <input id="cPhone">
-
-        </div>
-
-      </div>
-
-
-      <div
-        style="
-          display:flex;
-          justify-content:flex-end;
-          margin-top:18px
-        "
-      >
-
-        <button
-          class="btn primary"
-          onclick="saveClient()"
-        >
-          Salvar cliente
-        </button>
-
-      </div>
-  `;
-
-  document
-    .getElementById('modal')
-    .classList.add('show');
-
-}
-
-
-/* =========================================================
-   GALERIA
-========================================================= */
-
-async function loadGallery(){
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from('galeria')
-      .select('*')
-      .order('created_at',{
-        ascending:false
-      });
-
-  if(error){
-
-    console.error(error);
-
-    toast('Erro ao carregar galeria.');
-
-    return;
-
-  }
-
-  db.gallery = data || [];
-
-}
-
-
-function storagePublicUrl(path){
-
-  if(!path) return '';
-
-  const {
-    data
-  } =
-    supabaseClient
-      .storage
-      .from('estampas')
-      .getPublicUrl(path);
-
-  return data?.publicUrl || '';
-
-}
-
+/* GALERIA */
 
 async function addGalleryFiles(files){
 
-  if(!files || !files.length)
-    return;
+if(!currentUser)return;
 
-  let successCount = 0;
+for(const file of [...files]){
 
-  for(const file of [...files]){
+try{
 
-    try{
+const extension=file.name.split('.').pop().toLowerCase();
 
-      const extension =
-        file.name
-          .split('.')
-          .pop()
-          .toLowerCase();
+const safeName=file.name
+.replace(/\s+/g,'-')
+.replace(/[^a-zA-Z0-9._-]/g,'');
 
-      const safeName =
-        file.name
-          .replace(
-            /[^a-zA-Z0-9._-]/g,
-            '_'
-          );
+const path=`${currentUser.id}/${crypto.randomUUID()}-${safeName}`;
 
-      const path =
-        `${currentUser.id}/${Date.now()}-${crypto.randomUUID()}.${extension}`;
+const {error:uploadError}=await supabaseClient
+.storage
+.from(BUCKET)
+.upload(path,file,{
+upsert:false,
+contentType:file.type
+});
 
-      const {
-        error:uploadError
-      } =
-        await supabaseClient
-          .storage
-          .from('estampas')
-          .upload(
-            path,
-            file,
-            {
-              cacheControl:'3600',
-              upsert:false
-            }
-          );
+if(uploadError){
+console.error(uploadError);
+toast('Erro ao enviar imagem: '+uploadError.message);
+continue;
+}
 
-      if(uploadError){
 
-        console.error(uploadError);
+const {error:dbError}=await supabaseClient
+.from('galeria')
+.insert({
+nome:file.name,
+storage_path:path,
+usuario_id:currentUser.id
+});
 
-        toast(
-          'Erro ao enviar uma imagem. Verifique as permissões do Storage.'
-        );
+if(dbError){
 
-        continue;
+console.error(dbError);
 
-      }
+await supabaseClient
+.storage
+.from(BUCKET)
+.remove([path]);
 
-      const {
-        data:publicData
-      } =
-        supabaseClient
-          .storage
-          .from('estampas')
-          .getPublicUrl(path);
+toast('Erro ao salvar imagem na galeria: '+dbError.message);
 
-      const imageUrl =
-        publicData?.publicUrl || '';
+continue;
 
-      const {
-        error:dbError
-      } =
-        await supabaseClient
-          .from('galeria')
-          .insert({
+}
 
-            nome:safeName,
-            storage_path:path,
-            usuario_id:currentUser.id
+}catch(e){
 
-          });
+console.error(e);
+toast('Erro ao adicionar imagem.');
 
-      if(dbError){
+}
 
-        console.error(dbError);
+}
 
-        continue;
+document.getElementById('galleryFile').value='';
 
-      }
+toast('Imagens adicionadas.');
 
-      successCount++;
-
-    }catch(err){
-
-      console.error(err);
-
-    }
-
-  }
-
-  if(successCount){
-
-    toast(
-      `${successCount} imagem(ns) adicionada(s).`
-    );
-
-    await loadGallery();
-
-    renderGallery();
-
-  }
+await refreshData();
 
 }
 
 
-async function deleteGallery(id){
+async function getImageUrl(path){
 
-  const item =
-    db.gallery.find(
-      x=>x.id===id
-    );
+if(!path)return '';
 
-  if(!item) return;
+const {data}=supabaseClient
+.storage
+.from(BUCKET)
+.getPublicUrl(path);
 
-  if(!confirm(
-    'Excluir esta estampa da galeria?'
-  )) return;
-
-
-  if(item.storage_path){
-
-    const {
-      error
-    } =
-      await supabaseClient
-        .storage
-        .from('estampas')
-        .remove([
-          item.storage_path
-        ]);
-
-    if(error)
-      console.error(error);
-
-  }
-
-
-  const {
-    error
-  } =
-    await supabaseClient
-      .from('galeria')
-      .delete()
-      .eq('id',id);
-
-  if(error){
-
-    console.error(error);
-
-    toast('Não foi possível excluir.');
-
-    return;
-
-  }
-
-  toast('Imagem excluída.');
-
-  await loadGallery();
-
-  renderGallery();
+return data.publicUrl;
 
 }
 
 
-function renderGallery(){
+async function deleteGallery(id,path){
 
-  const el =
-    document.getElementById(
-      'galleryGrid'
-    );
+if(!confirm('Excluir esta imagem da galeria?'))return;
 
-  if(!el) return;
+const {error:storageError}=await supabaseClient
+.storage
+.from(BUCKET)
+.remove([path]);
 
-  el.innerHTML =
-    db.gallery.map(
-      (g,i)=>{
+if(storageError){
+console.error(storageError);
+}
 
-        const url =
-          storagePublicUrl(
-            g.storage_path
-          );
+const {error}=await supabaseClient
+.from('galeria')
+.delete()
+.eq('id',id);
 
-        return `
+if(error){
 
-          <div class="photo">
+toast('Não foi possível excluir a imagem.');
+console.error(error);
+return;
 
-            <img
-              src="${esc(url)}"
-              alt="${esc(g.nome||'Estampa')}"
-            >
+}
 
-            <div class="actions">
+toast('Imagem excluída.');
 
-              <button
-                onclick="toast('Imagem disponível para uso nos pedidos.')"
-              >
-                Usar
-              </button>
-
-              <button
-                onclick="deleteGallery('${g.id}')"
-              >
-                Excluir
-              </button>
-
-            </div>
-
-          </div>
-        `;
-
-      }
-    ).join('') ||
-
-    '<div class="empty">Sua galeria está vazia.</div>';
+await refreshData();
 
 }
 
 
-/* =========================================================
-   PEDIDOS
-========================================================= */
+async function renderGallery(){
 
-async function loadOrders(){
+const el=document.getElementById('galleryGrid');
 
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from('pedidos')
-      .select(`
-        *,
-        clientes (
-          id,
-          nome,
-          telefone
-        ),
-        itens_pedido (
-          id,
-          pedido_id,
-          imagem_url,
-          tecido,
-          quantidade,
-          created_at
-        )
-      `)
-      .order('created_at',{
-        ascending:false
-      });
+if(!el)return;
 
-  if(error){
+if(!gallery.length){
 
-    console.error(error);
+el.innerHTML='<div class="empty">Sua galeria está vazia.</div>';
+return;
 
-    toast('Erro ao carregar pedidos.');
+}
 
-    return;
+const cards=[];
 
-  }
+for(let i=0;i<gallery.length;i++){
 
-  db.orders =
-    (data || []).map(o=>({
+const g=gallery[i];
 
-      ...o,
+const url=await getImageUrl(g.storage_path);
 
-      clientId:o.cliente_id,
+cards.push(`
+<div class="photo">
 
-      date:o.data_pedido,
+<img src="${url}" alt="${esc(g.nome)}">
 
-      signal:Number(o.sinal||0),
+<div style="font-size:12px;margin-top:7px">
+${esc(g.nome)}
+</div>
 
-      total:
-        o.valor_total === null
-          ? null
-          : Number(o.valor_total),
+<div class="actions">
 
-      status:
-        o.status || 'Novo pedido',
+<button onclick="useGalleryImage('${g.id}')">
+Usar no pedido
+</button>
 
-      notes:
-        o.observacoes || '',
+<button onclick="deleteGallery('${g.id}','${esc(g.storage_path)}')">
+Excluir
+</button>
 
-      items:
-        (o.itens_pedido || [])
-          .map(item=>({
+</div>
 
-            id:item.id,
+</div>
+`);
 
-            image:item.imagem_url,
+}
 
-            fabric:item.tecido,
-
-            qty:Number(
-              item.quantidade || 1
-            )
-
-          }))
-
-    }));
+el.innerHTML=cards.join('');
 
 }
 
 
-function newOrder(){
+async function useGalleryImage(id){
 
-  if(!db.clients.length){
+const g=gallery.find(x=>x.id===id);
 
-    toast(
-      'Cadastre um cliente antes de criar o pedido.'
-    );
+if(!g)return;
 
-    openClientModal();
+const url=await getImageUrl(g.storage_path);
 
-    return;
+tempItems.push({
+id:crypto.randomUUID(),
+image:url,
+galleryId:g.id,
+storagePath:g.storage_path,
+fabric:'Suplex',
+qty:1
+});
 
-  }
-
-
-  const options =
-    db.clients
-      .map(
-        c=>
-          `<option value="${c.id}">
-            ${esc(c.nome)}
-          </option>`
-      )
-      .join('');
-
-
-  document
-    .getElementById('modalContent')
-    .innerHTML = `
-
-      <div class="modalhead">
-
-        <h3>Novo pedido</h3>
-
-        <button
-          class="close"
-          onclick="closeModal()"
-        >
-          ×
-        </button>
-
-      </div>
-
-
-      <div
-        class="formgrid"
-        style="margin-top:18px"
-      >
-
-        <div class="field">
-
-          <label>Cliente</label>
-
-          <select id="oClient">
-
-            <option value="">
-              Selecione...
-            </option>
-
-            ${options}
-
-          </select>
-
-        </div>
-
-
-        <div class="field">
-
-          <label>Data do pedido</label>
-
-          <input
-            id="oDate"
-            type="date"
-            value="${new Date().toISOString().slice(0,10)}"
-          >
-
-        </div>
-
-
-        <div class="field">
-
-          <label>Sinal recebido (R$)</label>
-
-          <input
-            id="oSignal"
-            type="number"
-            step="0.01"
-            min="0"
-            value="0"
-          >
-
-        </div>
-
-
-        <div class="field">
-
-          <label>Status</label>
-
-          <select id="oStatus">
-
-            ${statuses.map(
-              s=>
-                `<option value="${s}">
-                  ${s}
-                </option>`
-            ).join('')}
-
-          </select>
-
-        </div>
-
-
-        <div class="field full">
-
-          <label>Observações</label>
-
-          <textarea
-            id="oNotes"
-            placeholder="Observações do pedido..."
-          ></textarea>
-
-        </div>
-
-      </div>
-
-
-      <div class="items">
-
-        <div class="section-head">
-
-          <h3>Estampas do pedido</h3>
-
-          <div>
-
-            <button
-              class="btn secondary"
-              onclick="addOrderItem()"
-            >
-              + Da galeria
-            </button>
-
-            <button
-              class="btn gold"
-              onclick="addNewOrderImage()"
-            >
-              + Nova imagem
-            </button>
-
-          </div>
-
-        </div>
-
-
-        <div id="itemsList"></div>
-
-      </div>
-
-
-      <div class="totalbar">
-
-        <span>
-          Total de peças:
-          <b id="itemsTotal">0</b>
-        </span>
-
-      </div>
-
-
-      <div
-        style="
-          display:flex;
-          justify-content:flex-end;
-          gap:10px;
-          margin-top:18px
-        "
-      >
-
-        <button
-          class="btn secondary"
-          onclick="closeModal()"
-        >
-          Cancelar
-        </button>
-
-        <button
-          class="btn primary"
-          onclick="saveOrder()"
-        >
-          Salvar pedido
-        </button>
-
-      </div>
-  `;
-
-
-  tempItems = [];
-
-  document
-    .getElementById('modal')
-    .classList.add('show');
-
-  renderItems();
+toast('Estampa adicionada ao pedido.');
 
 }
 
 
-function addOrderItem(){
+/* NOVO PEDIDO */
 
-  if(!db.gallery.length){
+async function newOrder(){
 
-    toast(
-      'Sua galeria está vazia. Adicione uma imagem primeiro.'
-    );
+if(!clients.length){
 
-    return;
+toast('Cadastre um cliente primeiro.');
+return;
 
-  }
+}
 
+const options=clients
+.map(c=>`<option value="${c.id}">${esc(c.nome)}</option>`)
+.join('');
 
-  const html =
-    db.gallery
-      .map(
-        g=>{
+document.getElementById('modalContent').innerHTML=`
 
-          const url =
-            storagePublicUrl(
-              g.storage_path
-            );
+<div class="modalhead">
+<h3>Novo pedido</h3>
+<button class="close" onclick="closeModal()">×</button>
+</div>
 
-          return `
+<div class="formgrid" style="margin-top:18px">
 
-            <div class="pick-card">
+<div class="field">
+<label>Cliente</label>
+<select id="oClient">
+<option value="">Selecione...</option>
+${options}
+</select>
+</div>
 
-              <img
-                src="${esc(url)}"
-              >
+<div class="field">
+<label>Data do pedido</label>
+<input id="oDate" type="date" value="${new Date().toISOString().slice(0,10)}">
+</div>
 
-              <button
-                onclick="pickGallery('${g.id}')"
-              >
-                Usar esta
-              </button>
+<div class="field">
+<label>Sinal recebido (R$)</label>
+<input id="oSignal" type="number" step="0.01" min="0" value="0">
+</div>
 
-            </div>
-          `;
+<div class="field">
+<label>Status</label>
 
-        }
-      )
-      .join('');
+<select id="oStatus">
+${statuses.map(s=>`<option>${s}</option>`).join('')}
+</select>
 
+</div>
 
-  document
-    .getElementById('modalContent')
-    .innerHTML += `
+<div class="field full">
+<label>Observações</label>
+<textarea id="oNotes"></textarea>
+</div>
 
-      <div
-        id="galleryPicker"
-        class="gallery-picker"
-      >
+</div>
 
-        <div class="modalhead">
+<div class="items">
 
-          <h3>
-            Escolher da galeria
-          </h3>
+<div class="section-head">
 
-          <button
-            class="close"
-            onclick="
-              document
-                .getElementById('galleryPicker')
-                ?.remove()
-            "
-          >
-            ×
-          </button>
+<h3>Estampas do pedido</h3>
 
-        </div>
+<div>
 
+<button class="btn secondary" onclick="addOrderItem()">
++ Da galeria
+</button>
 
-        <div
-          class="grid gallery"
-          style="margin-top:14px"
-        >
+<button class="btn gold" onclick="addNewOrderImage()">
++ Nova imagem
+</button>
 
-          ${html}
+</div>
 
-        </div>
+</div>
 
-      </div>
-  `;
+<div id="itemsList"></div>
+
+</div>
+
+<div class="totalbar">
+<span>Total de peças:
+<b id="itemsTotal">0</b>
+</span>
+</div>
+
+<div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px">
+
+<button class="btn secondary" onclick="closeModal()">
+Cancelar
+</button>
+
+<button class="btn primary" onclick="saveOrder()">
+Salvar pedido
+</button>
+
+</div>
+`;
+
+tempItems=[];
+
+document.getElementById('modal').classList.add('show');
+
+renderItems();
 
 }
 
 
-function pickGallery(id){
+async function addOrderItem(){
 
-  const g =
-    db.gallery.find(
-      x=>x.id===id
-    );
+if(!gallery.length){
 
-  if(!g) return;
+toast('Sua galeria está vazia.');
+return;
+
+}
+
+const cards=[];
+
+for(const g of gallery){
+
+const url=await getImageUrl(g.storage_path);
+
+cards.push(`
+<div class="photo">
+
+<img src="${url}">
+
+<button class="btn secondary" style="width:100%;margin-top:8px"
+onclick="pickGallery('${g.id}')">
+Usar esta
+</button>
+
+</div>
+`);
+
+}
+
+document.getElementById('modalContent').insertAdjacentHTML(
+'beforeend',
+`
+<div id="galleryPicker"
+style="position:absolute;inset:20px;background:#fff;border-radius:14px;padding:20px;overflow:auto;z-index:3">
+
+<div class="modalhead">
+
+<h3>Escolher da galeria</h3>
+
+<button class="close"
+onclick="document.getElementById('galleryPicker').remove()">
+×
+</button>
+
+</div>
+
+<div class="grid gallery" style="margin-top:14px">
+${cards.join('')}
+</div>
+
+</div>
+`
+);
+
+}
 
 
-  const image =
-    storagePublicUrl(
-      g.storage_path
-    );
+async function pickGallery(id){
 
+const g=gallery.find(x=>x.id===id);
 
-  tempItems.push({
+if(!g)return;
 
-    id:crypto.randomUUID(),
+const url=await getImageUrl(g.storage_path);
 
-    image:image,
+tempItems.push({
+id:crypto.randomUUID(),
+image:url,
+galleryId:g.id,
+storagePath:g.storage_path,
+fabric:'Suplex',
+qty:1
+});
 
-    fabric:'Suplex',
+document.getElementById('galleryPicker')?.remove();
 
-    qty:1
-
-  });
-
-
-  document
-    .getElementById('galleryPicker')
-    ?.remove();
-
-  renderItems();
+renderItems();
 
 }
 
 
 function addNewOrderImage(){
 
-  const input =
-    document.createElement('input');
+const input=document.createElement('input');
 
-  input.type='file';
-  input.accept='image/*';
+input.type='file';
+input.accept='image/*';
 
+input.onchange=async()=>{
 
-  input.onchange=async()=>{
+const f=input.files[0];
 
-    const file =
-      input.files?.[0];
+if(!f)return;
 
-    if(!file) return;
+if(!currentUser)return;
 
+const safeName=f.name
+.replace(/\s+/g,'-')
+.replace(/[^a-zA-Z0-9._-]/g,'');
 
-    const extension =
-      file.name
-        .split('.')
-        .pop()
-        .toLowerCase();
+const path=`${currentUser.id}/${crypto.randomUUID()}-${safeName}`;
 
+const {error:uploadError}=await supabaseClient
+.storage
+.from(BUCKET)
+.upload(path,f,{
+upsert:false,
+contentType:f.type
+});
 
-    const path =
-      `${currentUser.id}/pedido-${Date.now()}-${crypto.randomUUID()}.${extension}`;
+if(uploadError){
 
+toast('Erro ao enviar imagem: '+uploadError.message);
+return;
 
-    const {
-      error
-    } =
-      await supabaseClient
-        .storage
-        .from('estampas')
-        .upload(
-          path,
-          file,
-          {
-            cacheControl:'3600',
-            upsert:false
-          }
-        );
+}
 
+const {error:dbError}=await supabaseClient
+.from('galeria')
+.insert({
+nome:f.name,
+storage_path:path,
+usuario_id:currentUser.id
+});
 
-    if(error){
+if(dbError){
 
-      console.error(error);
+await supabaseClient
+.storage
+.from(BUCKET)
+.remove([path]);
 
-      toast(
-        'Não foi possível enviar a imagem.'
-      );
+toast('Erro ao salvar imagem.');
+return;
 
-      return;
+}
 
-    }
+const {data}=supabaseClient
+.storage
+.from(BUCKET)
+.getPublicUrl(path);
 
+tempItems.push({
+id:crypto.randomUUID(),
+image:data.publicUrl,
+storagePath:path,
+fabric:'Suplex',
+qty:1
+});
 
-    const {
-      data
-    } =
-      supabaseClient
-        .storage
-        .from('estampas')
-        .getPublicUrl(path);
+renderItems();
 
+};
 
-    tempItems.push({
-
-      id:crypto.randomUUID(),
-
-      image:data.publicUrl,
-
-      fabric:'Suplex',
-
-      qty:1
-
-    });
-
-
-    renderItems();
-
-  };
-
-
-  input.click();
+input.click();
 
 }
 
 
 function renderItems(){
 
-  const el =
-    document.getElementById(
-      'itemsList'
-    );
+const el=document.getElementById('itemsList');
 
-  if(!el) return;
+if(!el)return;
 
+el.innerHTML=tempItems.map((it,i)=>`
 
-  el.innerHTML =
-    tempItems
-      .map(
-        (it,i)=>`
+<div class="item">
 
-          <div class="item">
+<img class="thumb" src="${it.image}">
 
-            <img
-              class="thumb"
-              src="${esc(it.image)}"
-            >
+<div>
+<b>Estampa ${i+1}</b>
+<div class="muted" style="font-size:11px">
+Imagem vinculada ao pedido
+</div>
+</div>
 
+<div class="fabric">
 
-            <div>
+<select onchange="tempItems[${i}].fabric=this.value">
 
-              <b>
-                Estampa ${i+1}
-              </b>
+${fabrics.map(f=>`
+<option ${f===it.fabric?'selected':''}>
+${f}
+</option>
+`).join('')}
 
-              <div
-                class="muted"
-                style="font-size:11px"
-              >
-                Imagem vinculada ao item
-              </div>
+</select>
 
-            </div>
+</div>
 
+<div class="qty">
 
-            <div class="fabric">
+<input
+type="number"
+min="1"
+value="${it.qty}"
+onchange="tempItems[${i}].qty=Math.max(1,Number(this.value));renderItems()"
+>
 
-              <select
-                onchange="
-                  tempItems[${i}].fabric=this.value
-                "
-              >
+</div>
 
-                ${fabrics.map(
-                  f=>
-                    `<option
-                      ${f===it.fabric?'selected':''}
-                    >
-                      ${f}
-                    </option>`
-                ).join('')}
+<button class="remove"
+onclick="tempItems.splice(${i},1);renderItems()">
+×
+</button>
 
-              </select>
+</div>
 
-            </div>
+`).join('') || '<div class="empty">Nenhuma estampa adicionada ainda.</div>';
 
-
-            <div class="qty">
-
-              <input
-                type="number"
-                min="1"
-                value="${it.qty}"
-                onchange="
-                  tempItems[${i}].qty=Math.max(
-                    1,
-                    Number(this.value)
-                  );
-                  renderItems()
-                "
-              >
-
-            </div>
-
-
-            <button
-              class="remove"
-              onclick="
-                tempItems.splice(${i},1);
-                renderItems()
-              "
-            >
-              ×
-            </button>
-
-          </div>
-      `
-      )
-      .join('') ||
-
-    '<div class="empty">Nenhuma estampa adicionada ainda.</div>';
-
-
-  const total =
-    tempItems.reduce(
-      (a,x)=>
-        a+Number(x.qty||0),
-      0
-    );
-
-
-  document
-    .getElementById('itemsTotal')
-    .textContent=total;
+document.getElementById('itemsTotal').textContent=
+tempItems.reduce((a,x)=>a+Number(x.qty||0),0);
 
 }
 
+
+/* SALVAR PEDIDO */
 
 async function saveOrder(){
 
-  const clientId =
-    document
-      .getElementById('oClient')
-      .value;
+const clientId=document.getElementById('oClient').value;
 
-  if(!clientId){
+if(!clientId){
 
-    toast(
-      'Selecione um cliente.'
-    );
-
-    return;
-
-  }
-
-
-  if(!tempItems.length){
-
-    toast(
-      'Adicione pelo menos uma estampa.'
-    );
-
-    return;
-
-  }
-
-
-  const {
-    data:order,
-    error:orderError
-  } =
-    await supabaseClient
-      .from('pedidos')
-      .insert({
-
-        cliente_id:clientId,
-
-        usuario_id:currentUser.id,
-
-        data_pedido:
-          document
-            .getElementById('oDate')
-            .value,
-
-        sinal:
-          Number(
-            document
-              .getElementById('oSignal')
-              .value
-          ) || 0,
-
-        valor_total:null,
-
-        observacoes:
-          document
-            .getElementById('oNotes')
-            .value,
-
-        status:
-          document
-            .getElementById('oStatus')
-            .value
-
-      })
-      .select()
-      .single();
-
-
-  if(orderError){
-
-    console.error(orderError);
-
-    toast(
-      'Erro ao criar o pedido.'
-    );
-
-    return;
-
-  }
-
-
-  const rows =
-    tempItems.map(
-      item=>({
-
-        pedido_id:order.id,
-
-        imagem_url:item.image,
-
-        tecido:item.fabric,
-
-        quantidade:Number(
-          item.qty||1
-        )
-
-      })
-    );
-
-
-  const {
-    error:itemError
-  } =
-    await supabaseClient
-      .from('itens_pedido')
-      .insert(rows);
-
-
-  if(itemError){
-
-    console.error(itemError);
-
-    await supabaseClient
-      .from('pedidos')
-      .delete()
-      .eq('id',order.id);
-
-    toast(
-      'Erro ao salvar as estampas do pedido.'
-    );
-
-    return;
-
-  }
-
-
-  closeModal();
-
-  tempItems=[];
-
-  toast('Pedido criado.');
-
-  await loadOrders();
-
-  renderAll();
+toast('Selecione um cliente.');
+return;
 
 }
 
+if(!tempItems.length){
+
+toast('Adicione pelo menos uma estampa.');
+return;
+
+}
+
+if(!currentUser){
+
+toast('Usuário não conectado.');
+return;
+
+}
+
+
+const pedido={
+cliente_id:clientId,
+data_pedido:document.getElementById('oDate').value,
+sinal:Number(document.getElementById('oSignal').value)||0,
+valor_total:null,
+observacoes:document.getElementById('oNotes').value,
+status:document.getElementById('oStatus').value,
+usuario_id:currentUser.id
+};
+
+
+const {data:pedidoData,error}=await supabaseClient
+.from('pedidos')
+.insert(pedido)
+.select()
+.single();
+
+if(error){
+
+console.error(error);
+
+toast('Não foi possível salvar pedido: '+error.message);
+return;
+
+}
+
+
+const itens=tempItems.map(it=>({
+
+pedido_id:pedidoData.id,
+imagem_url:it.storagePath || it.image,
+tecido:it.fabric,
+quantidade:Number(it.qty)||1
+}));
+
+
+const {error:itemError}=await supabaseClient
+.from('itens_pedido')
+.insert(itens);
+
+if(itemError){
+
+console.error(itemError);
+
+await supabaseClient
+.from('pedidos')
+.delete()
+.eq('id',pedidoData.id);
+
+toast('Erro ao salvar os itens do pedido: '+itemError.message);
+
+return;
+
+}
+
+
+closeModal();
+
+toast('Pedido criado com sucesso.');
+
+tempItems=[];
+
+await refreshData();
+
+}
+
+
+/* ABRIR PEDIDO */
+
+async function viewOrder(id){
+
+const o=orders.find(x=>x.id===id);
+
+if(!o)return;
+
+const clientName=o.clientes?.nome ||
+clients.find(c=>c.id===o.cliente_id)?.nome ||
+'Cliente';
+
+const items=o.itens_pedido||[];
+
+document.getElementById('modalContent').innerHTML=`
+
+<div class="modalhead">
+
+<h3>Pedido — ${esc(clientName)}</h3>
+
+<button class="close" onclick="closeModal()">×</button>
+
+</div>
+
+<div class="muted" style="margin:8px 0 18px">
+
+Pedido criado em ${fmtDate(o.data_pedido)}
+· ${items.reduce((a,x)=>a+Number(x.quantidade||0),0)} peças
+
+</div>
+
+<div class="tablewrap">
+
+<table>
+
+<thead>
+<tr>
+<th>Estampa</th>
+<th>Tecido</th>
+<th>Quantidade</th>
+</tr>
+</thead>
+
+<tbody>
+
+${items.map((x,i)=>`
+
+<tr>
+
+<td>
+
+<img
+src="${await imageUrlFromStored(x.imagem_url)}"
+style="width:90px;height:70px;object-fit:cover;border-radius:7px"
+>
+
+</td>
+
+<td>${esc(x.tecido)}</td>
+
+<td>${x.quantidade} peça(s)</td>
+
+</tr>
+
+`).join('')}
+
+</tbody>
+
+</table>
+
+</div>
+
+
+<div class="formgrid" style="margin-top:16px">
+
+<div class="field">
+
+<label>Status</label>
+
+<select id="vStatus">
+
+${statuses.map(s=>`
+<option ${s===o.status?'selected':''}>
+${s}
+</option>
+`).join('')}
+
+</select>
+
+</div>
+
+
+<div class="field">
+
+<label>Valor total do pedido (R$)</label>
+
+<input
+id="vTotal"
+type="number"
+step="0.01"
+min="0"
+value="${o.valor_total??''}"
+placeholder="Informar ao fechar"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>Sinal recebido</label>
+
+<input value="${money(o.sinal)}" disabled>
+
+</div>
+
+
+<div class="field">
+
+<label>Saldo a receber</label>
+
+<input
+id="vBalance"
+value="${o.valor_total==null?'—':money(Math.max(0,o.valor_total-o.sinal))}"
+disabled
+>
+
+</div>
+
+</div>
+
+
+<div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px">
+
+<button class="btn secondary"
+onclick="generatePDF('${o.id}')">
+Gerar PDF
+</button>
+
+<button class="btn primary"
+onclick="updateOrder('${o.id}')">
+Salvar alterações
+</button>
+
+</div>
+
+`;
+
+document.getElementById('modal').classList.add('show');
+
+document.getElementById('vTotal').oninput=e=>{
+
+const n=Number(e.target.value);
+
+document.getElementById('vBalance').value=
+isNaN(n)?'—':money(Math.max(0,n-o.sinal));
+
+};
+
+}
+
+
+async function imageUrlFromStored(value){
+
+if(!value)return '';
+
+if(value.startsWith('http'))return value;
+
+const {data}=supabaseClient
+.storage
+.from(BUCKET)
+.getPublicUrl(value);
+
+return data.publicUrl;
+
+}
+
+
+/* ATUALIZAR PEDIDO */
 
 async function updateOrder(id){
 
-  const o =
-    db.orders.find(
-      x=>x.id===id
-    );
+const o=orders.find(x=>x.id===id);
 
-  if(!o) return;
+if(!o)return;
 
+const status=document.getElementById('vStatus').value;
+const totalInput=document.getElementById('vTotal').value;
 
-  const totalInput =
-    document.getElementById(
-      'vTotal'
-    ).value;
+let total=null;
 
-  const status =
-    document.getElementById(
-      'vStatus'
-    ).value;
+if(totalInput!==''){
 
+total=Number(totalInput);
 
-  let valorTotal = null;
-  let closedAt = null;
+}
 
-  if(totalInput !== ''){
-
-    valorTotal =
-      Number(totalInput);
-
-    if(valorTotal < 0){
-
-      toast(
-        'O valor não pode ser negativo.'
-      );
-
-      return;
-
-    }
-
-    if(status==='Fechado'){
-
-      closedAt =
-        new Date()
-          .toISOString();
-
-    }
-
-  }
+const finalStatus=
+status==='Cancelado'
+?'Cancelado'
+:(total!==null?'Fechado':status);
 
 
-  const {
-    error
-  } =
-    await supabaseClient
-      .from('pedidos')
-      .update({
+const {error}=await supabaseClient
+.from('pedidos')
+.update({
+valor_total:total,
+status:finalStatus
+})
+.eq('id',id)
+.eq('usuario_id',currentUser.id);
 
-        valor_total:
-          valorTotal,
+if(error){
 
-        status:status
+console.error(error);
 
-      })
-      .eq('id',id);
+toast('Não foi possível atualizar: '+error.message);
+return;
 
+}
 
-  if(error){
+closeModal();
 
-    console.error(error);
+toast('Pedido atualizado.');
 
-    toast(
-      'Não foi possível atualizar o pedido.'
-    );
-
-    return;
-
-  }
-
-
-  closeModal();
-
-  toast('Pedido atualizado.');
-
-  await loadOrders();
-
-  renderAll();
+await refreshData();
 
 }
 
 
-/* =========================================================
-   VISUALIZAR PEDIDO
-========================================================= */
-
-function viewOrder(id){
-
-  const o =
-    db.orders.find(
-      x=>x.id===id
-    );
-
-  if(!o) return;
-
-
-  const c =
-    db.clients.find(
-      x=>x.id===o.clientId
-    );
-
-
-  document
-    .getElementById('modalContent')
-    .innerHTML = `
-
-      <div class="modalhead">
-
-        <h3>
-          Pedido — ${esc(c?.nome||'Cliente')}
-        </h3>
-
-        <button
-          class="close"
-          onclick="closeModal()"
-        >
-          ×
-        </button>
-
-      </div>
-
-
-      <div
-        class="muted"
-        style="margin:8px 0 18px"
-      >
-        Criado em ${fmtDate(o.date)}
-        ·
-        ${o.items.reduce(
-          (a,x)=>a+Number(x.qty||0),
-          0
-        )} peças
-      </div>
-
-
-      <div class="tablewrap">
-
-        <table>
-
-          <thead>
-
-            <tr>
-              <th>Estampa</th>
-              <th>Tecido</th>
-              <th>Quantidade</th>
-            </tr>
-
-          </thead>
-
-
-          <tbody>
-
-            ${o.items.map(
-              x=>`
-
-                <tr>
-
-                  <td>
-
-                    <img
-                      src="${esc(x.image)}"
-                      style="
-                        width:120px;
-                        height:90px;
-                        object-fit:cover;
-                        border-radius:7px
-                      "
-                    >
-
-                  </td>
-
-                  <td>
-                    ${esc(x.fabric)}
-                  </td>
-
-                  <td>
-                    ${x.qty} peça(s)
-                  </td>
-
-                </tr>
-              `
-            ).join('')}
-
-          </tbody>
-
-        </table>
-
-      </div>
-
-
-      <div
-        class="formgrid"
-        style="margin-top:16px"
-      >
-
-        <div class="field">
-
-          <label>Status</label>
-
-          <select id="vStatus">
-
-            ${statuses.map(
-              s=>
-                `<option
-                  ${s===o.status?'selected':''}
-                >
-                  ${s}
-                </option>`
-            ).join('')}
-
-          </select>
-
-        </div>
-
-
-        <div class="field">
-
-          <label>
-            Valor total do pedido (R$)
-          </label>
-
-          <input
-            id="vTotal"
-            type="number"
-            step="0.01"
-            min="0"
-            value="${o.total??''}"
-            placeholder="Informar quando fechar"
-          >
-
-        </div>
-
-
-        <div class="field">
-
-          <label>Sinal recebido</label>
-
-          <input
-            value="${money(o.signal)}"
-            disabled
-          >
-
-        </div>
-
-
-        <div class="field">
-
-          <label>Saldo a receber</label>
-
-          <input
-            id="vBalance"
-            value="${
-              o.total==null
-                ? '—'
-                : money(
-                    Math.max(
-                      0,
-                      o.total-o.signal
-                    )
-                  )
-            }"
-            disabled
-          >
-
-        </div>
-
-      </div>
-
-
-      <div
-        style="
-          display:flex;
-          justify-content:flex-end;
-          gap:10px;
-          margin-top:18px;
-          flex-wrap:wrap
-        "
-      >
-
-        <button
-          class="btn danger"
-          onclick="deleteOrder('${o.id}')"
-        >
-          Excluir pedido
-        </button>
-
-        <button
-          class="btn secondary"
-          onclick="generatePDF('${o.id}')"
-        >
-          Gerar PDF
-        </button>
-
-        <button
-          class="btn primary"
-          onclick="updateOrder('${o.id}')"
-        >
-          Salvar alterações
-        </button>
-
-      </div>
-  `;
-
-
-  document
-    .getElementById('modal')
-    .classList.add('show');
-
-
-  document
-    .getElementById('vTotal')
-    .oninput=e=>{
-
-      const n =
-        Number(e.target.value);
-
-      document
-        .getElementById('vBalance')
-        .value =
-          e.target.value === ''
-            ? '—'
-            : money(
-                Math.max(
-                  0,
-                  n-o.signal
-                )
-              );
-
-    };
-
-}
-
-
-async function deleteOrder(id){
-
-  const o =
-    db.orders.find(
-      x=>x.id===id
-    );
-
-  if(!o) return;
-
-
-  if(!confirm(
-    'Tem certeza que deseja excluir este pedido? Esta ação não pode ser desfeita.'
-  )) return;
-
-
-  const {
-    error:itemError
-  } =
-    await supabaseClient
-      .from('itens_pedido')
-      .delete()
-      .eq('pedido_id',id);
-
-
-  if(itemError){
-
-    console.error(itemError);
-
-    toast(
-      'Não foi possível excluir os itens do pedido.'
-    );
-
-    return;
-
-  }
-
-
-  const {
-    error
-  } =
-    await supabaseClient
-      .from('pedidos')
-      .delete()
-      .eq('id',id);
-
-
-  if(error){
-
-    console.error(error);
-
-    toast(
-      'Não foi possível excluir o pedido.'
-    );
-
-    return;
-
-  }
-
-
-  closeModal();
-
-  toast('Pedido excluído.');
-
-  await loadOrders();
-
-  renderAll();
-
-}
-
-
-/* =========================================================
-   RENDER PEDIDOS
-========================================================= */
+/* RENDER PEDIDOS */
 
 function renderOrders(){
 
-  const el =
-    document.getElementById(
-      'ordersBody'
-    );
+const el=document.getElementById('ordersBody');
 
-  if(!el) return;
+if(!el)return;
 
+el.innerHTML=orders.map(o=>{
 
-  el.innerHTML =
-    db.orders.map(
-      o=>{
+const clientName=o.clientes?.nome ||
+clients.find(c=>c.id===o.cliente_id)?.nome ||
+'—';
 
-        const c =
-          db.clients.find(
-            x=>x.id===o.clientId
-          );
+const pieces=(o.itens_pedido||[])
+.reduce((a,x)=>a+Number(x.quantidade||0),0);
 
-        const pieces =
-          o.items.reduce(
-            (a,x)=>
-              a+Number(x.qty||0),
-            0
-          );
+let badge='wait';
 
+if(o.status==='Fechado')badge='ok';
+if(o.status==='Cancelado')badge='cancel';
 
-        let badge='wait';
+return `
 
-        if(o.status==='Fechado')
-          badge='ok';
+<tr>
 
-        if(o.status==='Cancelado')
-          badge='cancel';
+<td>${esc(clientName)}</td>
 
+<td>${fmtDate(o.data_pedido)}</td>
 
-        return `
+<td>${pieces}</td>
 
-          <tr>
+<td>
+<span class="badge ${badge}">
+${esc(o.status)}
+</span>
+</td>
 
-            <td>
-              ${esc(c?.nome||'—')}
-            </td>
+<td>
+${o.valor_total==null?'—':money(o.valor_total)}
+</td>
 
-            <td>
-              ${fmtDate(o.date)}
-            </td>
+<td>
 
-            <td>
-              ${pieces}
-            </td>
+<button
+class="btn secondary"
+onclick="viewOrder('${o.id}')">
+Abrir
+</button>
 
-            <td>
+</td>
 
-              <span class="badge ${badge}">
-                ${esc(o.status)}
-              </span>
+</tr>
 
-            </td>
+`;
 
-            <td>
-              ${
-                o.total==null
-                  ? '—'
-                  : money(o.total)
-              }
-            </td>
+}).join('') ||
 
-            <td>
-
-              <button
-                class="btn secondary"
-                onclick="viewOrder('${o.id}')"
-              >
-                Abrir
-              </button>
-
-            </td>
-
-          </tr>
-        `;
-
-      }
-    ).join('') ||
-
-    '<tr><td colspan="6" class="empty">Nenhum pedido cadastrado.</td></tr>';
+'<tr><td colspan="6" class="empty">Nenhum pedido cadastrado.</td></tr>';
 
 }
 
+
+/* RENDER CLIENTES */
 
 function renderClients(){
 
-  const el =
-    document.getElementById(
-      'clientsBody'
-    );
+const el=document.getElementById('clientsBody');
 
-  if(!el) return;
+if(!el)return;
 
+el.innerHTML=clients.map(c=>{
 
-  el.innerHTML =
-    db.clients.map(
-      c=>`
+const count=orders.filter(o=>o.cliente_id===c.id).length;
 
-        <tr>
+return `
 
-          <td>
-            <b>
-              ${esc(c.nome)}
-            </b>
-          </td>
+<tr>
 
-          <td>
-            ${esc(c.telefone||'—')}
-          </td>
+<td>
+<b>${esc(c.nome)}</b>
+</td>
 
-          <td>
-            ${
-              db.orders.filter(
-                o=>o.clientId===c.id
-              ).length
-            }
-          </td>
+<td>
+${esc(c.telefone||'—')}
+</td>
 
-        </tr>
-      `
-    ).join('') ||
+<td>
+${count}
+</td>
 
-    '<tr><td colspan="3" class="empty">Nenhum cliente cadastrado.</td></tr>';
+</tr>
+
+`;
+
+}).join('') ||
+
+'<tr><td colspan="3" class="empty">Nenhum cliente cadastrado.</td></tr>';
 
 }
 
 
-/* =========================================================
-   FINANCEIRO
-========================================================= */
-
-function getClosedForMonth(month){
-
-  return db.orders.filter(
-    o=>
-      o.total!=null &&
-      o.status==='Fechado' &&
-      String(
-        o.created_at ||
-        o.date
-      ).slice(0,7)===month
-  );
-
-}
-
+/* FINANCEIRO */
 
 function renderFinance(){
 
-  const input =
-    document.getElementById(
-      'monthFilter'
-    );
+const m=
+document.getElementById('monthFilter')?.value ||
+monthNow();
 
-  const month =
-    input?.value ||
-    monthNow();
+if(document.getElementById('monthFilter') &&
+!document.getElementById('monthFilter').value){
 
-
-  if(input && !input.value)
-    input.value=month;
-
-
-  const closed =
-    db.orders.filter(
-      o=>
-        o.total!=null &&
-        o.status==='Fechado' &&
-        String(
-          o.created_at ||
-          o.date
-        ).slice(0,7)===month
-    );
-
-
-  const sales =
-    closed.reduce(
-      (a,o)=>
-        a+Number(o.total||0),
-      0
-    );
-
-
-  document
-    .getElementById('finSales')
-    .textContent=money(sales);
-
-
-  document
-    .getElementById('finComm')
-    .textContent=money(
-      sales*.01
-    );
-
-
-  document
-    .getElementById('finCount')
-    .textContent=closed.length;
-
-
-  document
-    .getElementById('finPending')
-    .textContent=
-      db.orders.filter(
-        o=>
-          o.status!=='Cancelado' &&
-          o.total==null
-      ).length;
-
-
-  document
-    .getElementById('finBody')
-    .innerHTML =
-      closed.map(
-        o=>{
-
-          const c =
-            db.clients.find(
-              x=>x.id===o.clientId
-            );
-
-
-          return `
-
-            <tr>
-
-              <td>
-                ${esc(c?.nome||'—')}
-              </td>
-
-              <td>
-                ${fmtDate(
-                  o.created_at ||
-                  o.date
-                )}
-              </td>
-
-              <td>
-                ${money(o.total)}
-              </td>
-
-              <td>
-                ${money(o.signal)}
-              </td>
-
-              <td>
-                ${money(
-                  Math.max(
-                    0,
-                    o.total-o.signal
-                  )
-                )}
-              </td>
-
-              <td>
-                ${money(
-                  o.total*.01
-                )}
-              </td>
-
-            </tr>
-          `;
-
-        }
-      ).join('') ||
-
-      '<tr><td colspan="6" class="empty">Nenhum fechamento neste mês.</td></tr>';
+document.getElementById('monthFilter').value=m;
 
 }
 
 
-/* =========================================================
-   RELATÓRIOS
-========================================================= */
-
-function renderReports(){
-
-  const input =
-    document.getElementById(
-      'reportMonth'
-    );
-
-  const month =
-    input?.value ||
-    monthNow();
+const closed=orders.filter(o=>
+o.valor_total!=null &&
+o.status==='Fechado' &&
+o.created_at?.slice(0,7)===m
+);
 
 
-  if(input && !input.value)
-    input.value=month;
+const sales=closed.reduce(
+(a,o)=>a+Number(o.valor_total||0),0
+);
+
+document.getElementById('finSales').textContent=money(sales);
+
+document.getElementById('finComm').textContent=money(sales*.01);
+
+document.getElementById('finCount').textContent=closed.length;
+
+document.getElementById('finPending').textContent=
+orders.filter(o=>o.status==='Novo pedido').length;
 
 
-  const closed =
-    db.orders.filter(
-      o=>
-        o.total!=null &&
-        o.status==='Fechado' &&
-        String(
-          o.created_at ||
-          o.date
-        ).slice(0,7)===month
-    );
+document.getElementById('finBody').innerHTML=
+closed.map(o=>{
 
+const clientName=o.clientes?.nome ||
+clients.find(c=>c.id===o.cliente_id)?.nome ||
+'—';
 
-  const sales =
-    closed.reduce(
-      (a,o)=>
-        a+Number(o.total||0),
-      0
-    );
+return `
 
+<tr>
 
-  document
-    .getElementById('reportSales')
-    .textContent=money(sales);
+<td>${esc(clientName)}</td>
 
+<td>${fmtDate(o.created_at)}</td>
 
-  document
-    .getElementById('reportClosed')
-    .textContent=closed.length;
+<td>${money(o.valor_total)}</td>
 
+<td>${money(o.sinal)}</td>
 
-  document
-    .getElementById('reportComm')
-    .textContent=money(
-      sales*.01
-    );
+<td>${money(Math.max(0,o.valor_total-o.sinal))}</td>
 
+<td>${money(o.valor_total*.01)}</td>
 
-  document
-    .getElementById('reportBody')
-    .innerHTML =
-      closed.map(
-        o=>{
+</tr>
 
-          const c =
-            db.clients.find(
-              x=>x.id===o.clientId
-            );
+`;
 
+}).join('') ||
 
-          return `
-
-            <tr>
-
-              <td>
-                ${esc(c?.nome||'—')}
-              </td>
-
-              <td>
-                ${fmtDate(
-                  o.created_at ||
-                  o.date
-                )}
-              </td>
-
-              <td>
-                ${money(o.total)}
-              </td>
-
-              <td>
-                ${money(o.signal)}
-              </td>
-
-              <td>
-                ${money(
-                  Math.max(
-                    0,
-                    o.total-o.signal
-                  )
-                )}
-              </td>
-
-            </tr>
-          `;
-
-        }
-      ).join('') ||
-
-      '<tr><td colspan="5" class="empty">Nenhum fechamento neste mês.</td></tr>';
+'<tr><td colspan="6" class="empty">Nenhum fechamento neste mês.</td></tr>';
 
 }
 
 
-/* =========================================================
-   DASHBOARD
-========================================================= */
+/* DASHBOARD */
 
 function renderDashboard(){
 
-  const month =
-    monthNow();
+const m=monthNow();
+
+const closed=orders.filter(o=>
+o.valor_total!=null &&
+o.status==='Fechado' &&
+o.created_at?.slice(0,7)===m
+);
+
+const sales=closed.reduce(
+(a,o)=>a+Number(o.valor_total||0),0
+);
+
+document.getElementById('dashSales').textContent=money(sales);
+
+document.getElementById('dashComm').textContent=money(sales*.01);
+
+document.getElementById('dashClosed').textContent=closed.length;
+
+document.getElementById('dashOpen').textContent=
+orders.filter(o=>o.status==='Novo pedido').length;
 
 
-  const closed =
-    db.orders.filter(
-      o=>
-        o.total!=null &&
-        o.status==='Fechado' &&
-        String(
-          o.created_at ||
-          o.date
-        ).slice(0,7)===month
-    );
+document.getElementById('recentBody').innerHTML=
+orders.slice(0,8).map(o=>{
 
+const clientName=o.clientes?.nome ||
+clients.find(c=>c.id===o.cliente_id)?.nome ||
+'—';
 
-  const sales =
-    closed.reduce(
-      (a,o)=>
-        a+Number(o.total||0),
-      0
-    );
+const pieces=(o.itens_pedido||[])
+.reduce((a,x)=>a+Number(x.quantidade||0),0);
 
+let badge='wait';
 
-  document
-    .getElementById('dashSales')
-    .textContent=money(sales);
+if(o.status==='Fechado')badge='ok';
+if(o.status==='Cancelado')badge='cancel';
 
+return `
 
-  document
-    .getElementById('dashComm')
-    .textContent=money(
-      sales*.01
-    );
+<tr>
 
+<td>${esc(clientName)}</td>
 
-  document
-    .getElementById('dashClosed')
-    .textContent=closed.length;
+<td>${pieces} peças</td>
 
+<td>${fmtDate(o.data_pedido)}</td>
 
-  document
-    .getElementById('dashOpen')
-    .textContent =
-      db.orders.filter(
-        o=>
-          o.total==null &&
-          o.status!=='Cancelado'
-      ).length;
+<td>
+<span class="badge ${badge}">
+${esc(o.status)}
+</span>
+</td>
 
+<td>
+${o.valor_total==null?'—':money(o.valor_total)}
+</td>
 
-  document
-    .getElementById('recentBody')
-    .innerHTML =
-      db.orders
-        .slice(0,8)
-        .map(
-          o=>{
+</tr>
 
-            const c =
-              db.clients.find(
-                x=>x.id===o.clientId
-              );
+`;
 
+}).join('') ||
 
-            let badge='wait';
-
-            if(o.status==='Fechado')
-              badge='ok';
-
-            if(o.status==='Cancelado')
-              badge='cancel';
-
-
-            return `
-
-              <tr>
-
-                <td>
-                  ${esc(c?.nome||'—')}
-                </td>
-
-                <td>
-                  ${
-                    o.items.reduce(
-                      (a,x)=>
-                        a+Number(x.qty||0),
-                      0
-                    )
-                  } peças
-                </td>
-
-                <td>
-                  ${fmtDate(o.date)}
-                </td>
-
-                <td>
-
-                  <span class="badge ${badge}">
-                    ${esc(o.status)}
-                  </span>
-
-                </td>
-
-                <td>
-                  ${
-                    o.total==null
-                      ? '—'
-                      : money(o.total)
-                  }
-                </td>
-
-              </tr>
-            `;
-
-          }
-        ).join('') ||
-
-      '<tr><td colspan="5" class="empty">Nenhum pedido recente.</td></tr>';
+'<tr><td colspan="5" class="empty">Nenhum pedido recente.</td></tr>';
 
 }
 
 
-/* =========================================================
-   NAVEGAÇÃO
-========================================================= */
+/* GALERIA RENDER */
 
-function showPage(id){
+function renderAll(){
 
-  document
-    .querySelectorAll('.page')
-    .forEach(
-      x=>x.classList.remove('active')
-    );
-
-
-  const page =
-    document.getElementById(id);
-
-  if(page)
-    page.classList.add('active');
-
-
-  document
-    .querySelectorAll('nav button')
-    .forEach(
-      x=>
-        x.classList.toggle(
-          'active',
-          x.dataset.page===id
-        )
-    );
-
-
-  const names = {
-
-    dashboard:'Início',
-
-    pedidos:'Pedidos',
-
-    clientes:'Clientes',
-
-    galeria:'Galeria',
-
-    financeiro:'Financeiro',
-
-    relatorios:'Relatórios'
-
-  };
-
-
-  document
-    .getElementById('title')
-    .textContent =
-      names[id] || 'Augusto Digital';
-
-
-  renderAll();
+renderDashboard();
+renderOrders();
+renderClients();
+renderGallery();
+renderFinance();
 
 }
 
 
-document
-  .querySelectorAll('nav button')
-  .forEach(
-    b=>
-      b.onclick=()=>
-        showPage(
-          b.dataset.page
-        )
-  );
-
-
-/* =========================================================
-   MODAL
-========================================================= */
+/* FECHAR MODAL */
 
 function closeModal(){
 
-  document
-    .getElementById('modal')
-    .classList.remove('show');
+document.getElementById('modal').classList.remove('show');
 
 }
 
 
-/* =========================================================
-   PDF
-========================================================= */
+/* PDF */
 
-function generatePDF(id){
+async function generatePDF(id){
 
-  const o =
-    db.orders.find(
-      x=>x.id===id
-    );
+const o=orders.find(x=>x.id===id);
 
-  if(!o) return;
+if(!o)return;
 
+const clientName=o.clientes?.nome ||
+clients.find(c=>c.id===o.cliente_id)?.nome ||
+'Cliente';
 
-  const c =
-    db.clients.find(
-      x=>x.id===o.clientId
-    );
+const items=o.itens_pedido||[];
 
+const images=[];
 
-  const w =
-    window.open(
-      '',
-      '_blank'
-    );
+for(const x of items){
+
+images.push(await imageUrlFromStored(x.imagem_url));
+
+}
 
 
-  if(!w){
+const w=window.open('','_blank');
 
-    toast(
-      'Permita pop-ups para gerar o PDF.'
-    );
+if(!w){
 
-    return;
+toast('Permita pop-ups para gerar o PDF.');
+return;
 
-  }
-
-
-  const items =
-    o.items || [];
+}
 
 
-  const totalPieces =
-    items.reduce(
-      (a,x)=>
-        a+Number(x.qty||0),
-      0
-    );
+w.document.write(`
 
-
-  /*
-    2 estampas por página.
-    Cada item ocupa aproximadamente metade
-    da página A4.
-  */
-
-
-  let itemHtml='';
-
-
-  items.forEach(
-    (x,i)=>{
-
-      itemHtml += `
-
-        <div class="stamp">
-
-          <div class="stamp-title">
-            Estampa ${i+1}
-          </div>
-
-          <div class="stamp-content">
-
-            <img
-              src="${esc(x.image)}"
-            >
-
-            <div class="stamp-info">
-
-              <p>
-                <b>Tecido:</b>
-                ${esc(x.fabric)}
-              </p>
-
-              <p>
-                <b>Quantidade:</b>
-                ${x.qty} peça(s)
-              </p>
-
-            </div>
-
-          </div>
-
-        </div>
-      `;
-
-    }
-  );
-
-
-  w.document.write(`
-
-<!doctype html>
-
-<html lang="pt-BR">
+<html>
 
 <head>
 
-<meta charset="utf-8">
-
-<title>
-Pedido Augusto Digital
-</title>
+<title>Pedido Augusto Digital</title>
 
 <style>
 
-@page{
-  size:A4;
-  margin:12mm;
-}
-
-*{
-  box-sizing:border-box;
-}
-
 body{
-  font-family:Arial,sans-serif;
-  color:#142536;
-  margin:0;
+font-family:Arial;
+color:#142536;
+padding:30px
 }
 
-.header{
-  border-bottom:2px solid #06243a;
-  padding-bottom:10px;
-  margin-bottom:14px;
+h1{color:#06243a}
+
+table{
+width:100%;
+border-collapse:collapse
 }
 
-h1{
-  color:#06243a;
-  margin:0;
-  font-size:22px;
+td,th{
+padding:10px;
+border-bottom:1px solid #ddd;
+text-align:left
 }
 
-h2{
-  margin:4px 0 0;
-  font-size:16px;
+img{
+width:110px;
+height:85px;
+object-fit:cover;
+border-radius:6px
 }
 
-.info{
-  font-size:12px;
-  margin-bottom:12px;
-}
-
-.stamp{
-  height:128mm;
-  page-break-inside:avoid;
-  border:1px solid #d8e1e9;
-  border-radius:8px;
-  padding:7mm;
-  margin-bottom:6mm;
-}
-
-.stamp:nth-of-type(2n){
-  page-break-after:always;
-}
-
-.stamp-title{
-  font-size:15px;
-  font-weight:bold;
-  margin-bottom:5mm;
-  color:#06243a;
-}
-
-.stamp-content{
-  display:flex;
-  gap:8mm;
-  height:105mm;
-}
-
-.stamp img{
-  width:100mm;
-  height:100mm;
-  object-fit:contain;
-  border:1px solid #e0e6eb;
-  border-radius:5px;
-  background:#f7f9fb;
-}
-
-.stamp-info{
-  font-size:13px;
-  padding-top:8px;
-}
-
-.footer-info{
-  margin-top:5mm;
-  padding:5mm;
-  border-top:1px solid #ddd;
-  font-size:13px;
+.gold{
+color:#b87500
 }
 
 </style>
@@ -3852,165 +2035,98 @@ h2{
 
 <body>
 
-<div class="header">
+<h1>AUGUSTO ESTAMPARIA DIGITAL</h1>
 
-  <h1>
-    AUGUSTO ESTAMPARIA DIGITAL
-  </h1>
+<h2>Pedido</h2>
 
-  <h2>
-    Pedido
-  </h2>
+<p>
 
-</div>
+<b>Cliente:</b> ${esc(clientName)}
 
+&nbsp;
 
-<div class="info">
+<b>Data:</b> ${fmtDate(o.data_pedido)}
 
-  <b>Cliente:</b>
-  ${esc(c?.nome||'—')}
+</p>
 
-  &nbsp;&nbsp;&nbsp;
+<table>
 
-  <b>Data:</b>
-  ${fmtDate(o.date)}
+<tr>
+<th>Estampa</th>
+<th>Tecido</th>
+<th>Quantidade</th>
+</tr>
 
-</div>
+${items.map((x,i)=>`
 
+<tr>
 
-${itemHtml}
+<td>
+<img src="${images[i]}">
+</td>
 
+<td>${esc(x.tecido)}</td>
 
-<div class="footer-info">
+<td>${x.quantidade} peça(s)</td>
 
-  <b>Total de peças:</b>
-  ${totalPieces}
+</tr>
 
-  ${
-    o.total!=null
-      ? `
-        <br>
-        <b>Valor total:</b>
-        ${money(o.total)}
+`).join('')}
 
-        <br>
-        <b>Sinal:</b>
-        ${money(o.signal)}
+</table>
 
-        <br>
-        <b>Saldo a receber:</b>
-        ${money(
-          Math.max(
-            0,
-            o.total-o.signal
-          )
-        )}
-      `
-      : ''
-  }
+<h3>
+Total de peças:
+${items.reduce((a,x)=>a+Number(x.quantidade||0),0)}
+</h3>
 
-  ${
-    o.notes
-      ? `
-        <br><br>
-        <b>Observações:</b>
-        ${esc(o.notes)}
-      `
-      : ''
-  }
+${
+o.valor_total!=null
+?
+`
+<p>
 
-</div>
+<b>Valor total:</b> ${money(o.valor_total)}
+<br>
 
+<b>Sinal:</b> ${money(o.sinal)}
+<br>
+
+<b>Saldo a receber:</b>
+${money(Math.max(0,o.valor_total-o.sinal))}
+
+</p>
+`
+:''
+}
+
+<p class="gold">
+
+<b>
+Comissão (1%):
+${o.valor_total==null?'—':money(o.valor_total*.01)}
+</b>
+
+</p>
 
 <script>
-
-window.onload=function(){
-
-  setTimeout(
-    ()=>window.print(),
-    300
-  );
-
-};
-
+window.onload=()=>window.print()
 <\/script>
 
 </body>
 
 </html>
-  `);
 
+`);
 
-  w.document.close();
-
-}
-
-
-/* =========================================================
-   RENDER GERAL
-========================================================= */
-
-function renderAll(){
-
-  renderDashboard();
-
-  renderOrders();
-
-  renderClients();
-
-  renderGallery();
-
-  renderFinance();
-
-  renderReports();
+w.document.close();
 
 }
 
 
-/* =========================================================
-   INICIALIZAÇÃO
-========================================================= */
+/* INICIALIZAÇÃO */
 
-async function init(){
-
-  const {
-    data
-  } =
-    await supabaseClient.auth.getSession();
-
-
-  if(data?.session?.user){
-
-    currentUser =
-      data.session.user;
-
-    await startApp();
-
-  }
-
-
-  supabaseClient.auth.onAuthStateChange(
-    async(event,session)=>{
-
-      if(
-        session?.user &&
-        !currentUser
-      ){
-
-        currentUser =
-          session.user;
-
-        await startApp();
-
-      }
-
-    }
-  );
-
-}
-
-
-init();
+checkSession();
 
 </script>
 
