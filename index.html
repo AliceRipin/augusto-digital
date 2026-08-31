@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Augusto Digital — Pedidos</title>
+<style>
+:root{--navy:#06243a;--navy2:#0b304b;--blue:#1677d2;--gold:#e4a12a;--bg:#f4f7fb;--text:#152536;--muted:#6d7b8b;--white:#fff;--danger:#c0392b;--ok:#198754;--shadow:0 8px 30px rgba(6,36,58,.10)}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+.app{min-height:100vh;display:flex}.sidebar{width:245px;background:linear-gradient(180deg,var(--navy),#041b2c);color:#fff;padding:18px 14px;position:fixed;inset:0 auto 0 0;z-index:5}
+.brand{display:flex;align-items:center;gap:10px;padding:6px 8px 20px;border-bottom:1px solid rgba(255,255,255,.12)}.brand img{width:42px;height:42px;object-fit:cover;border-radius:8px}.brand b{font-size:14px}.brand span{display:block;font-size:11px;color:#b9c9d8;margin-top:2px}
+nav{padding-top:16px}nav button{width:100%;background:none;border:0;color:#dce8f1;text-align:left;padding:12px 13px;border-radius:9px;margin-bottom:5px}nav button.active,nav button:hover{background:rgba(228,161,42,.16);color:#fff}nav button.active{border-left:3px solid var(--gold)}
+.main{margin-left:245px;width:calc(100% - 245px);min-height:100vh}.top{height:68px;background:#fff;border-bottom:1px solid #e6edf4;display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:4}.top h1{font-size:20px;margin:0}.userpill{font-size:13px;color:var(--muted);background:#f3f6fa;padding:8px 12px;border-radius:99px}
+.content{padding:26px;max-width:1400px;margin:auto}.page{display:none}.page.active{display:block}
+.grid{display:grid;gap:16px}.cards{grid-template-columns:repeat(4,minmax(0,1fr))}.card{background:#fff;border-radius:14px;padding:18px;box-shadow:var(--shadow);border:1px solid #e9eff5}.card .label{color:var(--muted);font-size:12px}.card .value{font-size:25px;font-weight:750;margin-top:8px}.gold{color:#c77f00}.blue{color:var(--blue)}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin:0 0 16px}.section-head h2{font-size:19px;margin:0}.btn{border:0;border-radius:9px;padding:10px 15px;font-weight:650}.btn.primary{background:var(--blue);color:#fff}.btn.gold{background:var(--gold);color:#13202b}.btn.secondary{background:#eaf0f5;color:var(--navy)}.btn.danger{background:#fdecea;color:var(--danger)}
+.tablewrap{overflow:auto;background:#fff;border-radius:14px;box-shadow:var(--shadow)}table{width:100%;border-collapse:collapse;min-width:720px}th,td{padding:13px 14px;text-align:left;border-bottom:1px solid #edf1f5;font-size:13px}th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.03em;background:#fafcfe}
+.badge{display:inline-block;padding:5px 8px;border-radius:99px;font-size:11px;font-weight:700;background:#eaf0f5}.badge.ok{background:#e8f6ee;color:#177545}.badge.wait{background:#fff5df;color:#9a6500}
+.form{background:#fff;border-radius:14px;box-shadow:var(--shadow);padding:20px}.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}.field input,.field select,.field textarea{width:100%;border:1px solid #dbe4ec;border-radius:9px;padding:10px 11px;background:#fff}.field textarea{min-height:85px;resize:vertical}.full{grid-column:1/-1}
+.items{margin-top:20px}.item{display:grid;grid-template-columns:115px 1fr 150px 110px 40px;gap:10px;align-items:center;border:1px solid #e2eaf1;padding:10px;border-radius:12px;margin-bottom:9px}.thumb{width:115px;height:90px;border-radius:8px;background:#eef3f7;object-fit:cover}.item select,.item input{width:100%;padding:9px;border:1px solid #dbe4ec;border-radius:8px}.remove{border:0;background:#fdecea;color:var(--danger);width:36px;height:36px;border-radius:8px}.totalbar{display:flex;justify-content:flex-end;gap:28px;margin-top:15px;font-weight:700}.muted{color:var(--muted)}
+.gallery{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}.photo{background:#fff;border-radius:12px;padding:10px;box-shadow:var(--shadow)}.photo img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;background:#edf2f6}.photo .actions{display:flex;gap:7px;margin-top:8px}.photo button{flex:1;padding:7px;border:0;border-radius:7px;background:#eef3f7}.drop{border:2px dashed #c9d6e2;padding:22px;border-radius:12px;text-align:center;margin-bottom:16px;background:#fbfdff}.empty{padding:35px;text-align:center;color:var(--muted)}
+.modal{position:fixed;inset:0;background:rgba(3,20,34,.58);display:none;align-items:center;justify-content:center;z-index:20;padding:20px}.modal.show{display:flex}.modalbox{background:#fff;border-radius:16px;max-width:850px;width:100%;max-height:90vh;overflow:auto;padding:22px}.modalhead{display:flex;justify-content:space-between;align-items:center}.modalhead h3{margin:0}.close{border:0;background:#eef2f6;border-radius:8px;width:36px;height:36px}.toast{position:fixed;right:22px;bottom:22px;background:var(--navy);color:#fff;padding:12px 16px;border-radius:9px;display:none;z-index:50}.toast.show{display:block}
+.login{position:fixed;inset:0;background:linear-gradient(135deg,var(--navy),#0e5d91);display:flex;align-items:center;justify-content:center;z-index:100}.loginbox{background:#fff;width:min(410px,92vw);border-radius:18px;padding:28px;box-shadow:0 25px 80px rgba(0,0,0,.25)}.loginbox img{display:block;width:82px;height:82px;object-fit:cover;border-radius:14px;margin:0 auto 12px}.loginbox h2{text-align:center;margin:0}.loginbox p{text-align:center;color:var(--muted);font-size:13px}.loginbox .field{margin-top:12px}.loginbox .btn{width:100%;margin-top:14px}
+@media(max-width:900px){.sidebar{width:72px}.brand div,nav button span{display:none}.brand{justify-content:center}.main{margin-left:72px;width:calc(100% - 72px)}.cards{grid-template-columns:repeat(2,1fr)}.content{padding:18px}.item{grid-template-columns:80px 1fr 110px 70px 38px}.thumb{width:80px;height:70px}}
+@media(max-width:600px){.cards{grid-template-columns:1fr 1fr}.formgrid{grid-template-columns:1fr}.full{grid-column:auto}.top{padding:0 15px}.top h1{font-size:17px}.item{grid-template-columns:70px 1fr 38px;gap:7px}.item .fabric,.item .qty{grid-column:2}.item .remove{grid-column:3;grid-row:1/3}.thumb{width:70px;height:62px}}
+</style>
+</head>
+<body>
+<div id="login" class="login">
+  <div class="loginbox">
+    <img src="logo.jpg" alt="Augusto Estamparia Digital">
+    <h2>Augusto Digital</h2>
+    <p>Painel pessoal de pedidos e vendas</p>
+    <div class="field"><label>Senha</label><input id="loginPass" type="password" placeholder="Digite sua senha"></div>
+    <button class="btn primary" onclick="doLogin()">Entrar</button>
+    <p style="font-size:11px;margin-top:12px">Versão gratuita local: seus dados ficam neste navegador. Use Exportar Backup para guardar uma cópia.</p>
+  </div>
+</div>
+
+<div class="app" id="app" style="display:none">
+<aside class="sidebar">
+  <div class="brand"><img src="logo.jpg"><div><b>AUGUSTO</b><span>Estamparia Digital</span></div></div>
+  <nav>
+    <button class="active" data-page="dashboard"><span>⌂ &nbsp; </span>Início</button>
+    <button data-page="pedidos"><span>▣ &nbsp; </span>Pedidos</button>
+    <button data-page="clientes"><span>♙ &nbsp; </span>Clientes</button>
+    <button data-page="galeria"><span>▧ &nbsp; </span>Galeria</button>
+    <button data-page="financeiro"><span>R$ &nbsp; </span>Financeiro</button>
+    <button data-page="backup"><span>⇅ &nbsp; </span>Backup</button>
+  </nav>
+</aside>
+<main class="main">
+  <header class="top"><h1 id="title">Início</h1><div class="userpill">Alice · uso pessoal</div></header>
+  <div class="content">
+
+    <section class="page active" id="dashboard">
+      <div class="section-head"><h2>Visão rápida</h2><button class="btn gold" onclick="newOrder()">+ Novo pedido</button></div>
+      <div class="grid cards">
+        <div class="card"><div class="label">Vendas fechadas no mês</div><div class="value blue" id="dashSales">R$ 0,00</div></div>
+        <div class="card"><div class="label">Comissão (1%)</div><div class="value gold" id="dashComm">R$ 0,00</div></div>
+        <div class="card"><div class="label">Pedidos fechados</div><div class="value" id="dashClosed">0</div></div>
+        <div class="card"><div class="label">Aguardando fechamento</div><div class="value" id="dashOpen">0</div></div>
+      </div>
+      <div style="height:18px"></div>
+      <div class="section-head"><h2>Pedidos recentes</h2><button class="btn secondary" onclick="showPage('pedidos')">Ver todos</button></div>
+      <div class="tablewrap"><table><thead><tr><th>Cliente</th><th>Pedido</th><th>Data</th><th>Status</th><th>Total</th></tr></thead><tbody id="recentBody"></tbody></table></div>
+    </section>
+
+    <section class="page" id="pedidos">
+      <div class="section-head"><h2>Pedidos</h2><button class="btn primary" onclick="newOrder()">+ Novo pedido</button></div>
+      <div class="tablewrap"><table><thead><tr><th>Cliente</th><th>Data</th><th>Peças</th><th>Status</th><th>Valor total</th><th></th></tr></thead><tbody id="ordersBody"></tbody></table></div>
+    </section>
+
+    <section class="page" id="clientes">
+      <div class="section-head"><h2>Clientes</h2><button class="btn primary" onclick="openClientModal()">+ Novo cliente</button></div>
+      <div class="tablewrap"><table><thead><tr><th>Cliente/Empresa</th><th>Responsável</th><th>WhatsApp</th><th>Cidade/UF</th><th>Pedidos</th></tr></thead><tbody id="clientsBody"></tbody></table></div>
+    </section>
+
+    <section class="page" id="galeria">
+      <div class="section-head"><h2>Minha galeria</h2><button class="btn primary" onclick="document.getElementById('galleryFile').click()">+ Adicionar imagens</button></div>
+      <div class="drop">Adicione imagens de estampas. Elas ficam disponíveis para reutilização nos próximos pedidos.<input id="galleryFile" type="file" accept="image/*" multiple style="display:none" onchange="addGalleryFiles(this.files)"></div>
+      <div class="grid gallery" id="galleryGrid"></div>
+    </section>
+
+    <section class="page" id="financeiro">
+      <div class="section-head"><h2>Financeiro</h2><input id="monthFilter" type="month" onchange="renderFinance()" style="padding:9px;border:1px solid #dbe4ec;border-radius:8px"></div>
+      <div class="grid cards">
+        <div class="card"><div class="label">Vendas fechadas</div><div class="value blue" id="finSales">R$ 0,00</div></div>
+        <div class="card"><div class="label">Comissão de 1%</div><div class="value gold" id="finComm">R$ 0,00</div></div>
+        <div class="card"><div class="label">Pedidos fechados</div><div class="value" id="finCount">0</div></div>
+        <div class="card"><div class="label">Aguardando fechamento</div><div class="value" id="finPending">0</div></div>
+      </div>
+      <div style="height:18px"></div>
+      <div class="tablewrap"><table><thead><tr><th>Cliente</th><th>Data de fechamento</th><th>Total</th><th>Sinal</th><th>Saldo</th><th>Comissão</th></tr></thead><tbody id="finBody"></tbody></table></div>
+    </section>
+
+    <section class="page" id="backup">
+      <div class="section-head"><h2>Backup dos dados</h2></div>
+      <div class="form">
+        <h3>Versão gratuita e segura para começar</h3>
+        <p class="muted">Nesta versão, pedidos, clientes e imagens ficam salvos no navegador deste dispositivo. Para não perder seus dados, faça backups regularmente.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn primary" onclick="exportBackup()">Exportar backup</button>
+          <button class="btn secondary" onclick="document.getElementById('backupFile').click()">Importar backup</button>
+          <input id="backupFile" type="file" accept=".json" style="display:none" onchange="importBackup(this.files[0])">
+        </div>
+        <hr style="border:0;border-top:1px solid #edf1f5;margin:22px 0">
+        <h3>Regra financeira</h3>
+        <p class="muted">A venda entra no mês em que o <b>valor total é informado</b>. A comissão é 1% do valor total da venda. O sinal só reduz o saldo a receber.</p>
+      </div>
+    </section>
+
+  </div>
+</main>
+</div>
+
+<div class="modal" id="modal"><div class="modalbox" id="modalContent"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY='augustoDigitalV1';
+let db={clients:[],orders:[],gallery:[]};
+const fabrics=['Suplex','Fluit','Tule','Crepinho','Suede','Moletinho'];
+const statuses=['Novo pedido','Em produção','Produzido','Aguardando fechamento','Fechado','Cancelado'];
+
+function load(){try{const x=JSON.parse(localStorage.getItem(KEY));if(x)db=x}catch(e){}}
+function save(){localStorage.setItem(KEY,JSON.stringify(db))}
+function money(n){return (Number(n)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function toast(s){const t=document.getElementById('toast');t.textContent=s;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
+function showPage(id){
+ document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+ document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===id));
+ const names={dashboard:'Início',pedidos:'Pedidos',clientes:'Clientes',galeria:'Galeria',financeiro:'Financeiro',backup:'Backup'};
+ document.getElementById('title').textContent=names[id];
+ renderAll();
+}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+
+function doLogin(){if(document.getElementById('loginPass').value==='Augusto@2026'){sessionStorage.setItem('augLogged','1');document.getElementById('login').style.display='none';document.getElementById('app').style.display='flex';renderAll()}else toast('Senha incorreta')}
+function initLogin(){if(sessionStorage.getItem('augLogged')){document.getElementById('login').style.display='none';document.getElementById('app').style.display='flex'}}
+
+function newOrder(){
+ const options=db.clients.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');
+ document.getElementById('modalContent').innerHTML=`
+ <div class="modalhead"><h3>Novo pedido</h3><button class="close" onclick="closeModal()">×</button></div>
+ <div class="formgrid" style="margin-top:18px">
+  <div class="field"><label>Cliente</label><select id="oClient"><option value="">Selecione...</option>${options}</select></div>
+  <div class="field"><label>Data do pedido</label><input id="oDate" type="date" value="${new Date().toISOString().slice(0,10)}"></div>
+  <div class="field"><label>Sinal recebido (R$)</label><input id="oSignal" type="number" step="0.01" min="0" value="0"></div>
+  <div class="field"><label>Status</label><select id="oStatus">${statuses.map(s=>`<option>${s}</option>`).join('')}</select></div>
+  <div class="field full"><label>Observações</label><textarea id="oNotes" placeholder="Observações do pedido..."></textarea></div>
+ </div>
+ <div class="items"><div class="section-head"><h3>Estampas do pedido</h3><div><button class="btn secondary" onclick="addOrderItem()">+ Da galeria</button> <button class="btn gold" onclick="addNewOrderImage()">+ Nova imagem</button></div></div><div id="itemsList"></div></div>
+ <div class="totalbar"><span>Total de peças: <b id="itemsTotal">0</b></span></div>
+ <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px"><button class="btn secondary" onclick="closeModal()">Cancelar</button><button class="btn primary" onclick="saveOrder()">Salvar pedido</button></div>`;
+ window.tempItems=[]; document.getElementById('modal').classList.add('show'); renderItems();
+}
+function addOrderItem(){
+ if(!db.gallery.length){toast('Sua galeria está vazia. Adicione uma imagem primeiro.');return}
+ const html=db.gallery.map(g=>`<div class="photo"><img src="${g.data}" alt=""><button onclick="pickGallery('${g.id}')">Usar esta</button></div>`).join('');
+ document.getElementById('modalContent').innerHTML += `<div id="galleryPicker" style="position:absolute;inset:20px;background:#fff;border-radius:14px;padding:20px;overflow:auto;z-index:3"><div class="modalhead"><h3>Escolher da galeria</h3><button class="close" onclick="document.getElementById('galleryPicker').remove()">×</button></div><div class="grid gallery" style="margin-top:14px">${html}</div></div>`;
+}
+function pickGallery(id){const g=db.gallery.find(x=>x.id===id);if(g){window.tempItems.push({id:crypto.randomUUID(),image:g.data,fabric:'Suplex',qty:1});document.getElementById('galleryPicker')?.remove();renderItems()}}
+function addNewOrderImage(){
+ const input=document.createElement('input');input.type='file';input.accept='image/*';input.onchange=()=>{const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const item={id:crypto.randomUUID(),image:r.result,fabric:'Suplex',qty:1};window.tempItems.push(item);db.gallery.push({id:crypto.randomUUID(),data:r.result});save();renderItems()};r.readAsDataURL(f)};input.click()
+}
+function renderItems(){const el=document.getElementById('itemsList');if(!el)return;el.innerHTML=window.tempItems.map((it,i)=>`<div class="item"><img class="thumb" src="${it.image}"><div><b>Estampa ${i+1}</b><div class="muted" style="font-size:11px">Imagem vinculada ao item</div></div><div class="fabric"><select onchange="tempItems[${i}].fabric=this.value">${fabrics.map(f=>`<option ${f===it.fabric?'selected':''}>${f}</option>`).join('')}</select></div><div class="qty"><input type="number" min="1" value="${it.qty}" onchange="tempItems[${i}].qty=Math.max(1,Number(this.value));renderItems()"></div><button class="remove" onclick="tempItems.splice(${i},1);renderItems()">×</button></div>`).join('')||'<div class="empty">Nenhuma estampa adicionada ainda.</div>';document.getElementById('itemsTotal').textContent=window.tempItems.reduce((a,x)=>a+Number(x.qty||0),0)}
+function saveOrder(){
+ const client=document.getElementById('oClient').value;if(!client){toast('Selecione um cliente.');return}
+ if(!window.tempItems.length){toast('Adicione pelo menos uma estampa.');return}
+ const o={id:crypto.randomUUID(),clientId:client,date:document.getElementById('oDate').value,signal:Number(document.getElementById('oSignal').value)||0,total:null,closedAt:null,status:document.getElementById('oStatus').value,notes:document.getElementById('oNotes').value,items:window.tempItems.map(x=>({...x}))};
+ db.orders.unshift(o);save();closeModal();toast('Pedido criado.');renderAll()
+}
+function viewOrder(id){
+ const o=db.orders.find(x=>x.id===id), c=db.clients.find(x=>x.id===o.clientId); if(!o)return;
+ document.getElementById('modalContent').innerHTML=`<div class="modalhead"><h3>Pedido — ${esc(c?.name||'Cliente')}</h3><button class="close" onclick="closeModal()">×</button></div>
+ <div class="muted" style="margin:8px 0 18px">Criado em ${fmtDate(o.date)} · ${o.items.reduce((a,x)=>a+Number(x.qty||0),0)} peças</div>
+ <div class="tablewrap"><table><thead><tr><th>Estampa</th><th>Tecido</th><th>Quantidade</th></tr></thead><tbody>${o.items.map((x,i)=>`<tr><td><img src="${x.image}" style="width:90px;height:70px;object-fit:cover;border-radius:7px"></td><td>${esc(x.fabric)}</td><td>${x.qty} peça(s)</td></tr>`).join('')}</tbody></table></div>
+ <div class="formgrid" style="margin-top:16px">
+  <div class="field"><label>Status</label><select id="vStatus">${statuses.map(s=>`<option ${s===o.status?'selected':''}>${s}</option>`).join('')}</select></div>
+  <div class="field"><label>Valor total do pedido (R$)</label><input id="vTotal" type="number" step="0.01" min="0" value="${o.total??''}" placeholder="Informar quando fechar"></div>
+  <div class="field"><label>Sinal recebido</label><input value="${money(o.signal)}" disabled></div>
+  <div class="field"><label>Saldo a receber</label><input id="vBalance" value="${o.total==null?'—':money(Math.max(0,o.total-o.signal))}" disabled></div>
+ </div>
+ <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px"><button class="btn secondary" onclick="generatePDF('${o.id}')">Gerar PDF</button><button class="btn primary" onclick="updateOrder('${o.id}')">Salvar alterações</button></div>`;
+ document.getElementById('modal').classList.add('show');
+ document.getElementById('vTotal').oninput=e=>{const n=Number(e.target.value);document.getElementById('vBalance').value=isNaN(n)?'—':money(Math.max(0,n-o.signal))}
+}
+function updateOrder(id){const o=db.orders.find(x=>x.id===id);const n=document.getElementById('vTotal').value;o.status=document.getElementById('vStatus').value;if(n!==''){o.total=Number(n);o.closedAt=new Date().toISOString().slice(0,10);if(o.status!=='Cancelado')o.status='Fechado'}else{o.total=null;o.closedAt=null}save();closeModal();toast('Pedido atualizado.');renderAll()}
+function openClientModal(){
+ document.getElementById('modalContent').innerHTML=`<div class="modalhead"><h3>Novo cliente</h3><button class="close" onclick="closeModal()">×</button></div><div class="formgrid" style="margin-top:18px"><div class="field"><label>Cliente / Empresa</label><input id="cName"></div><div class="field"><label>Responsável</label><input id="cResp"></div><div class="field"><label>WhatsApp</label><input id="cPhone"></div><div class="field"><label>Cidade / UF</label><input id="cCity"></div><div class="field full"><label>Observações</label><textarea id="cNotes"></textarea></div></div><div style="display:flex;justify-content:flex-end;margin-top:18px"><button class="btn primary" onclick="saveClient()">Salvar cliente</button></div>`;
+ document.getElementById('modal').classList.add('show')
+}
+function saveClient(){const name=document.getElementById('cName').value.trim();if(!name){toast('Informe o cliente.');return}db.clients.push({id:crypto.randomUUID(),name,resp:document.getElementById('cResp').value,phone:document.getElementById('cPhone').value,city:document.getElementById('cCity').value,notes:document.getElementById('cNotes').value});save();closeModal();toast('Cliente salvo.');renderAll()}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+function addGalleryFiles(files){[...files].forEach(f=>{const r=new FileReader();r.onload=()=>{db.gallery.push({id:crypto.randomUUID(),data:r.result});save();renderGallery()};r.readAsDataURL(f)});toast('Imagens adicionadas à galeria.')}
+function deleteGallery(id){db.gallery=db.gallery.filter(x=>x.id!==id);save();renderGallery()}
+function renderGallery(){const el=document.getElementById('galleryGrid');if(!el)return;el.innerHTML=db.gallery.map((g,i)=>`<div class="photo"><img src="${g.data}" alt="Estampa ${i+1}"><div class="actions"><button onclick="navigator.clipboard?.writeText('Estampa ${i+1}');toast('Referência copiada')">Usar no pedido</button><button onclick="deleteGallery('${g.id}')">Excluir</button></div></div>`).join('')||'<div class="empty">Sua galeria está vazia.</div>'}
+function renderOrders(){const el=document.getElementById('ordersBody');if(!el)return;el.innerHTML=db.orders.map(o=>{const c=db.clients.find(x=>x.id===o.clientId);const pieces=o.items.reduce((a,x)=>a+Number(x.qty||0),0);return `<tr><td>${esc(c?.name||'—')}</td><td>${fmtDate(o.date)}</td><td>${pieces}</td><td><span class="badge ${o.status==='Fechado'?'ok':o.status==='Cancelado'?'':'wait'}">${esc(o.status)}</span></td><td>${o.total==null?'—':money(o.total)}</td><td><button class="btn secondary" onclick="viewOrder('${o.id}')">Abrir</button></td></tr>`}).join('')||'<tr><td colspan="6" class="empty">Nenhum pedido cadastrado.</td></tr>'}
+function renderClients(){const el=document.getElementById('clientsBody');if(!el)return;el.innerHTML=db.clients.map(c=>`<tr><td><b>${esc(c.name)}</b></td><td>${esc(c.resp)}</td><td>${esc(c.phone)}</td><td>${esc(c.city)}</td><td>${db.orders.filter(o=>o.clientId===c.id).length}</td></tr>`).join('')||'<tr><td colspan="5" class="empty">Nenhum cliente cadastrado.</td></tr>'}
+function monthNow(){return new Date().toISOString().slice(0,7)}
+function renderFinance(){const m=document.getElementById('monthFilter')?.value||monthNow();if(document.getElementById('monthFilter')&&!document.getElementById('monthFilter').value)document.getElementById('monthFilter').value=m;const closed=db.orders.filter(o=>o.total!=null&&o.closedAt?.slice(0,7)===m&&o.status!=='Cancelado');const sales=closed.reduce((a,o)=>a+Number(o.total||0),0);document.getElementById('finSales').textContent=money(sales);document.getElementById('finComm').textContent=money(sales*.01);document.getElementById('finCount').textContent=closed.length;document.getElementById('finPending').textContent=db.orders.filter(o=>o.total==null&&o.status!=='Cancelado').length;document.getElementById('finBody').innerHTML=closed.map(o=>{const c=db.clients.find(x=>x.id===o.clientId);return `<tr><td>${esc(c?.name||'—')}</td><td>${fmtDate(o.closedAt)}</td><td>${money(o.total)}</td><td>${money(o.signal)}</td><td>${money(Math.max(0,o.total-o.signal))}</td><td>${money(o.total*.01)}</td></tr>`}).join('')||'<tr><td colspan="6" class="empty">Nenhum fechamento neste mês.</td></tr>'}
+function renderDashboard(){const m=monthNow();const closed=db.orders.filter(o=>o.total!=null&&o.closedAt?.slice(0,7)===m&&o.status!=='Cancelado');const sales=closed.reduce((a,o)=>a+Number(o.total||0),0);document.getElementById('dashSales').textContent=money(sales);document.getElementById('dashComm').textContent=money(sales*.01);document.getElementById('dashClosed').textContent=closed.length;document.getElementById('dashOpen').textContent=db.orders.filter(o=>o.total==null&&o.status!=='Cancelado').length;document.getElementById('recentBody').innerHTML=db.orders.slice(0,8).map(o=>{const c=db.clients.find(x=>x.id===o.clientId);return `<tr><td>${esc(c?.name||'—')}</td><td>${o.items.reduce((a,x)=>a+Number(x.qty||0),0)} peças</td><td>${fmtDate(o.date)}</td><td><span class="badge ${o.status==='Fechado'?'ok':'wait'}">${esc(o.status)}</span></td><td>${o.total==null?'—':money(o.total)}</td></tr>`}).join('')||'<tr><td colspan="5" class="empty">Nenhum pedido recente.</td></tr>'}
+function fmtDate(s){if(!s)return'—';const [y,m,d]=s.slice(0,10).split('-');return `${d}/${m}/${y}`}
+function renderAll(){renderDashboard();renderOrders();renderClients();renderGallery();renderFinance()}
+function exportBackup(){const blob=new Blob([JSON.stringify(db)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='backup-augusto-digital.json';a.click();URL.revokeObjectURL(a.href);toast('Backup exportado.')}
+function importBackup(file){if(!file)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!x.orders||!x.clients||!x.gallery)throw 0;db=x;save();renderAll();toast('Backup importado.')}catch(e){toast('Arquivo de backup inválido.')}};r.readAsText(file)}
+function generatePDF(id){
+ const o=db.orders.find(x=>x.id===id),c=db.clients.find(x=>x.id===o.clientId);const w=window.open('','_blank');if(!w){toast('Permita pop-ups para gerar o PDF.');return}
+ w.document.write(`<html><head><title>Pedido Augusto Digital</title><style>body{font-family:Arial;color:#142536;padding:30px}h1{color:#06243a}table{width:100%;border-collapse:collapse}td,th{padding:10px;border-bottom:1px solid #ddd;text-align:left}img{width:110px;height:85px;object-fit:cover;border-radius:6px}.gold{color:#b87500}</style></head><body><h1>AUGUSTO ESTAMPARIA DIGITAL</h1><h2>Pedido</h2><p><b>Cliente:</b> ${esc(c?.name||'—')} &nbsp; <b>Data:</b> ${fmtDate(o.date)}</p><table><tr><th>Estampa</th><th>Tecido</th><th>Quantidade</th></tr>${o.items.map(x=>`<tr><td><img src="${x.image}"></td><td>${esc(x.fabric)}</td><td>${x.qty} peça(s)</td></tr>`).join('')}</table><h3>Total de peças: ${o.items.reduce((a,x)=>a+Number(x.qty||0),0)}</h3>${o.total!=null?`<p><b>Valor total:</b> ${money(o.total)}<br><b>Sinal:</b> ${money(o.signal)}<br><b>Saldo a receber:</b> ${money(Math.max(0,o.total-o.signal))}</p>`:''}<p class="gold"><b>Comissão (1%): ${o.total==null?'—':money(o.total*.01)}</b></p><script>window.onload=()=>window.print()<\/script></body></html>`);w.document.close()
+}
+load();initLogin();renderAll();
+</script>
+</body></html>
