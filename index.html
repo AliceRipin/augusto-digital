@@ -2558,74 +2558,80 @@ async function addNewOrderImage(){
   const input =
     document.createElement('input');
 
-  input.type='file';
-  input.accept='image/*';
+input.type='file';
+input.accept='image/*';
+input.multiple=true;
 
-  input.onchange=async()=>{
+input.onchange=async()=>{
 
-    const file =
-      input.files?.[0];
+  const files =
+    [...(input.files || [])];
 
-    if(!file)
-      return;
+  if(!files.length)
+    return;
+
+  try{
 
     try{
 
-      const extension =
-        file.name
-          .split('.')
-          .pop()
-          .toLowerCase();
+   for(const file of files){
 
-      const path =
-        `${currentUser.id}/pedido-${Date.now()}-${crypto.randomUUID()}.${extension}`;
+    const extension =
+      file.name
+        .split('.')
+        .pop()
+        .toLowerCase();
 
-      const {
+    const path =
+      `${currentUser.id}/pedido-${Date.now()}-${crypto.randomUUID()}.${extension}`;
+
+    const {
+      error
+    } =
+      await supabaseClient
+        .storage
+        .from('estampas')
+        .upload(
+          path,
+          file,
+          {
+            cacheControl:'3600',
+            upsert:false
+          }
+        );
+
+    if(error){
+      console.error(
+        'Erro ao enviar imagem do pedido:',
         error
-      } =
-        await supabaseClient
-          .storage
-          .from('estampas')
-          .upload(
-            path,
-            file,
-            {
-              cacheControl:'3600',
-              upsert:false
-            }
-          );
+      );
 
-      if(error){
+      toast(
+        'Não foi possível enviar uma das imagens.\n' +
+        supabaseErrorText(error)
+      );
 
-        console.error(
-          'Erro ao enviar imagem do pedido:',
-          error
-        );
+      continue;
+    }
 
-        toast(
-          'Não foi possível enviar a imagem.\n' +
-          supabaseErrorText(error)
-        );
+    const {
+      data
+    } =
+      supabaseClient
+        .storage
+        .from('estampas')
+        .getPublicUrl(path);
 
-        return;
-      }
+    tempItems.push({
+      id:crypto.randomUUID(),
+      image:data?.publicUrl || '',
+      fabric:'Suplex',
+      qty:1
+    });
 
-      const {
-        data
-      } =
-        supabaseClient
-          .storage
-          .from('estampas')
-          .getPublicUrl(path);
+  }
 
-      tempItems.push({
-        id:crypto.randomUUID(),
-        image:data?.publicUrl || '',
-        fabric:'Suplex',
-        qty:1
-      });
-
-      renderItems();
+  renderItems();   
 
     }catch(err){
 
