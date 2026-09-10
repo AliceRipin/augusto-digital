@@ -2559,15 +2559,18 @@ async function addNewOrderImage(){
     document.createElement('input');
 
   input.type='file';
-  input.accept='image/*';
+input.accept='image/*';
+input.multiple=true;
 
-  input.onchange=async()=>{
+input.onchange=async()=>{
 
-    const file =
-      input.files?.[0];
+  const files =
+    [...(input.files || [])];
 
-    if(!file)
-      return;
+  if(!files.length)
+    return;
+
+  try{
 
     try{
 
