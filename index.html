@@ -2393,7 +2393,7 @@ function addOrderItem(){
               <button
               type="button"
                 class="gallery-select-btn"
-                onclick="toggleGallerySelection('${g.id}')"
+                onclick="pickGallery('${g.id}')"
               >
                 Selecionar
               </button>
@@ -2559,18 +2559,15 @@ async function addNewOrderImage(){
     document.createElement('input');
 
   input.type='file';
-input.accept='image/*';
-input.multiple=true;
+  input.accept='image/*';
 
-input.onchange=async()=>{
+  input.onchange=async()=>{
 
-  const files =
-    [...(input.files || [])];
+    const file =
+      input.files?.[0];
 
-  if(!files.length)
-    return;
-
-  try{
+    if(!file)
+      return;
 
     try{
 
