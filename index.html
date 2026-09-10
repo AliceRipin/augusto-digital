@@ -1017,38 +1017,42 @@ th{
 
         <div class="report-head">
 
-          <div class="report-box">
-            <small>Vendas no período</small>
-            <strong class="blue" id="reportSales">
-              R$ 0,00
-            </strong>
-          </div>
+  <div class="report-box">
+    <small>Vendas no período</small>
+    <strong class="blue" id="reportSales">
+      R$ 0,00
+    </strong>
+  </div>
 
-          <div class="report-box">
-            <small>Pedidos fechados</small>
-            <strong id="reportClosed">0</strong>
-          </div>
+  <div class="report-box">
+    <small>Peças vendidas</small>
+    <strong id="reportPieces">0</strong>
+  </div>
 
-          <div class="report-box">
-            <small>Comissão estimada</small>
-            <strong class="gold" id="reportComm">
-              R$ 0,00
-            </strong>
-          </div>
+  <div class="report-box">
+    <small>Pedidos fechados</small>
+    <strong id="reportClosed">0</strong>
+  </div>
 
-        </div>
+  <div class="report-box">
+    <small>Comissão estimada</small>
+    <strong class="gold" id="reportComm">
+      R$ 0,00
+    </strong>
+  </div>
+
+</div>
 
         <div class="tablewrap">
           <table>
-            <thead>
-              <tr>
-                <th>Cliente</th>
-                <th>Data</th>
-                <th>Valor</th>
-                <th>Sinal</th>
-                <th>Saldo</th>
-              </tr>
-            </thead>
+           <thead>
+  <tr>
+    <th>Cliente</th>
+    <th>Pedidos</th>
+    <th>Peças</th>
+    <th>Total vendido</th>
+  </tr>
+</thead>
 
             <tbody id="reportBody"></tbody>
           </table>
@@ -3736,71 +3740,110 @@ function renderReports(){
       0
     );
 
+  const pieces =
+    closed.reduce(
+      (total,o)=>
+        total +
+        (o.items || []).reduce(
+          (sum,item)=>
+            sum + Number(item.qty || 0),
+          0
+        ),
+      0
+    );
+
   document
     .getElementById('reportSales')
-    .textContent=
+    .textContent =
       money(sales);
 
   document
+    .getElementById('reportPieces')
+    .textContent =
+      pieces;
+
+  document
     .getElementById('reportClosed')
-    .textContent=
+    .textContent =
       closed.length;
 
   document
     .getElementById('reportComm')
-    .textContent=
+    .textContent =
       money(
-        sales*.01
+        sales * .01
       );
+
+  const byClient = {};
+
+  closed.forEach(
+    o=>{
+
+      const c =
+        db.clients.find(
+          x=>x.id===o.clientId
+        );
+
+      const clientId =
+        o.clientId || 'sem-cliente';
+
+      if(!byClient[clientId]){
+
+        byClient[clientId] = {
+          name:c?.nome || '—',
+          orders:0,
+          pieces:0,
+          total:0
+        };
+
+      }
+
+      byClient[clientId].orders++;
+
+      byClient[clientId].pieces +=
+        (o.items || []).reduce(
+          (sum,item)=>
+            sum + Number(item.qty || 0),
+          0
+        );
+
+      byClient[clientId].total +=
+        Number(o.total || 0);
+    }
+  );
+
+  const rows =
+    Object.values(byClient);
 
   document
     .getElementById('reportBody')
     .innerHTML =
-      closed.map(
-        o=>{
+      rows.map(
+        item=>`
 
-          const c =
-            db.clients.find(
-              x=>x.id===o.clientId
-            );
+          <tr>
 
-          return `
+            <td>
+              ${esc(item.name)}
+            </td>
 
-            <tr>
+            <td>
+              ${item.orders}
+            </td>
 
-              <td>
-                ${esc(c?.nome||'—')}
-              </td>
+            <td>
+              ${item.pieces}
+            </td>
 
-              <td>
-                ${fmtDate(
-                  o.created_at ||
-                  o.date
-                )}
-              </td>
+            <td>
+              ${money(item.total)}
+            </td>
 
-              <td>
-                ${money(o.total)}
-              </td>
+          </tr>
 
-              <td>
-                ${money(o.signal)}
-              </td>
-
-              <td>
-                ${money(
-                  Math.max(
-                    0,
-                    o.total-o.signal
-                  )
-                )}
-              </td>
-
-            </tr>
-          `;
-        }
+        `
       ).join('') ||
-      '<tr><td colspan="5" class="empty">Nenhum fechamento neste mês.</td></tr>';
+      '<tr><td colspan="4" class="empty">Nenhum fechamento neste mês.</td></tr>';
 }
 
 
