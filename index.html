@@ -579,7 +579,15 @@ th{
   border-radius:7px;
   background:#eaf0f5
 }
+.pick-card.selected{
+  border:2px solid #2563eb;
+  box-shadow:0 0 0 2px rgba(37,99,235,.12)
+}
 
+.pick-card.selected .gallery-select-btn{
+  background:#2563eb;
+  color:#fff
+}
 .diagnostic{
   margin-top:10px;
   padding:10px;
@@ -1106,7 +1114,7 @@ let db = {
 };
 
 let tempItems = [];
-
+let selectedGalleryIds = new Set();
 
 /* =========================================================
    UTILITÁRIOS
@@ -2359,6 +2367,8 @@ function addOrderItem(){
     return;
   }
 
+  selectedGalleryIds.clear();
+
   const html =
     db.gallery
       .map(
@@ -2370,8 +2380,10 @@ function addOrderItem(){
             );
 
           return `
-
-            <div class="pick-card">
+            <div
+              class="pick-card"
+              id="pick-card-${g.id}"
+            >
 
               <img
                 src="${esc(url)}"
@@ -2379,9 +2391,10 @@ function addOrderItem(){
               >
 
               <button
-                onclick="pickGallery('${g.id}')"
+                class="gallery-select-btn"
+                onclick="toggleGallerySelection('${g.id}')"
               >
-                Usar esta
+                Selecionar
               </button>
 
             </div>
@@ -2425,31 +2438,108 @@ function addOrderItem(){
           ${html}
         </div>
 
+        <div
+          style="
+            display:flex;
+            gap:10px;
+            justify-content:flex-end;
+            margin-top:16px;
+          "
+        >
+
+          <button
+            class="btn secondary"
+            onclick="
+              document
+                .getElementById('galleryPicker')
+                ?.remove()
+            "
+          >
+            Cancelar
+          </button>
+
+          <button
+            class="btn primary"
+            onclick="addSelectedGalleryImages()"
+          >
+            Adicionar selecionadas
+          </button>
+
+        </div>
+
       </div>
     `;
 }
+  function pickGallery(id){
 
-function pickGallery(id){
-
-  const g =
-    db.gallery.find(
-      x=>x.id===id
+   const card =
+    document.getElementById(
+      `pick-card-${id}`
     );
 
-  if(!g)
+  const button =
+    card?.querySelector(
+      '.gallery-select-btn'
+    );
+
+  if(selectedGalleryIds.has(id)){
+
+    selectedGalleryIds.delete(id);
+
+    card?.classList.remove('selected');
+
+    if(button)
+      button.textContent = 'Selecionar';
+
+  }else{
+
+    selectedGalleryIds.add(id);
+
+    card?.classList.add('selected');
+
+    if(button)
+      button.textContent = 'Selecionada ✓';
+
+  }
+}
+
+
+function addSelectedGalleryImages(){
+
+  if(!selectedGalleryIds.size){
+
+    toast(
+      'Selecione pelo menos uma estampa.'
+    );
+
     return;
+  }
 
-  const image =
-    storagePublicUrl(
-      g.storage_path
-    );
+  selectedGalleryIds.forEach(id=>{
 
-  tempItems.push({
-    id:crypto.randomUUID(),
-    image:image,
-    fabric:'Suplex',
-    qty:1
+    const g =
+      db.gallery.find(
+        x=>x.id===id
+      );
+
+    if(!g)
+      return;
+
+    const image =
+      storagePublicUrl(
+        g.storage_path
+      );
+
+    tempItems.push({
+      id:crypto.randomUUID(),
+      image:image,
+      fabric:'Suplex',
+      qty:1
+    });
+
   });
+
+  selectedGalleryIds.clear();
 
   document
     .getElementById('galleryPicker')
