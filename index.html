@@ -1,0 +1,4414 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Augusto Digital — Pedidos</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root{
+  --navy:#06243a;
+  --navy2:#0b304b;
+  --blue:#1677d2;
+  --gold:#e4a12a;
+  --bg:#f4f7fb;
+  --text:#152536;
+  --muted:#6d7b8b;
+  --white:#fff;
+  --danger:#c0392b;
+  --ok:#198754;
+  --shadow:0 8px 30px rgba(6,36,58,.10)
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text)
+}
+
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+
+.app{
+  min-height:100vh;
+  display:flex
+}
+
+.sidebar{
+  width:245px;
+  background:linear-gradient(180deg,var(--navy),#041b2c);
+  color:#fff;
+  padding:18px 14px;
+  position:fixed;
+  inset:0 auto 0 0;
+  z-index:5
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:6px 8px 20px;
+  border-bottom:1px solid rgba(255,255,255,.12)
+}
+
+.brand img{
+  width:42px;
+  height:42px;
+  object-fit:cover;
+  border-radius:8px
+}
+
+.brand b{font-size:14px}
+
+.brand span{
+  display:block;
+  font-size:11px;
+  color:#b9c9d8;
+  margin-top:2px
+}
+
+nav{padding-top:16px}
+
+nav button{
+  width:100%;
+  background:none;
+  border:0;
+  color:#dce8f1;
+  text-align:left;
+  padding:12px 13px;
+  border-radius:9px;
+  margin-bottom:5px
+}
+
+nav button.active,
+nav button:hover{
+  background:rgba(228,161,42,.16);
+  color:#fff
+}
+
+nav button.active{
+  border-left:3px solid var(--gold)
+}
+
+.main{
+  margin-left:245px;
+  width:calc(100% - 245px);
+  min-height:100vh
+}
+
+.top{
+  height:68px;
+  background:#fff;
+  border-bottom:1px solid #e6edf4;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 28px;
+  position:sticky;
+  top:0;
+  z-index:4
+}
+
+.top h1{
+  font-size:20px;
+  margin:0
+}
+
+.top-right{
+  display:flex;
+  align-items:center;
+  gap:10px
+}
+
+.userpill{
+  font-size:13px;
+  color:var(--muted);
+  background:#f3f6fa;
+  padding:8px 12px;
+  border-radius:99px
+}
+
+.logout{
+  border:0;
+  background:#fdecea;
+  color:var(--danger);
+  padding:8px 12px;
+  border-radius:8px;
+  font-size:12px;
+  font-weight:650
+}
+
+.content{
+  padding:26px;
+  max-width:1400px;
+  margin:auto
+}
+
+.page{display:none}
+.page.active{display:block}
+
+.grid{
+  display:grid;
+  gap:16px
+}
+
+.cards{
+  grid-template-columns:repeat(4,minmax(0,1fr))
+}
+
+.card{
+  background:#fff;
+  border-radius:14px;
+  padding:18px;
+  box-shadow:var(--shadow);
+  border:1px solid #e9e5
+}
+
+.card .label{
+  color:var(--muted);
+  font-size:12px
+}
+
+.card .value{
+  font-size:25px;
+  font-weight:750;
+  margin-top:8px
+}
+
+.gold{color:#c77f00}
+.blue{color:var(--blue)}
+
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:0 0 16px
+}
+
+.section-head h2{
+  font-size:19px;
+  margin:0
+}
+
+.btn{
+  border:0;
+  border-radius:9px;
+  padding:10px 15px;
+  font-weight:650
+}
+
+.btn.primary{
+  background:var(--blue);
+  color:#fff
+}
+
+.btn.gold{
+  background:var(--gold);
+  color:#13202b
+}
+
+.btn.secondary{
+  background:#eaf0f5;
+  color:var(--navy)
+}
+
+.btn.danger{
+  background:#fdecea;
+  color:var(--danger)
+}
+
+.tablewrap{
+  overflow:auto;
+  background:#fff;
+  border-radius:14px;
+  box-shadow:var(--shadow)
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:720px
+}
+
+th,td{
+  padding:13px 14px;
+  text-align:left;
+  border-bottom:1px solid #edf1f5;
+  font-size:13px
+}
+
+th{
+  color:var(--muted);
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.03em;
+  background:#fafcfe
+}
+
+.badge{
+  display:inline-block;
+  padding:5px 8px;
+  border-radius:99px;
+  font-size:11px;
+  font-weight:700;
+  background:#eaf0f5
+}
+
+.badge.ok{
+  background:#e8f6ee;
+  color:#177545
+}
+
+.badge.wait{
+  background:#fff5df;
+  color:#9a6500
+}
+
+.badge.cancel{
+  background:#fdecea;
+  color:var(--danger)
+}
+
+.form{
+  background:#fff;
+  border-radius:14px;
+  box-shadow:var(--shadow);
+  padding:20px
+}
+
+.formgrid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px
+}
+
+.field label{
+  display:block;
+  font-size:12px;
+  color:var(--muted);
+  margin-bottom:6px
+}
+
+.field input,
+.field select,
+.field textarea{
+  width:100%;
+  border:1px solid #dbe4ec;
+  border-radius:9px;
+  padding:10px 11px;
+  background:#fff
+}
+
+.field textarea{
+  min-height:85px;
+  resize:vertical
+}
+
+.full{
+  grid-column:1/-1
+}
+
+.items{
+  margin-top:20px
+}
+
+.item{
+  display:grid;
+  grid-template-columns:125px 1fr 150px 110px 40px;
+  gap:10px;
+  align-items:center;
+  border:1px solid #e2eaf1;
+  padding:10px;
+  border-radius:12px;
+  margin-bottom:9px
+}
+
+.thumb{
+  width:125px;
+  height:100px;
+  border-radius:8px;
+  background:#eef3f7;
+  object-fit:cover
+}
+
+.item select,
+.item input{
+  width:100%;
+  padding:9px;
+  border:1px solid #dbe4ec;
+  border-radius:8px
+}
+
+.remove{
+  border:0;
+  background:#fdecea;
+  color:var(--danger);
+  width:36px;
+  height:36px;
+  border-radius:8px
+}
+
+.totalbar{
+  display:flex;
+  justify-content:flex-end;
+  gap:28px;
+  margin-top:15px;
+  font-weight:700
+}
+
+.muted{color:var(--muted)}
+
+.gallery{
+  grid-template-columns:repeat(auto-fill,minmax(180px,1fr))
+}
+
+.photo{
+  background:#fff;
+  border-radius:12px;
+  padding:10px;
+  box-shadow:var(--shadow)
+}
+
+.photo img{
+  width:100%;
+  aspect-ratio:1;
+  object-fit:cover;
+  border-radius:8px;
+  background:#edf2f6
+}
+
+.photo .actions{
+  display:flex;
+  gap:7px;
+  margin-top:8px
+}
+
+.photo button{
+  flex:1;
+  padding:7px;
+  border:0;
+  border-radius:7px;
+  background:#eef3f7
+}
+
+.drop{
+  border:2px dashed #c9d6e2;
+  padding:22px;
+  border-radius:12px;
+  text-align:center;
+  margin-bottom:16px;
+  background:#fbfdff
+}
+
+.empty{
+  padding:35px;
+  text-align:center;
+  color:var(--muted)
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(3,20,34,.58);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:20;
+  padding:20px
+}
+
+.modal.show{display:flex}
+
+.modalbox{
+  background:#fff;
+  border-radius:16px;
+  max-width:900px;
+  width:100%;
+  max-height:90vh;
+  overflow:auto;
+  padding:22px
+}
+
+.modalhead{
+  display:flex;
+  justify-content:space-between;
+  align-items:center
+}
+
+.modalhead h3{margin:0}
+
+.close{
+  border:0;
+  background:#eef2f6;
+  border-radius:8px;
+  width:36px;
+  height:36px
+}
+
+.toast{
+  position:fixed;
+  right:22px;
+  bottom:22px;
+  background:var(--navy);
+  color:#fff;
+  padding:12px 16px;
+  border-radius:9px;
+  display:none;
+  z-index:50;
+  max-width:420px;
+  white-space:pre-wrap
+}
+
+.toast.show{display:block}
+
+.login{
+  position:fixed;
+  inset:0;
+  background:linear-gradient(135deg,var(--navy),#0e5d91);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:100
+}
+
+.loginbox{
+  background:#fff;
+  width:min(410px,92vw);
+  border-radius:18px;
+  padding:28px;
+  box-shadow:0 25px 80px rgba(0,0,0,.25)
+}
+
+.loginbox img{
+  display:block;
+  width:82px;
+  height:82px;
+  object-fit:cover;
+  border-radius:14px;
+  margin:0 auto 12px
+}
+
+.loginbox h2{
+  text-align:center;
+  margin:0
+}
+
+.loginbox p{
+  text-align:center;
+  color:var(--muted);
+  font-size:13px
+}
+
+.loginbox .field{
+  margin-top:12px
+}
+
+.loginbox .btn{
+  width:100%;
+  margin-top:14px
+}
+
+.login-error{
+  color:var(--danger)!important;
+  font-size:12px!important;
+  min-height:16px
+}
+
+.report-head{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+  margin-bottom:18px
+}
+
+.report-box{
+  background:#fff;
+  border:1px solid #e9e5;
+  box-shadow:var(--shadow);
+  border-radius:14px;
+  padding:18px
+}
+
+.report-box small{
+  display:block;
+  color:var(--muted);
+  font-size:12px
+}
+
+.report-box strong{
+  display:block;
+  font-size:23px;
+  margin-top:7px
+}
+
+.gallery-picker{
+  position:absolute;
+  inset:20px;
+  background:#fff;
+  border-radius:14px;
+  padding:20px;
+  overflow:auto;
+  z-index:3
+}
+
+.pick-card{
+  background:#fff;
+  border:1px solid #e3eaf0;
+  border-radius:10px;
+  padding:8px
+}
+
+.pick-card img{
+  width:100%;
+  aspect-ratio:1;
+  object-fit:cover;
+  border-radius:7px
+}
+
+.pick-card button{
+  width:100%;
+  margin-top:7px;
+  padding:8px;
+  border:0;
+  border-radius:7px;
+  background:#eaf0f5
+}
+.pick-card.selected{
+  border:2px solid #2563eb;
+  box-shadow:0 0 0 2px rgba(37,99,235,.12)
+}
+
+.pick-card.selected .gallery-select-btn{
+  background:#2563eb;
+  color:#fff
+}
+.diagnostic{
+  margin-top:10px;
+  padding:10px;
+  border-radius:8px;
+  background:#fff4f2;
+  color:#8d2d20;
+  font-size:11px;
+  display:none;
+  white-space:pre-wrap;
+  word-break:break-word
+}
+
+@media(max-width:900px){
+  .sidebar{width:72px}
+
+  .brand div,
+  nav button span{display:none}
+
+  .brand{justify-content:center}
+
+  .main{
+    margin-left:72px;
+    width:calc(100% - 72px)
+  }
+
+  .cards{
+    grid-template-columns:repeat(2,1fr)
+  }
+
+  .content{padding:18px}
+
+  .item{
+    grid-template-columns:90px 1fr 110px 70px 38px
+  }
+
+  .thumb{
+    width:90px;
+    height:75px
+  }
+}
+
+@media(max-width:600px){
+  .cards{
+    grid-template-columns:1fr 1fr
+  }
+
+  .report-head{
+    grid-template-columns:1fr
+  }
+
+  .formgrid{
+    grid-template-columns:1fr
+  }
+
+  .full{
+    grid-column:auto
+  }
+
+  .top{
+    padding:0 15px
+  }
+
+  .top h1{
+    font-size:17px
+  }
+
+  .userpill{
+    display:none
+  }
+
+  .item{
+    grid-template-columns:70px 1fr 38px;
+    gap:7px
+  }
+
+  .item .fabric,
+  .item .qty{
+    grid-column:2
+  }
+
+  .item .remove{
+    grid-column:3;
+    grid-row:1/3
+  }
+
+  .thumb{
+    width:70px;
+    height:62px
+  }
+
+  .logout{
+    padding:7px 9px
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="login" class="login">
+  <div class="loginbox">
+
+    <img src="logo.jpg" alt="Augusto Estamparia Digital">
+
+    <h2>Augusto Digital</h2>
+    <p>Painel de pedidos e vendas</p>
+
+    <div class="field">
+      <label>E-mail</label>
+      <input
+        id="loginEmail"
+        type="email"
+        placeholder="Digite seu e-mail"
+        autocomplete="email"
+      >
+    </div>
+
+    <div class="field">
+      <label>Senha</label>
+      <input
+        id="loginPass"
+        type="password"
+        placeholder="Digite sua senha"
+        autocomplete="current-password"
+      >
+    </div>
+
+    <p id="loginError" class="login-error"></p>
+    <div id="loginDiagnostic" class="diagnostic"></div>
+
+    <button class="btn primary" id="loginButton" onclick="doLogin()">
+      Entrar
+    </button>
+
+    <p style="font-size:11px;margin-top:12px">
+      Acesso protegido por Supabase.
+    </p>
+
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app" style="display:none">
+
+  <aside class="sidebar">
+
+    <div class="brand">
+      <img src="logo.jpg" alt="Augusto">
+      <div>
+        <b>AUGUSTO</b>
+        <span>Estamparia Digital</span>
+      </div>
+    </div>
+
+    <nav>
+      <button class="active" data-page="dashboard">
+        <span>⌂ &nbsp;</span>Início
+      </button>
+
+      <button data-page="pedidos">
+        <span>▣ &nbsp;</span>Pedidos
+      </button>
+
+      <button data-page="clientes">
+        <span>♙ &nbsp;</span>Clientes
+      </button>
+
+      <button data-page="galeria">
+        <span>▧ &nbsp;</span>Galeria
+      </button>
+
+      <button data-page="financeiro">
+        <span>R$ &nbsp;</span>Financeiro
+      </button>
+
+      <button data-page="relatorios">
+        <span>▤ &nbsp;</span>Relatórios
+      </button>
+    </nav>
+
+  </aside>
+
+  <main class="main">
+
+    <header class="top">
+      <h1 id="title">Início</h1>
+
+      <div class="top-right">
+        <div class="userpill" id="userPill">
+          Carregando...
+        </div>
+
+        <button class="logout" onclick="logout()">
+          Sair
+        </button>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <section class="page active" id="dashboard">
+
+        <div class="section-head">
+          <h2>Visão rápida</h2>
+
+          <button class="btn gold" onclick="newOrder()">
+            + Novo pedido
+          </button>
+        </div>
+
+        <div class="grid cards">
+
+          <div class="card">
+            <div class="label">Vendas fechadas no mês</div>
+            <div class="value blue" id="dashSales">R$ 0,00</div>
+          </div>
+
+          <div class="card">
+            <div class="label">Comissão (1%)</div>
+            <div class="value gold" id="dashComm">R$ 0,00</div>
+          </div>
+
+          <div class="card">
+            <div class="label">Pedidos fechados</div>
+            <div class="value" id="dashClosed">0</div>
+          </div>
+
+          <div class="card">
+            <div class="label">Pedidos em aberto</div>
+            <div class="value" id="dashOpen">0</div>
+          </div>
+
+        </div>
+
+        <div style="height:18px"></div>
+
+        <div class="section-head">
+          <h2>Pedidos recentes</h2>
+
+          <button class="btn secondary" onclick="showPage('pedidos')">
+            Ver todos
+          </button>
+        </div>
+
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Pedido</th>
+                <th>Data</th>
+                <th>Status</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody id="recentBody"></tbody>
+          </table>
+        </div>
+
+      </section>
+
+      <!-- PEDIDOS -->
+      <section class="page" id="pedidos">
+
+        <div class="section-head">
+          <h2>Pedidos</h2>
+
+          <button class="btn primary" onclick="newOrder()">
+            + Novo pedido
+          </button>
+        </div>
+
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Data</th>
+                <th>Peças</th>
+                <th>Status</th>
+                <th>Valor total</th>
+                <th></th>
+              </tr>
+            </thead>
+
+            <tbody id="ordersBody"></tbody>
+          </table>
+        </div>
+
+      </section>
+
+      <!-- CLIENTES -->
+      <section class="page" id="clientes">
+
+        <div class="section-head">
+          <h2>Clientes</h2>
+
+          <button class="btn primary" onclick="openClientModal()">
+            + Novo cliente
+          </button>
+        </div>
+
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Cliente / Empresa</th>
+                <th>Telefone</th>
+                <th>Pedidos</th>
+              </tr>
+            </thead>
+
+            <tbody id="clientsBody"></tbody>
+          </table>
+        </div>
+
+      </section>
+
+      <!-- GALERIA -->
+      <section class="page" id="galeria">
+
+        <div class="section-head">
+          <h2>Minha galeria</h2>
+
+          <button
+            class="btn primary"
+            onclick="document.getElementById('galleryFile').click()"
+          >
+            + Adicionar imagens
+          </button>
+        </div>
+
+        <div class="drop">
+
+          Adicione imagens de estampas.<br>
+          Elas ficam disponíveis para reutilização nos próximos pedidos.
+
+          <input
+            id="galleryFile"
+            type="file"
+            accept="image/*"
+            multiple
+            style="display:none"
+            onchange="addGalleryFiles(this.files)"
+          >
+
+        </div>
+
+        <div class="grid gallery" id="galleryGrid"></div>
+
+      </section>
+
+      <!-- FINANCEIRO -->
+      <section class="page" id="financeiro">
+
+        <div class="section-head">
+          <h2>Financeiro</h2>
+
+          <input
+            id="monthFilter"
+            type="month"
+            onchange="renderFinance()"
+            style="padding:9px;border:1px solid #dbe4ec;border-radius:8px"
+          >
+        </div>
+
+        <div class="grid cards">
+
+          <div class="card">
+            <div class="label">Vendas fechadas</div>
+            <div class="value blue" id="finSales">R$ 0,00</div>
+          </div>
+
+          <div class="card">
+            <div class="label">Comissão de 1%</div>
+            <div class="value gold" id="finComm">R$ 0,00</div>
+          </div>
+
+          <div class="card">
+            <div class="label">Pedidos fechados</div>
+            <div class="value" id="finCount">0</div>
+          </div>
+
+          <div class="card">
+            <div class="label">Pedidos em aberto</div>
+            <div class="value" id="finPending">0</div>
+          </div>
+
+        </div>
+
+        <div style="height:18px"></div>
+
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Data de fechamento</th>
+                <th>Total</th>
+                <th>Sinal</th>
+                <th>Saldo</th>
+                <th>Comissão</th>
+              </tr>
+            </thead>
+
+            <tbody id="finBody"></tbody>
+          </table>
+        </div>
+
+      </section>
+
+      <!-- RELATÓRIOS -->
+      <section class="page" id="relatorios">
+
+        <div class="section-head">
+          <h2>Relatórios</h2>
+
+          <input
+            id="reportMonth"
+            type="month"
+            onchange="renderReports()"
+            style="padding:9px;border:1px solid #dbe4ec;border-radius:8px"
+          >
+        </div>
+
+        <div class="report-head">
+
+          <div class="report-box">
+            <small>Vendas no período</small>
+            <strong class="blue" id="reportSales">
+              R$ 0,00
+            </strong>
+          </div>
+
+          <div class="report-box">
+            <small>Pedidos fechados</small>
+            <strong id="reportClosed">0</strong>
+          </div>
+
+          <div class="report-box">
+            <small>Comissão estimada</small>
+            <strong class="gold" id="reportComm">
+              R$ 0,00
+            </strong>
+          </div>
+
+        </div>
+
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Data</th>
+                <th>Valor</th>
+                <th>Sinal</th>
+                <th>Saldo</th>
+              </tr>
+            </thead>
+
+            <tbody id="reportBody"></tbody>
+          </table>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modalbox" id="modalContent"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+
+/* =========================================================
+   SUPABASE
+========================================================= */
+
+const SUPABASE_URL =
+  'https://lzmjuqsunccqutgemgpl.supabase.co';
+
+const SUPABASE_KEY =
+  'sb_publishable_2bpLexKQE9hFSQLgbZDFVA_oJKJx-2k';
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+/* =========================================================
+   CONFIGURAÇÕES
+========================================================= */
+
+const fabrics = [
+  'Suplex',
+  'Fluit',
+  'Tule',
+  'Crepinho',
+  'Suede',
+  'Moletinho'
+];
+
+const statuses = [
+  'Novo pedido',
+  'Fechado',
+  'Cancelado'
+];
+
+let currentUser = null;
+let currentProfile = null;
+
+let db = {
+  clients: [],
+  orders: [],
+  gallery: []
+};
+
+let tempItems = [];
+let selectedGalleryIds = new Set();
+
+/* =========================================================
+   UTILITÁRIOS
+========================================================= */
+
+function money(n){
+  return (Number(n)||0).toLocaleString(
+    'pt-BR',
+    {
+      style:'currency',
+      currency:'BRL'
+    }
+  );
+}
+
+function esc(s){
+  return String(s ?? '')
+    .replace(/[&<>"']/g,m=>({
+      '&':'&amp;',
+      '<':'&lt;',
+      '>':'&gt;',
+      '"':'&quot;',
+      "'":'&#39;'
+    }[m]));
+}
+
+function toast(s){
+  const t = document.getElementById('toast');
+
+  if(!t) return;
+
+  t.textContent = s;
+  t.classList.add('show');
+
+  clearTimeout(window.__toastTimer);
+
+  window.__toastTimer =
+    setTimeout(
+      ()=>t.classList.remove('show'),
+      4000
+    );
+}
+
+function showDiagnostic(elementId,message){
+  const el = document.getElementById(elementId);
+
+  if(!el) return;
+
+  el.textContent = message || '';
+  el.style.display = message ? 'block' : 'none';
+}
+
+function supabaseErrorText(error){
+  if(!error) return 'Erro desconhecido.';
+
+  const parts = [];
+
+  if(error.message)
+    parts.push('Mensagem: ' + error.message);
+
+  if(error.details)
+    parts.push('Detalhes: ' + error.details);
+
+  if(error.hint)
+    parts.push('Dica: ' + error.hint);
+
+  if(error.code)
+    parts.push('Código: ' + error.code);
+
+  return parts.join('\n') || JSON.stringify(error);
+}
+
+function fmtDate(s){
+  if(!s) return '—';
+
+  const [y,m,d] =
+    String(s).slice(0,10).split('-');
+
+  if(!y || !m || !d)
+    return '—';
+
+  return `${d}/${m}/${y}`;
+}
+
+function monthNow(){
+  return new Date()
+    .toISOString()
+    .slice(0,7);
+}
+
+function ensureAuthenticated(){
+  if(!currentUser){
+    toast('Sua sessão não está disponível. Faça login novamente.');
+    return false;
+  }
+
+  return true;
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+async function doLogin(){
+
+  const button =
+    document.getElementById('loginButton');
+
+  const email =
+    document
+      .getElementById('loginEmail')
+      .value
+      .trim();
+
+  const password =
+    document
+      .getElementById('loginPass')
+      .value;
+
+  const error =
+    document.getElementById('loginError');
+
+  error.textContent = '';
+
+  showDiagnostic('loginDiagnostic','');
+
+  if(!email || !password){
+    error.textContent =
+      'Informe seu e-mail e sua senha.';
+    return;
+  }
+
+  try{
+
+    button.disabled = true;
+    button.textContent = 'Entrando...';
+
+    const {
+      data,
+      error:loginError
+    } =
+      await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
+
+    if(loginError){
+
+      console.error(
+        'Erro no login:',
+        loginError
+      );
+
+      error.textContent =
+        loginError.message ||
+        'Não foi possível entrar.';
+
+      showDiagnostic(
+        'loginDiagnostic',
+        supabaseErrorText(loginError)
+      );
+
+      return;
+    }
+
+    if(!data?.user){
+
+      const msg =
+        'O Supabase não retornou um usuário autenticado.';
+
+      console.error(msg,data);
+
+      error.textContent = msg;
+
+      showDiagnostic(
+        'loginDiagnostic',
+        JSON.stringify(data || {},null,2)
+      );
+
+      return;
+    }
+
+    currentUser = data.user;
+
+    await startApp();
+
+  }catch(err){
+
+    console.error(
+      'Exceção durante login:',
+      err
+    );
+
+    error.textContent =
+      'Ocorreu um erro ao tentar entrar.';
+
+    showDiagnostic(
+      'loginDiagnostic',
+      supabaseErrorText(err)
+    );
+
+  }finally{
+
+    button.disabled = false;
+    button.textContent = 'Entrar';
+
+  }
+}
+
+async function logout(){
+
+  try{
+
+    const {error} =
+      await supabaseClient.auth.signOut();
+
+    if(error)
+      console.error('Erro ao sair:',error);
+
+  }catch(err){
+
+    console.error('Erro no logout:',err);
+
+  }finally{
+
+    currentUser = null;
+    currentProfile = null;
+
+    db = {
+      clients:[],
+      orders:[],
+      gallery:[]
+    };
+
+    document
+      .getElementById('app')
+      .style.display='none';
+
+    document
+      .getElementById('login')
+      .style.display='flex';
+
+    document
+      .getElementById('loginPass')
+      .value='';
+
+    document
+      .getElementById('userPill')
+      .textContent='';
+
+  }
+}
+
+async function startApp(){
+
+  if(!currentUser){
+    console.error(
+      'startApp chamado sem currentUser.'
+    );
+    return;
+  }
+
+  document
+    .getElementById('login')
+    .style.display='none';
+
+  document
+    .getElementById('app')
+    .style.display='flex';
+
+  document
+    .getElementById('userPill')
+    .textContent =
+      currentUser.email || 'Usuário';
+
+  await loadProfile();
+
+  document
+    .getElementById('userPill')
+    .textContent =
+      currentProfile?.nome ||
+      currentUser.email ||
+      'Usuário';
+
+  await loadAll();
+}
+
+
+/* =========================================================
+   PERFIL
+========================================================= */
+
+async function loadProfile(){
+
+  if(!currentUser)
+    return;
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from('perfis')
+        .select('*')
+        .eq('id',currentUser.id)
+        .maybeSingle();
+
+    if(error){
+
+      console.warn(
+        'Tabela/perfil não pôde ser carregado. Usando e-mail:',
+        error
+      );
+
+      currentProfile = {
+        nome:currentUser.email,
+        role:'funcionario'
+      };
+
+      return;
+    }
+
+    currentProfile =
+      data || {
+        nome:currentUser.email,
+        role:'funcionario'
+      };
+
+  }catch(err){
+
+    console.error(
+      'Erro ao carregar perfil:',
+      err
+    );
+
+    currentProfile = {
+      nome:currentUser.email,
+      role:'funcionario'
+    };
+  }
+}
+
+
+/* =========================================================
+   CARREGAMENTO GERAL
+========================================================= */
+
+async function loadAll(){
+
+  if(!ensureAuthenticated())
+    return;
+
+  await Promise.all([
+    loadClients(),
+    loadGallery(),
+    loadOrders()
+  ]);
+
+  renderAll();
+}
+
+
+/* =========================================================
+   CLIENTES
+========================================================= */
+
+async function loadClients(){
+
+  if(!ensureAuthenticated())
+    return;
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from('clientes')
+        .select('*')
+        .eq(
+          'usuario_id',
+          currentUser.id
+        )
+        .order(
+          'created_at',
+          {ascending:false}
+        );
+
+    if(error){
+
+      console.error(
+        'Erro ao carregar clientes:',
+        error
+      );
+
+      toast(
+        'Erro ao carregar clientes.\n' +
+        supabaseErrorText(error)
+      );
+
+      return;
+    }
+
+    db.clients = data || [];
+
+  }catch(err){
+
+    console.error(
+      'Exceção ao carregar clientes:',
+      err
+    );
+
+    toast(
+      'Erro ao carregar clientes.\n' +
+      supabaseErrorText(err)
+    );
+  }
+}
+
+async function saveClient(){
+
+  if(!ensureAuthenticated())
+    return;
+
+  const name =
+    document
+      .getElementById('cName')
+      .value
+      .trim();
+
+  const phone =
+    document
+      .getElementById('cPhone')
+      .value
+      .trim();
+
+  if(!name){
+    toast('Informe o cliente.');
+    return;
+  }
+
+  try{
+
+    const payload = {
+      nome:name,
+      telefone:phone,
+      usuario_id:currentUser.id
+    };
+
+    console.log(
+      'Salvando cliente:',
+      payload
+    );
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from('clientes')
+        .insert(payload)
+        .select()
+        .single();
+
+    if(error){
+
+      console.error(
+        'Erro real retornado pelo Supabase ao salvar cliente:',
+        error
+      );
+
+      toast(
+        'Não foi possível salvar cliente.\n\n' +
+        supabaseErrorText(error)
+      );
+
+      const diagnostic =
+        document.getElementById(
+          'clientDiagnostic'
+        );
+
+      if(diagnostic){
+        diagnostic.textContent =
+          supabaseErrorText(error);
+        diagnostic.style.display='block';
+      }
+
+      return;
+    }
+
+    console.log(
+      'Cliente salvo com sucesso:',
+      data
+    );
+
+    closeModal();
+
+    toast(
+      'Cliente salvo com sucesso.'
+    );
+
+    await loadClients();
+
+    renderAll();
+
+  }catch(err){
+
+    console.error(
+      'Exceção ao salvar cliente:',
+      err
+    );
+
+    toast(
+      'Erro ao salvar cliente.\n\n' +
+      supabaseErrorText(err)
+    );
+  }
+}
+
+function openClientModal(){
+
+  document
+    .getElementById('modalContent')
+    .innerHTML = `
+
+      <div class="modalhead">
+
+        <h3>Novo cliente</h3>
+
+        <button
+          class="close"
+          onclick="closeModal()"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <div
+        class="formgrid"
+        style="margin-top:18px"
+      >
+
+        <div class="field">
+
+          <label>
+            Cliente / Empresa
+          </label>
+
+          <input id="cName">
+
+        </div>
+
+        <div class="field">
+
+          <label>
+            WhatsApp / Telefone
+          </label>
+
+          <input id="cPhone">
+
+        </div>
+
+      </div>
+
+      <div
+        id="clientDiagnostic"
+        class="diagnostic"
+      ></div>
+
+      <div
+        style="
+          display:flex;
+          justify-content:flex-end;
+          margin-top:18px
+        "
+      >
+
+        <button
+          class="btn primary"
+          onclick="saveClient()"
+        >
+          Salvar cliente
+        </button>
+
+      </div>
+    `;
+
+  document
+    .getElementById('modal')
+    .classList.add('show');
+}
+
+
+/* =========================================================
+   GALERIA
+========================================================= */
+
+async function loadGallery(){
+
+  if(!ensureAuthenticated())
+    return;
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from('galeria')
+        .select('*')
+        .eq(
+          'usuario_id',
+          currentUser.id
+        )
+        .order(
+          'created_at',
+          {ascending:false}
+        );
+
+    if(error){
+
+      console.error(
+        'Erro ao carregar galeria:',
+        error
+      );
+
+      toast(
+        'Erro ao carregar galeria.\n' +
+        supabaseErrorText(error)
+      );
+
+      return;
+    }
+
+    db.gallery = data || [];
+
+  }catch(err){
+
+    console.error(
+      'Exceção ao carregar galeria:',
+      err
+    );
+
+    toast(
+      'Erro ao carregar galeria.\n' +
+      supabaseErrorText(err)
+    );
+  }
+}
+
+function storagePublicUrl(path){
+
+  if(!path)
+    return '';
+
+  const {
+    data
+  } =
+    supabaseClient
+      .storage
+      .from('estampas')
+      .getPublicUrl(path);
+
+  return data?.publicUrl || '';
+}
+
+async function addGalleryFiles(files){
+
+  if(!ensureAuthenticated())
+    return;
+
+  if(!files || !files.length)
+    return;
+
+  let successCount = 0;
+
+  for(const file of [...files]){
+
+    try{
+
+      const extension =
+        file.name
+          .split('.')
+          .pop()
+          .toLowerCase();
+
+      const safeName =
+        file.name.replace(
+          /[^a-zA-Z0-9._-]/g,
+          '_'
+        );
+
+      const path =
+        `${currentUser.id}/${Date.now()}-${crypto.randomUUID()}.${extension}`;
+
+      const {
+        error:uploadError
+      } =
+        await supabaseClient
+          .storage
+          .from('estampas')
+          .upload(
+            path,
+            file,
+            {
+              cacheControl:'3600',
+              upsert:false
+            }
+          );
+
+      if(uploadError){
+
+        console.error(
+          'Erro no upload:',
+          uploadError
+        );
+
+        toast(
+          'Erro ao enviar uma imagem.\n' +
+          supabaseErrorText(uploadError)
+        );
+
+        continue;
+      }
+
+      const {
+        error:dbError
+      } =
+        await supabaseClient
+          .from('galeria')
+          .insert({
+            nome:safeName,
+            storage_path:path,
+            usuario_id:currentUser.id
+          });
+
+      if(dbError){
+
+        console.error(
+          'Erro ao salvar imagem na galeria:',
+          dbError
+        );
+
+        toast(
+          'A imagem foi enviada, mas não foi salva na galeria.\n' +
+          supabaseErrorText(dbError)
+        );
+
+        continue;
+      }
+
+      successCount++;
+
+    }catch(err){
+
+      console.error(
+        'Exceção ao adicionar imagem:',
+        err
+      );
+
+      toast(
+        'Erro ao adicionar imagem.\n' +
+        supabaseErrorText(err)
+      );
+    }
+  }
+
+  if(successCount){
+
+    toast(
+      `${successCount} imagem(ns) adicionada(s).`
+    );
+
+    await loadGallery();
+    renderGallery();
+  }
+}
+
+async function deleteGallery(id){
+
+  if(!ensureAuthenticated())
+    return;
+
+  const item =
+    db.gallery.find(
+      x=>x.id===id
+    );
+
+  if(!item)
+    return;
+
+  if(!confirm(
+    'Excluir esta estampa da galeria?'
+  ))
+    return;
+
+  try{
+
+    if(item.storage_path){
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .storage
+          .from('estampas')
+          .remove([
+            item.storage_path
+          ]);
+
+      if(error)
+        console.error(
+          'Erro ao remover arquivo do Storage:',
+          error
+        );
+    }
+
+    const {
+      error
+    } =
+      await supabaseClient
+        .from('galeria')
+        .delete()
+        .eq('id',id)
+        .eq(
+          'usuario_id',
+          currentUser.id
+        );
+
+    if(error){
+
+      console.error(
+        'Erro ao excluir galeria:',
+        error
+      );
+
+      toast(
+        'Não foi possível excluir.\n' +
+        supabaseErrorText(error)
+      );
+
+      return;
+    }
+
+    toast('Imagem excluída.');
+
+    await loadGallery();
+
+    renderGallery();
+
+  }catch(err){
+
+    console.error(
+      'Exceção ao excluir galeria:',
+      err
+    );
+
+    toast(
+      'Erro ao excluir imagem.\n' +
+      supabaseErrorText(err)
+    );
+  }
+}
+
+function renderGallery(){
+
+  const el =
+    document.getElementById(
+      'galleryGrid'
+    );
+
+  if(!el)
+    return;
+
+  el.innerHTML =
+    db.gallery.map(
+      g=>{
+
+        const url =
+          storagePublicUrl(
+            g.storage_path
+          );
+
+        return `
+
+          <div class="photo">
+
+            <img
+              src="${esc(url)}"
+              alt="${esc(g.nome||'Estampa')}"
+            >
+
+            <div class="actions">
+
+              <button
+                onclick="useGalleryImage('${g.id}')"
+              >
+                Usar
+              </button>
+
+              <button
+                onclick="deleteGallery('${g.id}')"
+              >
+                Excluir
+              </button>
+
+            </div>
+
+          </div>
+        `;
+      }
+    ).join('') ||
+    '<div class="empty">Sua galeria está vazia.</div>';
+}
+
+function useGalleryImage(id){
+
+  if(!db.gallery.some(x=>x.id===id))
+    return;
+
+  toast(
+    'Imagem disponível para uso nos pedidos.'
+  );
+}
+
+
+/* =========================================================
+   PEDIDOS
+========================================================= */
+
+async function loadOrders(){
+
+  if(!ensureAuthenticated())
+    return;
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from('pedidos')
+        .select(`
+          *,
+          clientes (
+            id,
+            nome,
+            telefone
+          ),
+          itens_pedido (
+            id,
+            pedido_id,
+            imagem_url,
+            tecido,
+            quantidade,
+            created_at
+          )
+        `)
+        .eq(
+          'usuario_id',
+          currentUser.id
+        )
+        .order(
+          'created_at',
+          {ascending:false}
+        );
+
+    if(error){
+
+      console.error(
+        'Erro ao carregar pedidos:',
+        error
+      );
+
+      toast(
+        'Erro ao carregar pedidos.\n' +
+        supabaseErrorText(error)
+      );
+
+      return;
+    }
+
+    db.orders =
+      (data || []).map(
+        o=>({
+
+          ...o,
+
+          clientId:o.cliente_id,
+
+          date:o.data_pedido,
+
+          signal:Number(o.sinal||0),
+
+          total:
+            o.valor_total === null
+              ? null
+              : Number(o.valor_total),
+
+          status:
+            statuses.includes(o.status)
+              ? o.status
+              : 'Novo pedido',
+
+          notes:
+            o.observacoes || '',
+
+          items:
+            (o.itens_pedido || [])
+              .map(
+                item=>({
+
+                  id:item.id,
+
+                  image:item.imagem_url,
+
+                  fabric:item.tecido,
+
+                  qty:Number(
+                    item.quantidade || 1
+                  )
+                })
+              )
+        })
+      );
+
+  }catch(err){
+
+    console.error(
+      'Exceção ao carregar pedidos:',
+      err
+    );
+
+    toast(
+      'Erro ao carregar pedidos.\n' +
+      supabaseErrorText(err)
+    );
+  }
+}
+
+function newOrder(){
+
+  if(!ensureAuthenticated())
+    return;
+
+  if(!db.clients.length){
+
+    toast(
+      'Cadastre um cliente antes de criar o pedido.'
+    );
+
+    openClientModal();
+
+    return;
+  }
+
+  const options =
+    db.clients
+      .map(
+        c=>
+          `<option value="${esc(c.id)}">
+            ${esc(c.nome)}
+          </option>`
+      )
+      .join('');
+
+  document
+    .getElementById('modalContent')
+    .innerHTML = `
+
+      <div class="modalhead">
+
+        <h3>Novo pedido</h3>
+
+        <button
+          class="close"
+          onclick="closeModal()"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <div
+        class="formgrid"
+        style="margin-top:18px"
+      >
+
+        <div class="field">
+
+          <label>Cliente</label>
+
+          <select id="oClient">
+
+            <option value="">
+              Selecione...
+            </option>
+
+            ${options}
+
+          </select>
+
+        </div>
+
+        <div class="field">
+
+          <label>Data do pedido</label>
+
+          <input
+            id="oDate"
+            type="date"
+            value="${new Date().toISOString().slice(0,10)}"
+          >
+
+        </div>
+
+        <div class="field">
+
+          <label>Sinal recebido (R$)</label>
+
+          <input
+            id="oSignal"
+            type="number"
+            step="0.01"
+            min="0"
+            value="0"
+          >
+
+        </div>
+
+        <div class="field">
+
+          <label>Status</label>
+
+          <select id="oStatus">
+
+            ${statuses.map(
+              s=>
+                `<option value="${s}">
+                  ${s}
+                </option>`
+            ).join('')}
+
+          </select>
+
+        </div>
+
+        <div class="field full">
+
+          <label>Observações</label>
+
+          <textarea
+            id="oNotes"
+            placeholder="Observações do pedido..."
+          ></textarea>
+
+        </div>
+
+      </div>
+
+      <div class="items">
+
+        <div class="section-head">
+
+          <h3>Estampas do pedido</h3>
+
+          <div>
+
+            <button
+              class="btn secondary"
+              onclick="addOrderItem()"
+            >
+              + Da galeria
+            </button>
+
+            <button
+              class="btn gold"
+              onclick="addNewOrderImage()"
+            >
+              + Nova imagem
+            </button>
+
+          </div>
+
+        </div>
+
+        <div id="itemsList"></div>
+
+      </div>
+
+      <div class="totalbar">
+
+        <span>
+          Total de peças:
+          <b id="itemsTotal">0</b>
+        </span>
+
+      </div>
+
+      <div
+        style="
+          display:flex;
+          justify-content:flex-end;
+          gap:10px;
+          margin-top:18px
+        "
+      >
+
+        <button
+          class="btn secondary"
+          onclick="closeModal()"
+        >
+          Cancelar
+        </button>
+
+        <button
+          class="btn primary"
+          onclick="saveOrder()"
+        >
+          Salvar pedido
+        </button>
+
+      </div>
+    `;
+
+  tempItems = [];
+
+  document
+    .getElementById('modal')
+    .classList.add('show');
+
+  renderItems();
+}
+
+function addOrderItem(){
+
+  if(!db.gallery.length){
+
+    toast(
+      'Sua galeria está vazia. Adicione uma imagem primeiro.'
+    );
+
+    return;
+  }
+
+  selectedGalleryIds.clear();
+
+  const html =
+    db.gallery
+      .map(
+        g=>{
+
+          const url =
+            storagePublicUrl(
+              g.storage_path
+            );
+
+          return `
+            <div
+              class="pick-card"
+              id="pick-card-${g.id}"
+            >
+
+              <img
+                src="${esc(url)}"
+                alt="${esc(g.nome||'Estampa')}"
+              >
+
+              <button
+              type="button"
+                class="gallery-select-btn"
+                onclick="pickGallery('${g.id}')"
+              >
+                Selecionar
+              </button>
+
+            </div>
+          `;
+        }
+      )
+      .join('');
+
+  document
+    .getElementById('modalContent')
+    .innerHTML += `
+
+      <div
+        id="galleryPicker"
+        class="gallery-picker"
+      >
+
+        <div class="modalhead">
+
+          <h3>
+            Escolher da galeria
+          </h3>
+
+          <button
+            class="close"
+            onclick="
+              document
+                .getElementById('galleryPicker')
+                ?.remove()
+            "
+          >
+            ×
+          </button>
+
+        </div>
+
+        <div
+          class="grid gallery"
+          style="margin-top:14px"
+        >
+          ${html}
+        </div>
+
+        <div
+          style="
+            display:flex;
+            gap:10px;
+            justify-content:flex-end;
+            margin-top:16px;
+          "
+        >
+
+          <button
+            class="btn secondary"
+            onclick="
+              document
+                .getElementById('galleryPicker')
+                ?.remove()
+            "
+          >
+            Cancelar
+          </button>
+
+          <button
+          type="button"
+            class="btn primary"
+            onclick="addSelectedGalleryImages()"
+          >
+            Adicionar selecionadas
+          </button>
+
+        </div>
+
+      </div>
+    `;
+}
+  function pickGallery(id){
+
+   const card =
+    document.getElementById(
+      `pick-card-${id}`
+    );
+
+  const button =
+    card?.querySelector(
+      '.gallery-select-btn'
+    );
+
+  if(selectedGalleryIds.has(id)){
+
+    selectedGalleryIds.delete(id);
+
+    card?.classList.remove('selected');
+
+    if(button)
+      button.textContent = 'Selecionar';
+
+  }else{
+
+    selectedGalleryIds.add(id);
+
+    card?.classList.add('selected');
+
+    if(button)
+      button.textContent = 'Selecionada ✓';
+
+  }
+}
+
+
+function addSelectedGalleryImages(){
+
+  if(!selectedGalleryIds.size){
+
+    toast(
+      'Selecione pelo menos uma estampa.'
+    );
+
+    return;
+  }
+
+  selectedGalleryIds.forEach(id=>{
+
+    const g =
+      db.gallery.find(
+        x=>x.id===id
+      );
+
+    if(!g)
+      return;
+
+    const image =
+      storagePublicUrl(
+        g.storage_path
+      );
+
+    tempItems.push({
+      id:crypto.randomUUID(),
+      image:image,
+      fabric:'Suplex',
+      qty:1
+    });
+
+  });
+
+  selectedGalleryIds.clear();
+
+  document
+    .getElementById('galleryPicker')
+    ?.remove();
+
+  renderItems();
+}
+
+async function addNewOrderImage(){
+
+  if(!ensureAuthenticated())
+    return;
+
+  const input =
+    document.createElement('input');
+
+  input.type='file';
+  input.accept='image/*';
+
+  input.onchange=async()=>{
+
+    const file =
+      input.files?.[0];
+
+    if(!file)
+      return;
+
+    try{
+
+      const extension =
+        file.name
+          .split('.')
+          .pop()
+          .toLowerCase();
+
+      const path =
+        `${currentUser.id}/pedido-${Date.now()}-${crypto.randomUUID()}.${extension}`;
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .storage
+          .from('estampas')
+          .upload(
+            path,
+            file,
+            {
+              cacheControl:'3600',
+              upsert:false
+            }
+          );
+
+      if(error){
+
+        console.error(
+          'Erro ao enviar imagem do pedido:',
+          error
+        );
+
+        toast(
+          'Não foi possível enviar a imagem.\n' +
+          supabaseErrorText(error)
+        );
+
+        return;
+      }
+
+      const {
+        data
+      } =
+        supabaseClient
+          .storage
+          .from('estampas')
+          .getPublicUrl(path);
+
+      tempItems.push({
+        id:crypto.randomUUID(),
+        image:data?.publicUrl || '',
+        fabric:'Suplex',
+        qty:1
+      });
+
+      renderItems();
+
+    }catch(err){
+
+      console.error(
+        'Exceção ao enviar imagem:',
+        err
+      );
+
+      toast(
+        'Erro ao enviar imagem.\n' +
+        supabaseErrorText(err)
+      );
+    }
+  };
+
+  input.click();
+}
+
+function renderItems(){
+
+  const el =
+    document.getElementById(
+      'itemsList'
+    );
+
+  if(!el)
+    return;
+
+  el.innerHTML =
+    tempItems
+      .map(
+        (it,i)=>`
+
+          <div class="item">
+
+            <img
+              class="thumb"
+              src="${esc(it.image)}"
+              alt="Estampa ${i+1}"
+            >
+
+            <div>
+
+              <b>
+                Estampa ${i+1}
+              </b>
+
+              <div
+                class="muted"
+                style="font-size:11px"
+              >
+                Imagem vinculada ao item
+              </div>
+
+            </div>
+
+            <div class="fabric">
+
+              <select
+                onchange="
+                  tempItems[${i}].fabric=this.value
+                "
+              >
+
+                ${fabrics.map(
+                  f=>
+                    `<option
+                      ${f===it.fabric?'selected':''}
+                    >
+                      ${f}
+                    </option>`
+                ).join('')}
+
+              </select>
+
+            </div>
+
+            <div class="qty">
+
+              <input
+                type="number"
+                min="1"
+                value="${it.qty}"
+                onchange="
+                  tempItems[${i}].qty=Math.max(
+                    1,
+                    Number(this.value)||1
+                  );
+                  renderItems()
+                "
+              >
+
+            </div>
+
+            <button
+              class="remove"
+              onclick="
+                tempItems.splice(${i},1);
+                renderItems()
+              "
+            >
+              ×
+            </button>
+
+          </div>
+        `
+      )
+      .join('') ||
+      '<div class="empty">Nenhuma estampa adicionada ainda.</div>';
+
+  const total =
+    tempItems.reduce(
+      (a,x)=>
+        a+Number(x.qty||0),
+      0
+    );
+
+  const totalEl =
+    document.getElementById(
+      'itemsTotal'
+    );
+
+  if(totalEl)
+    totalEl.textContent=total;
+}
+
+async function saveOrder(){
+
+  if(!ensureAuthenticated())
+    return;
+
+  const clientId =
+    document
+      .getElementById('oClient')
+      .value;
+
+  if(!clientId){
+
+    toast(
+      'Selecione um cliente.'
+    );
+
+    return;
+  }
+
+  if(!tempItems.length){
+
+    toast(
+      'Adicione pelo menos uma estampa.'
+    );
+
+    return;
+  }
+
+  try{
+
+    const selectedClient =
+      db.clients.find(
+        c=>c.id===clientId
+      );
+
+    if(!selectedClient){
+
+      toast(
+        'Cliente inválido ou não pertence ao usuário logado.'
+      );
+
+      return;
+    }
+
+    const status =
+      document
+        .getElementById('oStatus')
+        .value;
+
+    if(!statuses.includes(status)){
+
+      toast(
+        'Status inválido.'
+      );
+
+      return;
+    }
+
+    const payload = {
+
+      cliente_id:clientId,
+
+      usuario_id:currentUser.id,
+
+      data_pedido:
+        document
+          .getElementById('oDate')
+          .value,
+
+      sinal:
+        Number(
+          document
+            .getElementById('oSignal')
+            .value
+        ) || 0,
+
+      valor_total:null,
+
+      observacoes:
+        document
+          .getElementById('oNotes')
+          .value,
+
+      status:status
+    };
+
+    console.log(
+      'Criando pedido:',
+      payload
+    );
+
+    const {
+      data:order,
+      error:orderError
+    } =
+      await supabaseClient
+        .from('pedidos')
+        .insert(payload)
+        .select()
+        .single();
+
+    if(orderError){
+
+      console.error(
+        'Erro ao criar pedido:',
+        orderError
+      );
+
+      toast(
+        'Erro ao criar o pedido.\n' +
+        supabaseErrorText(orderError)
+      );
+
+      return;
+    }
+
+    const rows =
+      tempItems.map(
+        item=>({
+
+          pedido_id:order.id,
+
+          imagem_url:item.image,
+
+          tecido:item.fabric,
+
+          quantidade:
+            Number(item.qty||1)
+
+        })
+      );
+
+    console.log(
+      'Salvando itens do pedido:',
+      rows
+    );
+
+    const {
+      error:itemError
+    } =
+      await supabaseClient
+        .from('itens_pedido')
+        .insert(rows);
+
+    if(itemError){
+
+      console.error(
+        'Erro ao salvar itens:',
+        itemError
+      );
+
+      await supabaseClient
+        .from('pedidos')
+        .delete()
+        .eq('id',order.id)
+        .eq(
+          'usuario_id',
+          currentUser.id
+        );
+
+      toast(
+        'Erro ao salvar as estampas do pedido.\n' +
+        supabaseErrorText(itemError)
+      );
+
+      return;
+    }
+
+    closeModal();
+
+    tempItems=[];
+
+    toast(
+      'Pedido criado com sucesso.'
+    );
+
+    await loadOrders();
+
+    renderAll();
+
+  }catch(err){
+
+    console.error(
+      'Exceção ao criar pedido:',
+      err
+    );
+
+    toast(
+      'Erro ao criar pedido.\n' +
+      supabaseErrorText(err)
+    );
+  }
+}
+
+async function updateOrder(id){
+
+  if(!ensureAuthenticated())
+    return;
+
+  const o =
+    db.orders.find(
+      x=>x.id===id
+    );
+
+  if(!o)
+    return;
+
+  const totalInput =
+    document
+      .getElementById('vTotal')
+      .value;
+
+  let status =
+    document
+      .getElementById('vStatus')
+      .value;
+
+  if(!statuses.includes(status)){
+
+    toast(
+      'Status inválido.'
+    );
+
+    return;
+  }
+
+  let valorTotal = null;
+
+  if(totalInput !== ''){
+
+    valorTotal =
+      Number(totalInput);
+
+    if(!Number.isFinite(valorTotal) ||
+       valorTotal < 0){
+
+      toast(
+        'O valor não pode ser negativo.'
+      );
+
+      return;
+    }
+
+    /*
+      Se o valor total foi informado,
+      o pedido fica fechado automaticamente,
+      exceto quando o usuário escolheu Cancelado.
+    */
+    if(status !== 'Cancelado')
+      status='Fechado';
+  }
+
+  /*
+    Cancelado pode permanecer sem valor.
+  */
+
+  try{
+
+    const {
+      error
+    } =
+      await supabaseClient
+        .from('pedidos')
+        .update({
+          valor_total:valorTotal,
+          status:status
+        })
+        .eq('id',id)
+        .eq(
+          'usuario_id',
+          currentUser.id
+        );
+
+    if(error){
+
+      console.error(
+        'Erro ao atualizar pedido:',
+        error
+      );
+
+      toast(
+        'Não foi possível atualizar o pedido.\n' +
+        supabaseErrorText(error)
+      );
+
+      return;
+    }
+
+    closeModal();
+
+    toast(
+      'Pedido atualizado com sucesso.'
+    );
+
+    await loadOrders();
+
+    renderAll();
+
+  }catch(err){
+
+    console.error(
+      'Exceção ao atualizar pedido:',
+      err
+    );
+
+    toast(
+      'Erro ao atualizar pedido.\n' +
+      supabaseErrorText(err)
+    );
+  }
+}
+
+
+/* =========================================================
+   VISUALIZAR PEDIDO
+========================================================= */
+
+function viewOrder(id){
+
+  const o =
+    db.orders.find(
+      x=>x.id===id
+    );
+
+  if(!o)
+    return;
+
+  const c =
+    db.clients.find(
+      x=>x.id===o.clientId
+    );
+
+  document
+    .getElementById('modalContent')
+    .innerHTML = `
+
+      <div class="modalhead">
+
+        <h3>
+          Pedido — ${esc(c?.nome||'Cliente')}
+        </h3>
+
+        <button
+          class="close"
+          onclick="closeModal()"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <div
+        class="muted"
+        style="margin:8px 0 18px"
+      >
+        Criado em ${fmtDate(o.date)}
+        ·
+        ${o.items.reduce(
+          (a,x)=>
+            a+Number(x.qty||0),
+          0
+        )} peças
+      </div>
+
+      <div class="tablewrap">
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>Estampa</th>
+              <th>Tecido</th>
+              <th>Quantidade</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            ${o.items.map(
+              x=>`
+
+                <tr>
+
+                  <td>
+                    <img
+                      src="${esc(x.image)}"
+                      style="
+                        width:120px;
+                        height:90px;
+                        object-fit:cover;
+                        border-radius:7px
+                      "
+                      alt="Estampa"
+                    >
+                  </td>
+
+                  <td>
+                    ${esc(x.fabric)}
+                  </td>
+
+                  <td>
+                    ${x.qty} peça(s)
+                  </td>
+
+                </tr>
+              `
+            ).join('')}
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+      <div
+        class="formgrid"
+        style="margin-top:16px"
+      >
+
+        <div class="field">
+
+          <label>Status</label>
+
+          <select id="vStatus">
+
+            ${statuses.map(
+              s=>
+                `<option
+                  ${s===o.status?'selected':''}
+                >
+                  ${s}
+                </option>`
+            ).join('')}
+
+          </select>
+
+        </div>
+
+        <div class="field">
+
+          <label>
+            Valor total do pedido (R$)
+          </label>
+
+          <input
+            id="vTotal"
+            type="number"
+            step="0.01"
+            min="0"
+            value="${o.total??''}"
+            placeholder="Informar quando fechar"
+          >
+
+        </div>
+
+        <div class="field">
+
+          <label>Sinal recebido</label>
+
+          <input
+            value="${money(o.signal)}"
+            disabled
+          >
+
+        </div>
+
+        <div class="field">
+
+          <label>Saldo a receber</label>
+
+          <input
+            id="vBalance"
+            value="${
+              o.total==null
+                ? '—'
+                : money(
+                    Math.max(
+                      0,
+                      o.total-o.signal
+                    )
+                  )
+            }"
+            disabled
+          >
+
+        </div>
+
+      </div>
+
+      <div
+        style="
+          margin-top:16px;
+          padding:13px;
+          background:#f6f9fc;
+          border-radius:9px;
+          display:grid;
+          grid-template-columns:repeat(3,1fr);
+          gap:10px
+        "
+      >
+
+        <div>
+          <div class="muted" style="font-size:11px">
+            Valor total
+          </div>
+          <strong id="viewTotal">
+            ${
+              o.total==null
+                ? '—'
+                : money(o.total)
+            }
+          </strong>
+        </div>
+
+        <div>
+          <div class="muted" style="font-size:11px">
+            Sinal
+          </div>
+          <strong>
+            ${money(o.signal)}
+          </strong>
+        </div>
+
+        <div>
+          <div class="muted" style="font-size:11px">
+            Comissão 1%
+          </div>
+          <strong class="gold">
+            ${
+              o.total==null
+                ? '—'
+                : money(o.total*.01)
+            }
+          </strong>
+        </div>
+
+      </div>
+
+      <div
+        style="
+          display:flex;
+          justify-content:flex-end;
+          gap:10px;
+          margin-top:18px;
+          flex-wrap:wrap
+        "
+      >
+
+        <button
+          class="btn danger"
+          onclick="deleteOrder('${o.id}')"
+        >
+          Excluir pedido
+        </button>
+
+        <button
+          class="btn secondary"
+          onclick="generatePDF('${o.id}')"
+        >
+          Gerar PDF
+        </button>
+
+        <button
+          class="btn primary"
+          onclick="updateOrder('${o.id}')"
+        >
+          Salvar alterações
+        </button>
+
+      </div>
+    `;
+
+  document
+    .getElementById('modal')
+    .classList.add('show');
+
+  document
+    .getElementById('vTotal')
+    .oninput=e=>{
+
+      const n =
+        Number(e.target.value);
+
+      document
+        .getElementById('vBalance')
+        .value =
+          e.target.value === ''
+            ? '—'
+            : money(
+                Math.max(
+                  0,
+                  n-o.signal
+                )
+              );
+    };
+}
+
+async function deleteOrder(id){
+
+  if(!ensureAuthenticated())
+    return;
+
+  const o =
+    db.orders.find(
+      x=>x.id===id
+    );
+
+  if(!o)
+    return;
+
+  if(!confirm(
+    'Tem certeza que deseja excluir este pedido? Esta ação não pode ser desfeita.'
+  ))
+    return;
+
+  try{
+
+    const {
+      error:itemError
+    } =
+      await supabaseClient
+        .from('itens_pedido')
+        .delete()
+        .eq(
+          'pedido_id',
+          id
+        );
+
+    if(itemError){
+
+      console.error(
+        'Erro ao excluir itens:',
+        itemError
+      );
+
+      toast(
+        'Não foi possível excluir os itens do pedido.\n' +
+        supabaseErrorText(itemError)
+      );
+
+      return;
+    }
+
+    const {
+      error
+    } =
+      await supabaseClient
+        .from('pedidos')
+        .delete()
+        .eq('id',id)
+        .eq(
+          'usuario_id',
+          currentUser.id
+        );
+
+    if(error){
+
+      console.error(
+        'Erro ao excluir pedido:',
+        error
+      );
+
+      toast(
+        'Não foi possível excluir o pedido.\n' +
+        supabaseErrorText(error)
+      );
+
+      return;
+    }
+
+    closeModal();
+
+    toast(
+      'Pedido excluído com sucesso.'
+    );
+
+    await loadOrders();
+
+    renderAll();
+
+  }catch(err){
+
+    console.error(
+      'Exceção ao excluir pedido:',
+      err
+    );
+
+    toast(
+      'Erro ao excluir pedido.\n' +
+      supabaseErrorText(err)
+    );
+  }
+}
+
+
+/* =========================================================
+   RENDER PEDIDOS
+========================================================= */
+
+function renderOrders(){
+
+  const el =
+    document.getElementById(
+      'ordersBody'
+    );
+
+  if(!el)
+    return;
+
+  el.innerHTML =
+    db.orders.map(
+      o=>{
+
+        const c =
+          db.clients.find(
+            x=>x.id===o.clientId
+          );
+
+        const pieces =
+          o.items.reduce(
+            (a,x)=>
+              a+Number(x.qty||0),
+            0
+          );
+
+        let badge='wait';
+
+        if(o.status==='Fechado')
+          badge='ok';
+
+        if(o.status==='Cancelado')
+          badge='cancel';
+
+        return `
+
+          <tr>
+
+            <td>
+              ${esc(c?.nome||'—')}
+            </td>
+
+            <td>
+              ${fmtDate(o.date)}
+            </td>
+
+            <td>
+              ${pieces}
+            </td>
+
+            <td>
+
+              <span class="badge ${badge}">
+                ${esc(o.status)}
+              </span>
+
+            </td>
+
+            <td>
+              ${
+                o.total==null
+                  ? '—'
+                  : money(o.total)
+              }
+            </td>
+
+            <td>
+
+              <button
+                class="btn secondary"
+                onclick="viewOrder('${o.id}')"
+              >
+                Abrir
+              </button>
+
+            </td>
+
+          </tr>
+        `;
+      }
+    ).join('') ||
+    '<tr><td colspan="6" class="empty">Nenhum pedido cadastrado.</td></tr>';
+}
+
+function renderClients(){
+
+  const el =
+    document.getElementById(
+      'clientsBody'
+    );
+
+  if(!el)
+    return;
+
+  el.innerHTML =
+    db.clients.map(
+      c=>`
+
+        <tr>
+
+          <td>
+            <b>
+              ${esc(c.nome)}
+            </b>
+          </td>
+
+          <td>
+            ${esc(c.telefone||'—')}
+          </td>
+
+          <td>
+            ${
+              db.orders.filter(
+                o=>o.clientId===c.id
+              ).length
+            }
+          </td>
+
+        </tr>
+      `
+    ).join('') ||
+    '<tr><td colspan="3" class="empty">Nenhum cliente cadastrado.</td></tr>';
+}
+
+
+/* =========================================================
+   FINANCEIRO
+========================================================= */
+
+function renderFinance(){
+
+  const input =
+    document.getElementById(
+      'monthFilter'
+    );
+
+  const month =
+    input?.value ||
+    monthNow();
+
+  if(input && !input.value)
+    input.value=month;
+
+  const closed =
+    db.orders.filter(
+      o=>
+        o.total!=null &&
+        o.status==='Fechado' &&
+        String(
+          o.created_at ||
+          o.date
+        ).slice(0,7)===month
+    );
+
+  const sales =
+    closed.reduce(
+      (a,o)=>
+        a+Number(o.total||0),
+      0
+    );
+
+  document
+    .getElementById('finSales')
+    .textContent=
+      money(sales);
+
+  document
+    .getElementById('finComm')
+    .textContent=
+      money(
+        sales*.01
+      );
+
+  document
+    .getElementById('finCount')
+    .textContent=
+      closed.length;
+
+  document
+    .getElementById('finPending')
+    .textContent=
+      db.orders.filter(
+        o=>
+          o.status!=='Cancelado' &&
+          o.total==null
+      ).length;
+
+  document
+    .getElementById('finBody')
+    .innerHTML =
+      closed.map(
+        o=>{
+
+          const c =
+            db.clients.find(
+              x=>x.id===o.clientId
+            );
+
+          return `
+
+            <tr>
+
+              <td>
+                ${esc(c?.nome||'—')}
+              </td>
+
+              <td>
+                ${fmtDate(
+                  o.created_at ||
+                  o.date
+                )}
+              </td>
+
+              <td>
+                ${money(o.total)}
+              </td>
+
+              <td>
+                ${money(o.signal)}
+              </td>
+
+              <td>
+                ${money(
+                  Math.max(
+                    0,
+                    o.total-o.signal
+                  )
+                )}
+              </td>
+
+              <td>
+                ${money(
+                  o.total*.01
+                )}
+              </td>
+
+            </tr>
+          `;
+        }
+      ).join('') ||
+      '<tr><td colspan="6" class="empty">Nenhum fechamento neste mês.</td></tr>';
+}
+
+
+/* =========================================================
+   RELATÓRIOS
+========================================================= */
+
+function renderReports(){
+
+  const input =
+    document.getElementById(
+      'reportMonth'
+    );
+
+  const month =
+    input?.value ||
+    monthNow();
+
+  if(input && !input.value)
+    input.value=month;
+
+  const closed =
+    db.orders.filter(
+      o=>
+        o.total!=null &&
+        o.status==='Fechado' &&
+        String(
+          o.created_at ||
+          o.date
+        ).slice(0,7)===month
+    );
+
+  const sales =
+    closed.reduce(
+      (a,o)=>
+        a+Number(o.total||0),
+      0
+    );
+
+  document
+    .getElementById('reportSales')
+    .textContent=
+      money(sales);
+
+  document
+    .getElementById('reportClosed')
+    .textContent=
+      closed.length;
+
+  document
+    .getElementById('reportComm')
+    .textContent=
+      money(
+        sales*.01
+      );
+
+  document
+    .getElementById('reportBody')
+    .innerHTML =
+      closed.map(
+        o=>{
+
+          const c =
+            db.clients.find(
+              x=>x.id===o.clientId
+            );
+
+          return `
+
+            <tr>
+
+              <td>
+                ${esc(c?.nome||'—')}
+              </td>
+
+              <td>
+                ${fmtDate(
+                  o.created_at ||
+                  o.date
+                )}
+              </td>
+
+              <td>
+                ${money(o.total)}
+              </td>
+
+              <td>
+                ${money(o.signal)}
+              </td>
+
+              <td>
+                ${money(
+                  Math.max(
+                    0,
+                    o.total-o.signal
+                  )
+                )}
+              </td>
+
+            </tr>
+          `;
+        }
+      ).join('') ||
+      '<tr><td colspan="5" class="empty">Nenhum fechamento neste mês.</td></tr>';
+}
+
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+function renderDashboard(){
+
+  const month =
+    monthNow();
+
+  const closed =
+    db.orders.filter(
+      o=>
+        o.total!=null &&
+        o.status==='Fechado' &&
+        String(
+          o.created_at ||
+          o.date
+        ).slice(0,7)===month
+    );
+
+  const sales =
+    closed.reduce(
+      (a,o)=>
+        a+Number(o.total||0),
+      0
+    );
+
+  document
+    .getElementById('dashSales')
+    .textContent=
+      money(sales);
+
+  document
+    .getElementById('dashComm')
+    .textContent=
+      money(
+        sales*.01
+      );
+
+  document
+    .getElementById('dashClosed')
+    .textContent=
+      closed.length;
+
+  document
+    .getElementById('dashOpen')
+    .textContent =
+      db.orders.filter(
+        o=>
+          o.total==null &&
+          o.status!=='Cancelado'
+      ).length;
+
+  document
+    .getElementById('recentBody')
+    .innerHTML =
+      db.orders
+        .slice(0,8)
+        .map(
+          o=>{
+
+            const c =
+              db.clients.find(
+                x=>x.id===o.clientId
+              );
+
+            let badge='wait';
+
+            if(o.status==='Fechado')
+              badge='ok';
+
+            if(o.status==='Cancelado')
+              badge='cancel';
+
+            return `
+
+              <tr>
+
+                <td>
+                  ${esc(c?.nome||'—')}
+                </td>
+
+                <td>
+                  ${
+                    o.items.reduce(
+                      (a,x)=>
+                        a+Number(x.qty||0),
+                      0
+                    )
+                  } peças
+                </td>
+
+                <td>
+                  ${fmtDate(o.date)}
+                </td>
+
+                <td>
+
+                  <span class="badge ${badge}">
+                    ${esc(o.status)}
+                  </span>
+
+                </td>
+
+                <td>
+                  ${
+                    o.total==null
+                      ? '—'
+                      : money(o.total)
+                  }
+                </td>
+
+              </tr>
+            `;
+          }
+        ).join('') ||
+        '<tr><td colspan="5" class="empty">Nenhum pedido recente.</td></tr>';
+}
+
+
+/* =========================================================
+   NAVEGAÇÃO
+========================================================= */
+
+function showPage(id){
+
+  document
+    .querySelectorAll('.page')
+    .forEach(
+      x=>x.classList.remove('active')
+    );
+
+  const page =
+    document.getElementById(id);
+
+  if(page)
+    page.classList.add('active');
+
+  document
+    .querySelectorAll('nav button')
+    .forEach(
+      x=>
+        x.classList.toggle(
+          'active',
+          x.dataset.page===id
+        )
+    );
+
+  const names = {
+    dashboard:'Início',
+    pedidos:'Pedidos',
+    clientes:'Clientes',
+    galeria:'Galeria',
+    financeiro:'Financeiro',
+    relatorios:'Relatórios'
+  };
+
+  document
+    .getElementById('title')
+    .textContent =
+      names[id] ||
+      'Augusto Digital';
+
+  renderAll();
+}
+
+document
+  .querySelectorAll('nav button')
+  .forEach(
+    b=>
+      b.onclick=()=>
+        showPage(
+          b.dataset.page
+        )
+  );
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+function closeModal(){
+
+  document
+    .getElementById('modal')
+    .classList.remove('show');
+}
+
+document
+  .getElementById('modal')
+  .addEventListener(
+    'click',
+    e=>{
+      if(e.target.id==='modal')
+        closeModal();
+    }
+  );
+
+
+/* =========================================================
+   PDF
+========================================================= */
+
+function generatePDF(id){
+
+  const o =
+    db.orders.find(
+      x=>x.id===id
+    );
+
+  if(!o)
+    return;
+
+  const c =
+    db.clients.find(
+      x=>x.id===o.clientId
+    );
+
+  const w =
+    window.open(
+      '',
+      '_blank'
+    );
+
+  if(!w){
+
+    toast(
+      'Permita pop-ups para gerar o PDF.'
+    );
+
+    return;
+  }
+
+  const items =
+    o.items || [];
+
+  const totalPieces =
+    items.reduce(
+      (a,x)=>
+        a+Number(x.qty||0),
+      0
+    );
+
+  let itemHtml='';
+
+  items.forEach(
+    (x,i)=>{
+
+      itemHtml += `
+
+        <div class="stamp">
+
+          <div class="stamp-title">
+            Estampa ${i+1}
+          </div>
+
+          <div class="stamp-content">
+
+            <img
+              src="${esc(x.image)}"
+              alt="Estampa ${i+1}"
+            >
+
+            <div class="stamp-info">
+
+              <p>
+                <b>Tecido:</b>
+                ${esc(x.fabric)}
+              </p>
+
+              <p>
+                <b>Quantidade:</b>
+                ${x.qty} peça(s)
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+      `;
+    }
+  );
+
+  w.document.write(`
+
+    <!doctype html>
+
+    <html lang="pt-BR">
+
+    <head>
+
+      <meta charset="utf-8">
+
+      <title>
+        Pedido Augusto Digital
+      </title>
+
+      <style>
+
+        @page{
+          size:A4;
+          margin:12mm;
+        }
+
+        *{
+          box-sizing:border-box;
+        }
+
+        body{
+          font-family:Arial,sans-serif;
+          color:#142536;
+          margin:0;
+        }
+
+        .header{
+          border-bottom:2px solid #06243a;
+          padding-bottom:10px;
+          margin-bottom:14px;
+        }
+
+        h1{
+          color:#06243a;
+          margin:0;
+          font-size:22px;
+        }
+
+        h2{
+          margin:4px 0 0;
+          font-size:16px;
+        }
+
+        .info{
+          font-size:12px;
+          margin-bottom:12px;
+        }
+
+        .stamp{
+          height:128mm;
+          page-break-inside:avoid;
+          border:1px solid #d8e1e9;
+          border-radius:8px;
+          padding:7mm;
+          margin-bottom:6mm;
+        }
+
+        .stamp:nth-of-type(2n){
+          page-break-after:always;
+        }
+
+        .stamp-title{
+          font-size:15px;
+          font-weight:bold;
+          margin-bottom:5mm;
+          color:#06243a;
+        }
+
+        .stamp-content{
+          display:flex;
+          gap:8mm;
+          height:105mm;
+        }
+
+        .stamp img{
+          width:100mm;
+          height:100mm;
+          object-fit:contain;
+          border:1px solid #e0e6eb;
+          border-radius:5px;
+          background:#f7f9fb;
+        }
+
+        .stamp-info{
+          font-size:13px;
+          padding-top:8px;
+        }
+
+        .footer-info{
+          margin-top:5mm;
+          padding:5mm;
+          border-top:1px solid #ddd;
+          font-size:13px;
+        }
+
+      </style>
+
+    </head>
+
+    <body>
+
+      <div class="header">
+
+        <h1>
+          AUGUSTO ESTAMPARIA DIGITAL
+        </h1>
+
+        <h2>
+          Pedido
+        </h2>
+
+      </div>
+
+      <div class="info">
+
+        <b>Cliente:</b>
+        ${esc(c?.nome||'—')}
+
+        &nbsp;&nbsp;&nbsp;
+
+        <b>Data:</b>
+        ${fmtDate(o.date)}
+
+      </div>
+
+      ${itemHtml}
+
+      <div class="footer-info">
+
+        <b>Total de peças:</b>
+        ${totalPieces}
+
+        ${
+          o.total!=null
+            ? `
+              <br>
+              <b>Valor total:</b>
+              ${money(o.total)}
+
+              <br>
+              <b>Sinal:</b>
+              ${money(o.signal)}
+
+              <br>
+              <b>Saldo a receber:</b>
+              ${money(
+                Math.max(
+                  0,
+                  o.total-o.signal
+                )
+              )}
+
+              <br>
+              <b>Comissão 1%:</b>
+              ${money(o.total*.01)}
+            `
+            : ''
+        }
+
+        ${
+          o.notes
+            ? `
+              <br><br>
+              <b>Observações:</b>
+              ${esc(o.notes)}
+            `
+            : ''
+        }
+
+      </div>
+
+      <script>
+
+        window.onload=function(){
+
+          setTimeout(
+            ()=>window.print(),
+            300
+          );
+
+        };
+
+      <\/script>
+
+    </body>
+
+    </html>
+  `);
+
+  w.document.close();
+}
+
+
+/* =========================================================
+   RENDER GERAL
+========================================================= */
+
+function renderAll(){
+
+  renderDashboard();
+  renderOrders();
+  renderClients();
+  renderGallery();
+  renderFinance();
+  renderReports();
+}
+
+
+/* =========================================================
+   INICIALIZAÇÃO
+========================================================= */
+
+async function init(){
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.auth.getSession();
+
+    if(error){
+
+      console.error(
+        'Erro ao recuperar sessão:',
+        error
+      );
+
+      return;
+    }
+
+    if(data?.session?.user){
+
+      currentUser =
+        data.session.user;
+
+      await startApp();
+    }
+
+  }catch(err){
+
+    console.error(
+      'Erro na inicialização:',
+      err
+    );
+
+  }
+
+  supabaseClient.auth.onAuthStateChange(
+    async(event,session)=>{
+
+      console.log(
+        'Mudança de autenticação:',
+        event
+      );
+
+      if(
+        session?.user &&
+        !currentUser
+      ){
+
+        currentUser =
+          session.user;
+
+        try{
+
+          await startApp();
+
+        }catch(err){
+
+          console.error(
+            'Erro ao iniciar aplicativo após autenticação:',
+            err
+          );
+        }
+      }
+
+      if(
+        !session?.user &&
+        currentUser
+      ){
+
+        currentUser=null;
+        currentProfile=null;
+
+        document
+          .getElementById('app')
+          .style.display='none';
+
+        document
+          .getElementById('login')
+          .style.display='flex';
+      }
+    }
+  );
+}
+
+
+/* =========================================================
+   ATALHOS DE LOGIN
+========================================================= */
+
+document
+  .getElementById('loginPass')
+  .addEventListener(
+    'keydown',
+    e=>{
+      if(e.key==='Enter')
+        doLogin();
+    }
+  );
+
+
+/* =========================================================
+   INICIAR
+========================================================= */
+
+init();
+
+</script>
+
+</body>
+</html>
